@@ -1,0 +1,93 @@
+# ============================================================
+# SPARKY LIVE — GAME NIGHT AUTOMATION
+# ============================================================
+# Runs every hour from 7pm to 1am ET on game nights.
+# NHL games run Oct-Jun, mostly Tue-Sat.
+#
+# Cron runs in UTC. 7pm-1am ET = midnight-6am UTC.
+# ============================================================
+
+name: Game Night Live Scoring
+
+on:
+  # Hourly during game windows (UTC times = ET + 5)
+  schedule:
+    - cron: "0 0,1,2,3,4,5,6 * 10-12,1-6 *"  # Every hour midnight-6am UTC (7pm-1am ET), Oct-Jun
+
+  # Manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      period:
+        description: "Current scoring period"
+        required: true
+        type: number
+      commentary_type:
+        description: "Commentary type"
+        required: false
+        default: "update"
+        type: choice
+        options:
+          - update
+          - nightly
+      dry_run:
+        description: "Dry run (no Slack post)"
+        required: false
+        default: false
+        type: boolean
+
+# Only allow one run at a time
+concurrency:
+  group: sparky-live
+  cancel-in-progress: true
+
+jobs:
+  scrape-and-comment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3 libatk1.0-0 libatk-bridge2.0-0 \
+            libdrm2 libxcomposite1 libxdamage1 \
+            libxrandr2 libgbm1 libasound2 \
+            libpangocairo-1.0-0 libgtk-3-0
+
+      - name: Run scraper
+        env:
+          FANTRAX_USERNAME: ${{ secrets.FANTRAX_USERNAME }}
+          FANTRAX_PASSWORD: ${{ secrets.FANTRAX_PASSWORD }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          CURRENT_PERIOD: ${{ inputs.period || vars.CURRENT_PERIOD }}
+          COMMENTARY_TYPE: ${{ inputs.commentary_type || 'update' }}
+          HEADLESS: "true"
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            node src/index.js --dry-run
+          else
+            node src/index.js
+          fi
+
+      # Save snapshots back to repo so we have history for comparison
+      - name: Commit snapshots
+        run: |
+          git config user.name "SparkyBot"
+          git config user.email "sparkybot@users.noreply.github.com"
+          git add data/snapshots/
+          git diff --staged --quiet || git commit -m "📊 Snapshot: Period ${{ inputs.period || vars.CURRENT_PERIOD }} - $(date -u +%Y-%m-%dT%H:%M:%S)"
+          git push
