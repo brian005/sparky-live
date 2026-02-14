@@ -1,20 +1,9 @@
-# ============================================================
-# SPARKY LIVE — GAME NIGHT AUTOMATION
-# ============================================================
-# Runs every hour from 7pm to 1am ET on game nights.
-# NHL games run Oct-Jun, mostly Tue-Sat.
-#
-# Cron runs in UTC. 7pm-1am ET = midnight-6am UTC.
-# ============================================================
-
 name: Game Night Live Scoring
 
 on:
-  # Hourly during game windows (UTC times = ET + 5)
   schedule:
-    - cron: "0 0,1,2,3,4,5,6 * 10-12,1-6 *"  # Every hour midnight-6am UTC (7pm-1am ET), Oct-Jun
+    - cron: "0 0,1,2,3,4,5,6 * 10-12,1-6 *"
 
-  # Manual trigger for testing
   workflow_dispatch:
     inputs:
       period:
@@ -35,7 +24,6 @@ on:
         default: false
         type: boolean
 
-# Only allow one run at a time
 concurrency:
   group: sparky-live
   cancel-in-progress: true
@@ -53,10 +41,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Install Chromium dependencies
         run: |
@@ -83,7 +70,6 @@ jobs:
             node src/index.js
           fi
 
-      # Save snapshots back to repo so we have history for comparison
       - name: Commit snapshots
         run: |
           git config user.name "SparkyBot"
