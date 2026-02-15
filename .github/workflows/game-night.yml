@@ -1,9 +1,20 @@
+# ============================================================
+# SPARKY LIVE — GAME NIGHT AUTOMATION
+# ============================================================
+# Runs every hour from 7pm to 1am ET on game nights.
+# NHL games run Oct-Jun, mostly Tue-Sat.
+#
+# Cron runs in UTC. 7pm-1am ET = midnight-6am UTC.
+# ============================================================
+
 name: Game Night Live Scoring
 
 on:
+  # Hourly during game windows (UTC times = ET + 5)
   schedule:
-    - cron: "0 0,1,2,3,4,5,6 * 10-12,1-6 *"
+    - cron: "0 0,1,2,3,4,5,6 * 10-12,1-6 *"  # Every hour midnight-6am UTC (7pm-1am ET), Oct-Jun
 
+  # Manual trigger for testing
   workflow_dispatch:
     inputs:
       period:
@@ -24,6 +35,7 @@ on:
         default: false
         type: boolean
 
+# Only allow one run at a time
 concurrency:
   group: sparky-live
   cancel-in-progress: true
@@ -41,9 +53,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Install Chromium dependencies
         run: |
@@ -51,7 +64,7 @@ jobs:
           sudo apt-get install -y \
             libnss3 libatk1.0-0 libatk-bridge2.0-0 \
             libdrm2 libxcomposite1 libxdamage1 \
-            libxrandr2 libgbm1 libasound2t64 \
+            libxrandr2 libgbm1 libasound2 \
             libpangocairo-1.0-0 libgtk-3-0
 
       - name: Run scraper
@@ -69,6 +82,16 @@ jobs:
           else
             node src/index.js
           fi
+
+      # Save snapshots back to repo so we have history for comparison
+      - name: Upload debug screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-screenshots
+          path: |
+            debug-*.png
+          if-no-files-found: ignore
 
       - name: Commit snapshots
         run: |

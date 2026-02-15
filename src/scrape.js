@@ -54,36 +54,125 @@ async function scrapeLiveScoring({ username, password, period, headless = true }
     );
 
     // Step 1: Login
+    // Fantrax uses an Angular Material dialog for login.
+    // We navigate to /login, which may open the dialog automatically,
+    // or we may need to click a Login button first.
     console.log("[scrape] Navigating to login page...");
     await page.goto(FANTRAX_LOGIN_URL, { waitUntil: "networkidle2", timeout: 30000 });
 
-    // Wait for login form
-    await page.waitForSelector('input[type="email"], input[name="email"], input[placeholder*="mail"]', { timeout: 15000 });
+    // Wait for page to settle
+    await new Promise(r => setTimeout(r, 3000));
 
-    // Find and fill email/username field
-    const emailInput = await page.$('input[type="email"]') ||
-                       await page.$('input[name="email"]') ||
-                       await page.$('input[placeholder*="mail"]');
-    if (!emailInput) throw new Error("Could not find email input field");
+    // Check if the login dialog is already open, or if we need to click a Login button
+    let dialogOpen = await page.$("mat-dialog-container, .mat-mdc-dialog-container");
+    if (!dialogOpen) {
+      console.log("[scrape] Login dialog not open, looking for Login button...");
+      // Try clicking a Login button on the page to open the dialog
+      const loginTrigger = await page.evaluate(() => {
+        const buttons = Array.from(document.querySelectorAll("button, a"));
+        const loginBtn = buttons.find(b => b.textContent.trim().toLowerCase() === "login");
+        if (loginBtn) { loginBtn.click(); return true; }
+        return false;
+      });
+      if (loginTrigger) {
+        console.log("[scrape] Clicked Login button, waiting for dialog...");
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    }
 
+    // Wait for the Material dialog to appear with input fields
+    try {
+      await page.waitForSelector("mat-dialog-container input, .mat-mdc-dialog-container input, .mat-mdc-form-field input, input[matinput], input.mat-mdc-input-element", { timeout: 15000 });
+    } catch (e) {
+      await page.screenshot({ path: "debug-login-page.png", fullPage: true });
+      // Log what's on the page for debugging
+      const pageInfo = await page.evaluate(() => ({
+        url: window.location.href,
+        title: document.title,
+        hasDialog: !!document.querySelector("mat-dialog-container"),
+        inputCount: document.querySelectorAll("input").length,
+        bodyText: document.body.innerText.substring(0, 500)
+      }));
+      throw new Error("Login dialog inputs not found. Page info: " + JSON.stringify(pageInfo));
+    }
+
+    console.log("[scrape] Login dialog found, filling credentials...");
+
+    // Debug: log all input fields
+    const inputInfo = await page.evaluate(() => {
+      const inputs = document.querySelectorAll("input");
+      return Array.from(inputs).map(i => ({
+        type: i.type, name: i.name, id: i.id,
+        placeholder: i.placeholder, className: i.className,
+        ariaLabel: i.getAttribute("aria-label"),
+        formFieldLabel: i.closest("mat-form-field, .mat-mdc-form-field") ?
+          i.closest("mat-form-field, .mat-mdc-form-field").querySelector("mat-label, label")?.textContent?.trim() : null
+      }));
+    });
+    console.log("[scrape] Found inputs:", JSON.stringify(inputInfo, null, 2));
+
+    // Find all input fields inside the dialog
+    // Fantrax uses Angular Material — inputs are inside mat-form-field elements
+    // First field is email/username, second is password
+    const allInputs = await page.$$("mat-dialog-container input, .mat-mdc-dialog-container input");
+
+    // Fallback: if dialog selector didn't work, try broader match
+    let emailInput, passwordInput;
+    if (allInputs.length >= 2) {
+      emailInput = allInputs[0];
+      passwordInput = allInputs[1];
+    } else {
+      // Try by type
+      const textInputs = await page.$$('input[type="text"], input[type="email"], input:not([type="password"]):not([type="hidden"])');
+      passwordInput = await page.$('input[type="password"]');
+      emailInput = textInputs.length > 0 ? textInputs[0] : null;
+    }
+
+    if (!emailInput) {
+      await page.screenshot({ path: "debug-login-form.png", fullPage: true });
+      throw new Error("Could not find email input. Inputs found: " + JSON.stringify(inputInfo));
+    }
+    if (!passwordInput) {
+      await page.screenshot({ path: "debug-login-form.png", fullPage: true });
+      throw new Error("Could not find password input. Inputs found: " + JSON.stringify(inputInfo));
+    }
+
+    // Fill credentials
     await emailInput.click({ clickCount: 3 });
-    await emailInput.type(username, { delay: 50 });
-
-    // Find and fill password field
-    const passwordInput = await page.$('input[type="password"]');
-    if (!passwordInput) throw new Error("Could not find password input field");
+    await emailInput.type(username, { delay: 30 });
+    await new Promise(r => setTimeout(r, 500));
 
     await passwordInput.click({ clickCount: 3 });
-    await passwordInput.type(password, { delay: 50 });
+    await passwordInput.type(password, { delay: 30 });
+    await new Promise(r => setTimeout(r, 500));
 
-    // Click login button
-    const loginButton = await page.$('button[type="submit"]') ||
-                        await page.$('button.login-btn') ||
-                        await page.$('button:has-text("Log In")');
-    if (loginButton) {
-      await loginButton.click();
-    } else {
+    // Click the Login button inside the dialog
+    const loginButton = await page.evaluate(() => {
+      // Look for button with text "Login" inside the dialog
+      const dialog = document.querySelector("mat-dialog-container, .mat-mdc-dialog-container");
+      if (dialog) {
+        const buttons = dialog.querySelectorAll("button");
+        for (const btn of buttons) {
+          if (btn.textContent.trim().toLowerCase() === "login") {
+            btn.click();
+            return true;
+          }
+        }
+      }
+      // Fallback: any submit button or button with login text
+      const allButtons = document.querySelectorAll("button");
+      for (const btn of allButtons) {
+        if (btn.textContent.trim().toLowerCase() === "login" && btn.offsetParent !== null) {
+          btn.click();
+          return true;
+        }
+      }
+      return false;
+    });
+
+    if (!loginButton) {
       // Fallback: press Enter
+      console.log("[scrape] No Login button found, pressing Enter...");
       await passwordInput.press("Enter");
     }
 
