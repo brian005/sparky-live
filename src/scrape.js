@@ -5,7 +5,9 @@
 // extracts all 6 team cards from the sidebar.
 // ============================================================
 
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+puppeteer.use(StealthPlugin());
 
 const FANTRAX_LOGIN_URL = "https://www.fantrax.com/login";
 const LEAGUE_ID = "264ojs1imd3nogmp";
@@ -147,30 +149,55 @@ async function scrapeLiveScoring({ username, password, period, headless = true }
     await new Promise(r => setTimeout(r, 500));
 
     // Click the Login button inside the dialog
-    const loginButton = await page.evaluate(() => {
-      // Look for button with text "Login" inside the dialog
-      const dialog = document.querySelector("mat-dialog-container, .mat-mdc-dialog-container");
-      if (dialog) {
-        const buttons = dialog.querySelectorAll("button");
+    const loginClicked = await page.evaluate(() => {
+      // Try multiple approaches to find the Login button
+      // 1. Look in mat-dialog-actions (Material dialog footer)
+      const dialogActions = document.querySelector("mat-dialog-actions, mat-mdc-dialog-actions, .mat-mdc-dialog-actions, .mat-dialog-actions");
+      if (dialogActions) {
+        const buttons = dialogActions.querySelectorAll("button");
         for (const btn of buttons) {
-          if (btn.textContent.trim().toLowerCase() === "login") {
+          if (btn.textContent.trim().toLowerCase().includes("login")) {
             btn.click();
-            return true;
+            return "found in dialog-actions";
           }
         }
       }
-      // Fallback: any submit button or button with login text
+
+      // 2. Look for any visible button with "Login" text
       const allButtons = document.querySelectorAll("button");
       for (const btn of allButtons) {
-        if (btn.textContent.trim().toLowerCase() === "login" && btn.offsetParent !== null) {
+        const text = btn.textContent.trim().toLowerCase();
+        if (text === "login" && btn.offsetParent !== null) {
           btn.click();
-          return true;
+          return "found by text match";
         }
       }
-      return false;
+
+      // 3. Look for mat-raised-button or primary button inside dialog
+      const dialog = document.querySelector("mat-dialog-container, .mat-mdc-dialog-container, .cdk-overlay-pane");
+      if (dialog) {
+        const buttons = dialog.querySelectorAll("button");
+        for (const btn of buttons) {
+          if (btn.textContent.trim().toLowerCase().includes("login") ||
+              btn.classList.contains("mat-primary") ||
+              btn.classList.contains("mat-raised-button")) {
+            btn.click();
+            return "found in dialog container";
+          }
+        }
+        // Last resort: click the last button in the dialog (usually the submit)
+        if (buttons.length > 0) {
+          buttons[buttons.length - 1].click();
+          return "clicked last dialog button";
+        }
+      }
+
+      return null;
     });
 
-    if (!loginButton) {
+    if (loginClicked) {
+      console.log(`[scrape] Clicked Login button (${loginClicked}).`);
+    } else {
       // Fallback: press Enter
       console.log("[scrape] No Login button found, pressing Enter...");
       await passwordInput.press("Enter");
@@ -182,10 +209,17 @@ async function scrapeLiveScoring({ username, password, period, headless = true }
       console.log("[scrape] Navigation timeout after login — continuing anyway...");
     });
 
-    // Verify login succeeded by checking we're not still on the login page
+    // Give the page extra time to settle (Angular redirect can be slow)
+    await new Promise(r => setTimeout(r, 5000));
+
+    // Verify login succeeded
     const currentUrl = page.url();
+    console.log("[scrape] Current URL after login: " + currentUrl);
+
     if (currentUrl.includes("/login")) {
-      throw new Error("Login failed — still on login page. Check credentials.");
+      // Take a screenshot to see what happened (CAPTCHA? Wrong creds?)
+      await page.screenshot({ path: "debug-login-failed.png", fullPage: true });
+      throw new Error("Login failed — still on login page. Check credentials or reCAPTCHA may be blocking. Screenshot saved.");
     }
     console.log("[scrape] Login successful.");
 
