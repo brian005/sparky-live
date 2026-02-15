@@ -1,0 +1,48 @@
+{
+  "scrapedAt": "2026-02-15T02:09:54.769Z",
+  "period": 9,
+  "teams": [
+    {
+      "rank": 1,
+      "name": "Jason's Gaucho Chudpumpers",
+      "seasonPts": 1,
+      "dayPts": 0,
+      "projectedFpg": 7.92
+    },
+    {
+      "rank": 2,
+      "name": "Matt's mid tier perpetual projects",
+      "seasonPts": 2,
+      "dayPts": 0,
+      "projectedFpg": 4.05
+    },
+    {
+      "rank": 3,
+      "name": "Graeme's Downtown Demons",
+      "seasonPts": 3,
+      "dayPts": 0,
+      "projectedFpg": 0.67
+    },
+    {
+      "rank": 4,
+      "name": "Cmack's PWN",
+      "seasonPts": 4,
+      "dayPts": 0,
+      "projectedFpg": 1.63
+    },
+    {
+      "rank": 5,
+      "name": "Richie's Meatspinners",
+      "seasonPts": 5,
+      "dayPts": 0,
+      "projectedFpg": 1.71
+    },
+    {
+      "rank": 6,
+      "name": "Brian's.Endless.Win ter.S13E01.720p.mp4",
+      "seasonPts": 6,
+      "dayPts": 0,
+      "projectedFpg": 3.49
+    }
+  ]
+}
