@@ -5,7 +5,16 @@
 // Uses node-canvas for server-side image rendering.
 // ============================================================
 
-const { createCanvas, loadImage } = require("canvas");
+let createCanvas, loadImage;
+try {
+  const canvasModule = require("canvas");
+  createCanvas = canvasModule.createCanvas;
+  loadImage = canvasModule.loadImage;
+} catch (e) {
+  // canvas not available (e.g. Windows local dev)
+  createCanvas = null;
+  loadImage = null;
+}
 const fs = require("fs");
 const path = require("path");
 
@@ -55,6 +64,10 @@ const RANK_COLORS = {
  * @returns {string} Path to the generated PNG
  */
 async function generateScoreboard(context, options = {}) {
+  if (!createCanvas) {
+    throw new Error("canvas package not available — skipping scoreboard generation");
+  }
+
   const { standings, period, scrapedAt, changes } = context;
   const outputPath = options.outputPath || path.join(__dirname, "..", "scoreboard.png");
   const title = options.title || `Period ${period} — Live Standings`;
