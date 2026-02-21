@@ -92,10 +92,10 @@ jobs:
           path: scoreboard.png
           if-no-files-found: ignore
 
-      - name: Commit snapshots
+      - name: Commit data
         run: |
           git config user.name "SparkyBot"
           git config user.email "sparkybot@users.noreply.github.com"
-          git add data/snapshots/
-          git diff --staged --quiet || git commit -m "📊 Snapshot: Period ${{ inputs.period || vars.CURRENT_PERIOD }} - $(date -u +%Y-%m-%dT%H:%M:%S)"
+          git add data/snapshots/ data/daily/
+          git diff --staged --quiet || git commit -m "📊 Nightly: $(date -u +%Y-%m-%d)"
           git push
