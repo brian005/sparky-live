@@ -54,7 +54,18 @@ async function login(browser, username, password) {
   }
 
   // Wait for inputs
-  await page.waitForSelector("mat-dialog-container input, .mat-mdc-dialog-container input, .mat-mdc-form-field input", { timeout: 15000 });
+  try {
+    await page.waitForSelector("mat-dialog-container input, .mat-mdc-dialog-container input, .mat-mdc-form-field input, input.mat-mdc-input-element", { timeout: 15000 });
+  } catch (e) {
+    await page.screenshot({ path: "debug-backfill-login.png", fullPage: true });
+    const info = await page.evaluate(() => ({
+      url: window.location.href,
+      inputCount: document.querySelectorAll("input").length,
+      hasDialog: !!document.querySelector("mat-dialog-container"),
+      bodySnippet: document.body.innerText.substring(0, 300)
+    }));
+    throw new Error("Login dialog inputs not found. Info: " + JSON.stringify(info));
+  }
 
   // Fill credentials
   const allInputs = await page.$$("mat-dialog-container input, .mat-mdc-dialog-container input");
@@ -63,8 +74,20 @@ async function login(browser, username, password) {
     emailInput = allInputs[0];
     passwordInput = allInputs[1];
   } else {
-    emailInput = (await page.$$('input[type="text"]'))[0];
+    // Broader fallback
+    const textInputs = await page.$$('input[type="text"], input[type="email"], input:not([type="password"]):not([type="hidden"]):not([type="checkbox"])');
     passwordInput = await page.$('input[type="password"]');
+    emailInput = textInputs.length > 0 ? textInputs[0] : null;
+  }
+
+  if (!emailInput || !passwordInput) {
+    await page.screenshot({ path: "debug-backfill-login.png", fullPage: true });
+    const inputInfo = await page.evaluate(() => {
+      return Array.from(document.querySelectorAll("input")).map(i => ({
+        type: i.type, id: i.id, className: i.className.substring(0, 60)
+      }));
+    });
+    throw new Error("Could not find login inputs. Found: " + JSON.stringify(inputInfo));
   }
 
   await emailInput.click({ clickCount: 3 });
