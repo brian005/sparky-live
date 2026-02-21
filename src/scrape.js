@@ -246,40 +246,17 @@ async function scrapeLiveScoring({ username, password, period, headless = true }
         const nameEl = section.querySelector("h4.matchup-list__name");
         const name = nameEl ? nameEl.textContent.trim() : `Unknown Team ${index + 1}`;
 
-        // Season score — look in the score-primary header
-        const primaryHeader = section.querySelector("header.matchup-list__score-primary");
-        let seasonPts = 0;
-        let dayPts = 0;
+        // Season score — in h2.matchup-list__score-primary--title
+        const seasonEl = section.querySelector("h2.matchup-list__score-primary--title");
+        const seasonPts = seasonEl ? parseFloat(seasonEl.textContent.trim()) || 0 : 0;
 
-        if (primaryHeader) {
-          // The primary header contains the main score values
-          // Try to extract season and day scores from the header content
-          const scoreTexts = primaryHeader.querySelectorAll("*");
-          const numbers = [];
-          scoreTexts.forEach(el => {
-            const text = el.textContent.trim();
-            const num = parseFloat(text);
-            if (!isNaN(num) && text === String(num)) {
-              numbers.push(num);
-            }
-          });
-          if (numbers.length >= 1) seasonPts = numbers[0];
-          if (numbers.length >= 2) dayPts = numbers[1];
-        }
+        // Day score — in h2.matchup-list__score-primary--alt
+        const dayEl = section.querySelector("h2.matchup-list__score-primary--alt");
+        const dayPts = dayEl ? parseFloat(dayEl.textContent.trim()) || 0 : 0;
 
-        // Fallback: look for score values more broadly in the section link
-        if (seasonPts === 0) {
-          const link = section.closest("a") || section.querySelector("a");
-          if (link) {
-            const allText = link.textContent;
-            const nums = allText.match(/\d+\.?\d*/g);
-            if (nums && nums.length >= 1) seasonPts = parseFloat(nums[0]);
-          }
-        }
-
-        // Secondary score (projected FP/G or similar)
-        const secondaryEl = section.querySelector("h3.matchup-list__score-secondary");
-        const projectedFpg = secondaryEl ? parseFloat(secondaryEl.textContent.trim()) || 0 : 0;
+        // Projected points — in h3.matchup-list__score-secondary
+        const projEl = section.querySelector("h3.matchup-list__score-secondary");
+        const projectedFpg = projEl ? parseFloat(projEl.textContent.trim()) || 0 : 0;
 
         results.push({
           rank: index + 1,

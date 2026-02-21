@@ -155,34 +155,21 @@ async function scrapeDate(page, dateStr, period) {
       const nameEl = section.querySelector("h4.matchup-list__name");
       const name = nameEl ? nameEl.textContent.trim() : `Unknown Team ${index + 1}`;
 
-      // Extract scores from the primary header
-      const primaryHeader = section.querySelector("header.matchup-list__score-primary");
-      let seasonPts = 0;
-      let dayPts = 0;
+      // Day score — in h2.matchup-list__score-primary--alt
+      const dayEl = section.querySelector("h2.matchup-list__score-primary--alt");
+      const dayPts = dayEl ? parseFloat(dayEl.textContent.trim()) || 0 : 0;
 
-      if (primaryHeader) {
-        const scoreTexts = primaryHeader.querySelectorAll("*");
-        const numbers = [];
-        scoreTexts.forEach(el => {
-          const text = el.textContent.trim();
-          const num = parseFloat(text);
-          if (!isNaN(num) && text === String(num)) {
-            numbers.push(num);
-          }
-        });
-        if (numbers.length >= 1) seasonPts = numbers[0];
-        if (numbers.length >= 2) dayPts = numbers[1];
-      }
+      // Projected points — in h3.matchup-list__score-secondary
+      const projEl = section.querySelector("h3.matchup-list__score-secondary");
+      const projPts = projEl ? parseFloat(projEl.textContent.trim()) || 0 : 0;
 
-      // Projected points — the secondary score element
-      const secondaryEl = section.querySelector("h3.matchup-list__score-secondary");
-      const projPts = secondaryEl ? parseFloat(secondaryEl.textContent.trim()) || 0 : 0;
-
-      // GP from roster info line (the "4 0 0" text)
+      // GP from roster info line
       let gp = 0;
-      const rosterEl = section.querySelector(".matchup-list__roster-info, .roster-info");
-      if (rosterEl) {
-        const nums = rosterEl.textContent.match(/\d+/g);
+      const rosterEls = section.querySelectorAll(".matchup-list__game-info, .player-game-info");
+      // Fallback: look for the small text line with numbers like "13 0 0"
+      const infoEl = section.querySelector(".matchup-list__roster-info, .roster-info");
+      if (infoEl) {
+        const nums = infoEl.textContent.match(/\d+/g);
         if (nums && nums.length >= 1) gp = parseInt(nums[0]);
       }
 
