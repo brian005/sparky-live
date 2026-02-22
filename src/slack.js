@@ -88,6 +88,67 @@ async function postUpdate({ webhookUrl, botToken, channelId, commentary, scorebo
   throw new Error("No Slack posting method configured. Set SLACK_WEBHOOK_URL or SLACK_BOT_TOKEN + SLACK_CHANNEL_ID.");
 }
 
+/**
+ * Post individual card strips to Slack.
+ * 1. Posts header text with commentary
+ * 2. Uploads each card strip image in rank order
+ * 3. Posts footer text
+ *
+ * @param {object} opts
+ * @param {string} opts.botToken - Slack Bot Token
+ * @param {string} opts.channelId - Slack Channel ID
+ * @param {string} opts.headerText - Header message (e.g. "🏒 P10: Feb 23 — Nightly Recap")
+ * @param {Array} opts.cardPaths - Array of { rank, franchise, filepath } sorted by rank
+ * @param {string} opts.commentary - Claude commentary text
+ * @param {string} opts.footerText - Footer summary line
+ */
+async function postCardStrips({ botToken, channelId, headerText, cardPaths, commentary, footerText }) {
+  if (!botToken || !channelId) {
+    throw new Error("SLACK_BOT_TOKEN and SLACK_CHANNEL_ID required for card strip posting.");
+  }
+
+  // 1. Post header + commentary
+  const headerMsg = headerText + (commentary ? `\n\n${commentary}` : "");
+  await slackApiJson(botToken, "chat.postMessage", {
+    channel: channelId,
+    text: headerMsg,
+    username: "SparkyBot",
+    icon_emoji: ":hockey:",
+  });
+  console.log("[slack] Header posted.");
+
+  // Small delay between posts
+  await new Promise(r => setTimeout(r, 500));
+
+  // 2. Upload each card strip
+  for (const card of cardPaths) {
+    if (fs.existsSync(card.filepath)) {
+      await uploadImageToSlack(
+        botToken,
+        channelId,
+        card.filepath,
+        `#${card.rank} ${card.franchise}`,
+        "" // no comment per card — image speaks for itself
+      );
+      console.log(`[slack] Card ${card.rank} (${card.franchise}) uploaded.`);
+      await new Promise(r => setTimeout(r, 300));
+    }
+  }
+
+  // 3. Post footer
+  if (footerText) {
+    await slackApiJson(botToken, "chat.postMessage", {
+      channel: channelId,
+      text: footerText,
+      username: "SparkyBot",
+      icon_emoji: ":hockey:",
+    });
+    console.log("[slack] Footer posted.");
+  }
+
+  console.log("[slack] All card strips posted.");
+}
+
 // ---- HTTP Helpers ----
 
 function httpPost(url, jsonPayload) {
@@ -188,4 +249,4 @@ function slackApiJson(token, method, jsonPayload) {
   });
 }
 
-module.exports = { postToSlack, uploadImageToSlack, postUpdate };
+module.exports = { postToSlack, uploadImageToSlack, postUpdate, postCardStrips };

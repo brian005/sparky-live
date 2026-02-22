@@ -1,233 +1,309 @@
 // ============================================================
-// ANALYSIS ENGINE
+// ANALYSIS ENGINE v2 — Daily Stats
 // ============================================================
-// Compares current scrape to previous snapshot.
-// Builds context package combining live data + historical records.
+// Reads data/daily/*.json files and computes:
+//   - Rolling 3D/7D PPG
+//   - Day rank streaks (win, podium, bottom-half)
+//   - Period projections
+//   - VS Projected performance
 // ============================================================
 
 const fs = require("fs");
 const path = require("path");
+const { getPeriodForDate, toFranchise, PERIODS } = require("./config");
 
-const SNAPSHOTS_DIR = path.join(__dirname, "..", "data", "snapshots");
-const HISTORY_FILE = path.join(__dirname, "..", "data", "historical.json");
+const DAILY_DIR = path.join(__dirname, "..", "data", "daily");
 
-// Franchise name → ID mapping (same as FRANCHISE_MAP in Apps Script)
-const FRANCHISE_MAP = {
-  "jason's gaucho chudpumpers": "Jason",
-  "matt's mid tier perpetual projects": "Matt",
-  "graeme's downtown demons": "Graeme",
-  "cmack's pwn": "Chris",
-  "richie's meatspinners": "Richie",
-  "brian's.endless.win ter.s13e01.720p.mp4": "Brian",
-  "brian's.endless.winter.s13e01.720p.mp4": "Brian"
-};
+/**
+ * Load all daily score files, sorted by date ascending.
+ * Filters out Olympic break / null period / empty files.
+ */
+function loadAllDailyScores() {
+  if (!fs.existsSync(DAILY_DIR)) return [];
 
-function normalizeName(name) {
-  return String(name).trim().toLowerCase().replace(/[\s.]+/g, "");
-}
+  const files = fs.readdirSync(DAILY_DIR)
+    .filter(f => f.endsWith(".json") && f !== ".gitkeep")
+    .sort();
 
-function resolveFranchise(teamName) {
-  const lower = String(teamName).trim().toLowerCase();
-
-  // Exact match
-  if (FRANCHISE_MAP[lower]) return FRANCHISE_MAP[lower];
-
-  // Normalized match
-  const normalized = normalizeName(teamName);
-  for (const [key, id] of Object.entries(FRANCHISE_MAP)) {
-    if (normalizeName(key) === normalized) return id;
-  }
-
-  // Partial match — check if any key is contained in the name
-  for (const [key, id] of Object.entries(FRANCHISE_MAP)) {
-    if (normalized.includes(normalizeName(key)) || normalizeName(key).includes(normalized)) {
-      return id;
+  const days = [];
+  for (const file of files) {
+    try {
+      const data = JSON.parse(fs.readFileSync(path.join(DAILY_DIR, file), "utf-8"));
+      if (!data.period || !data.teams || data.teams.length === 0) continue;
+      // Skip days where every team scored 0 (likely no games)
+      const totalPts = data.teams.reduce((sum, t) => sum + (t.dayPts || 0), 0);
+      if (totalPts === 0) continue;
+      days.push(data);
+    } catch (e) {
+      // Skip corrupt files
     }
   }
 
-  // Try to match on first name
-  const firstWord = lower.split(/[''`]/)[0].trim();
-  const knownFirstNames = { "jason": "Jason", "matt": "Matt", "graeme": "Graeme",
-    "cmack": "Chris", "chris": "Chris", "richie": "Richie", "brian": "Brian" };
-  if (knownFirstNames[firstWord]) return knownFirstNames[firstWord];
-
-  return teamName; // Return original if no match
+  return days;
 }
 
 /**
- * Ensure snapshots directory exists.
+ * Get days for a specific period only.
  */
-function ensureSnapshotsDir() {
-  if (!fs.existsSync(SNAPSHOTS_DIR)) {
-    fs.mkdirSync(SNAPSHOTS_DIR, { recursive: true });
+function getDaysForPeriod(allDays, period) {
+  return allDays.filter(d => d.period === period);
+}
+
+/**
+ * Compute rolling average PPG over the last N days for a franchise.
+ */
+function rollingAvgPPG(allDays, franchise, n) {
+  const teamDays = allDays
+    .filter(d => d.teams.some(t => t.franchise === franchise))
+    .slice(-n);
+
+  if (teamDays.length === 0) return null;
+
+  let totalPts = 0;
+  let totalGP = 0;
+
+  for (const day of teamDays) {
+    const team = day.teams.find(t => t.franchise === franchise);
+    if (!team) continue;
+    totalPts += team.dayPts || 0;
+    totalGP += team.gp || 0;
   }
+
+  if (totalGP > 0) return +(totalPts / totalGP).toFixed(2);
+  return +(totalPts / teamDays.length).toFixed(2);
 }
 
 /**
- * Save a scrape snapshot to disk.
+ * Compute season-long PPG for a franchise.
  */
-function saveSnapshot(scrapeData) {
-  ensureSnapshotsDir();
-  const filename = `snapshot_${scrapeData.period}_${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
-  const filepath = path.join(SNAPSHOTS_DIR, filename);
-  fs.writeFileSync(filepath, JSON.stringify(scrapeData, null, 2));
-  console.log(`[analyze] Snapshot saved: ${filename}`);
-  return filepath;
-}
+function seasonPPG(allDays, franchise) {
+  let totalPts = 0;
+  let totalGP = 0;
+  let dayCount = 0;
 
-/**
- * Get the most recent previous snapshot for this period.
- */
-function getPreviousSnapshot(period) {
-  ensureSnapshotsDir();
-  const files = fs.readdirSync(SNAPSHOTS_DIR)
-    .filter(f => f.startsWith(`snapshot_${period}_`) && f.endsWith(".json"))
-    .sort()
-    .reverse();
-
-  // Skip the most recent (that's the one we just saved) — get the one before
-  if (files.length < 2) return null;
-
-  const filepath = path.join(SNAPSHOTS_DIR, files[1]);
-  return JSON.parse(fs.readFileSync(filepath, "utf-8"));
-}
-
-/**
- * Load historical data (exported from Google Sheets Database tab).
- * Expected format: array of period objects matching the Database structure.
- */
-function loadHistorical() {
-  if (!fs.existsSync(HISTORY_FILE)) {
-    console.log("[analyze] No historical.json found — commentary will lack historical context.");
-    return null;
+  for (const day of allDays) {
+    const team = day.teams.find(t => t.franchise === franchise);
+    if (!team) continue;
+    totalPts += team.dayPts || 0;
+    totalGP += team.gp || 0;
+    dayCount++;
   }
-  return JSON.parse(fs.readFileSync(HISTORY_FILE, "utf-8"));
+
+  if (totalGP > 0) return +(totalPts / totalGP).toFixed(2);
+  if (dayCount > 0) return +(totalPts / dayCount).toFixed(2);
+  return 0;
 }
 
 /**
- * Build the full analysis context for Claude.
- * 
- * Returns a structured object with:
- * - current: current scrape data with resolved franchise names
- * - changes: what changed since last scrape
- * - historical: relevant historical context
+ * Compute streak narratives for a franchise.
  */
-function buildContext(scrapeData) {
-  // Resolve franchise names
-  const teams = scrapeData.teams.map(t => ({
-    ...t,
-    franchise: resolveFranchise(t.name)
-  }));
+function computeStreaks(allDays, franchise) {
+  const narratives = [];
+  if (allDays.length < 2) return narratives;
 
-  // Sort by season points descending for current standings
-  const standings = [...teams].sort((a, b) => b.seasonPts - a.seasonPts);
-
-  // Get previous snapshot and compute changes
-  const previous = getPreviousSnapshot(scrapeData.period);
-  let changes = null;
-
-  if (previous) {
-    const prevTeams = previous.teams.map(t => ({
-      ...t,
-      franchise: resolveFranchise(t.name)
-    }));
-
-    changes = {
-      timeSinceLast: timeDiff(previous.scrapedAt, scrapeData.scrapedAt),
-      movements: []
+  const rankedDays = allDays.map(day => {
+    const sorted = [...day.teams].sort((a, b) => (b.dayPts || 0) - (a.dayPts || 0));
+    const teamIdx = sorted.findIndex(t => t.franchise === franchise);
+    return {
+      date: day.date,
+      rank: teamIdx >= 0 ? teamIdx + 1 : 7,
+      dayPts: sorted[teamIdx]?.dayPts || 0,
     };
+  });
 
-    for (const team of standings) {
-      const prevTeam = prevTeams.find(t => t.franchise === team.franchise);
-      if (!prevTeam) continue;
+  const recent = rankedDays.slice(-30);
 
-      const ptsDiff = team.seasonPts - prevTeam.seasonPts;
-      const prevRank = [...prevTeams].sort((a, b) => b.seasonPts - a.seasonPts)
-        .findIndex(t => t.franchise === team.franchise) + 1;
-      const currentRank = standings.findIndex(t => t.franchise === team.franchise) + 1;
-      const rankChange = prevRank - currentRank; // positive = moved up
+  // Win streak
+  let winStreak = 0;
+  for (let i = recent.length - 1; i >= 0; i--) {
+    if (recent[i].rank === 1) winStreak++;
+    else break;
+  }
+  if (winStreak >= 2) narratives.push(`🔥 ${winStreak}-day win streak`);
 
-      if (ptsDiff !== 0 || rankChange !== 0) {
-        changes.movements.push({
-          franchise: team.franchise,
-          ptsDiff,
-          prevPts: prevTeam.seasonPts,
-          newPts: team.seasonPts,
-          prevRank,
-          currentRank,
-          rankChange
-        });
+  // Podium streak
+  let podiumStreak = 0;
+  for (let i = recent.length - 1; i >= 0; i--) {
+    if (recent[i].rank <= 3) podiumStreak++;
+    else break;
+  }
+  if (podiumStreak >= 3 && winStreak < 2) narratives.push(`📈 ${podiumStreak}-day podium streak`);
+
+  // Bottom half streak
+  let bottomStreak = 0;
+  for (let i = recent.length - 1; i >= 0; i--) {
+    if (recent[i].rank > 3) bottomStreak++;
+    else break;
+  }
+  if (bottomStreak >= 5) narratives.push(`⚠️ ${bottomStreak}-day bottom-half streak`);
+
+  // Best day this period
+  const currentPeriod = allDays[allDays.length - 1]?.period;
+  const periodDays = allDays.filter(d => d.period === currentPeriod);
+  if (periodDays.length > 1) {
+    const lastDay = periodDays[periodDays.length - 1];
+    const teamToday = lastDay.teams.find(t => t.franchise === franchise);
+    if (teamToday && (teamToday.dayPts || 0) > 0) {
+      const bestInPeriod = periodDays.reduce((best, day) => {
+        const t = day.teams.find(t => t.franchise === franchise);
+        return t && (t.dayPts || 0) > best ? (t.dayPts || 0) : best;
+      }, 0);
+      if ((teamToday.dayPts || 0) >= bestInPeriod) {
+        narratives.push("⭐ Best day this period");
       }
     }
   }
 
-  // Load historical context
-  const historical = loadHistorical();
-  let historicalContext = null;
+  return narratives;
+}
 
-  if (historical) {
-    historicalContext = buildHistoricalContext(standings, scrapeData.period, historical);
+/**
+ * Project period finish based on current pace.
+ */
+function projectPeriodFinish(allDays, franchise, period) {
+  const periodDays = allDays.filter(d => d.period === period);
+  if (periodDays.length === 0) return null;
+
+  const periodConfig = PERIODS.find(p => p.period === period);
+  if (!periodConfig) return null;
+
+  let periodPts = 0;
+  for (const day of periodDays) {
+    const team = day.teams.find(t => t.franchise === franchise);
+    if (team) periodPts += team.dayPts || 0;
   }
 
+  const daysPlayed = periodDays.length;
+  const startDate = new Date(periodConfig.start + "T12:00:00Z");
+  const endDate = new Date(periodConfig.end + "T12:00:00Z");
+  const totalDays = Math.round((endDate - startDate) / 86400000) + 1;
+  const daysRemaining = totalDays - daysPlayed;
+
+  if (daysPlayed === 0) return null;
+
+  const dailyAvg = periodPts / daysPlayed;
+  const projected = Math.round(periodPts + dailyAvg * daysRemaining);
+
+  return { periodPts: +periodPts.toFixed(1), projected, daysPlayed, daysRemaining, totalDays };
+}
+
+/**
+ * Build the full nightly analysis from daily data + today's scrape.
+ */
+function buildNightlyAnalysis(todayScrape) {
+  const allDays = loadAllDailyScores();
+  const period = todayScrape.period;
+  const today = todayScrape.date || new Date().toISOString().split("T")[0];
+
+  // Build stats for each team
+  const teamStats = todayScrape.teams.map(t => {
+    const franchise = t.franchise || toFranchise(t.name) || t.name;
+
+    const avg3d = rollingAvgPPG(allDays, franchise, 3);
+    const avg7d = rollingAvgPPG(allDays, franchise, 7);
+    const ppg = seasonPPG(allDays, franchise);
+    const streaks = computeStreaks(allDays, franchise);
+    const projection = projectPeriodFinish(allDays, franchise, period);
+    const vsProj = t.projPts ? +((t.dayPts || 0) - t.projPts).toFixed(2) : null;
+
+    // Fallback narrative
+    if (streaks.length === 0 && projection) {
+      streaks.push(`Proj finish: ${projection.projected} pts`);
+    }
+
+    return {
+      franchise,
+      name: t.name,
+      dayPts: t.dayPts || 0,
+      projPts: t.projPts || 0,
+      gp: t.gp || 0,
+      ppg,
+      avg3d,
+      avg7d,
+      vsProj,
+      streaks,
+      projection,
+    };
+  });
+
+  // Rank by day score
+  const ranked = [...teamStats].sort((a, b) => b.dayPts - a.dayPts);
+  ranked.forEach((t, i) => { t.dayRank = i + 1; });
+
+  // Season totals from daily files
+  const seasonTotals = {};
+  for (const t of teamStats) seasonTotals[t.franchise] = 0;
+
+  for (const day of allDays) {
+    for (const t of day.teams) {
+      const f = t.franchise || toFranchise(t.name);
+      if (f && seasonTotals[f] !== undefined) {
+        seasonTotals[f] += t.dayPts || 0;
+      }
+    }
+  }
+
+  // Add today if not in history
+  const todayInHistory = allDays.some(d => d.date === today);
+  if (!todayInHistory) {
+    for (const t of todayScrape.teams) {
+      const f = t.franchise || toFranchise(t.name);
+      if (f && seasonTotals[f] !== undefined) {
+        seasonTotals[f] += t.dayPts || 0;
+      }
+    }
+  }
+
+  for (const t of ranked) {
+    t.seasonPts = +(seasonTotals[t.franchise] || 0).toFixed(1);
+  }
+
+  const seasonRanked = [...ranked].sort((a, b) => b.seasonPts - a.seasonPts);
+  seasonRanked.forEach((t, i) => { t.seasonRank = i + 1; });
+
   return {
-    scrapedAt: scrapeData.scrapedAt,
-    period: scrapeData.period,
-    standings,
-    changes,
-    historicalContext
+    date: today,
+    period,
+    scrapedAt: todayScrape.scrapedAt || new Date().toISOString(),
+    teams: ranked,       // sorted by day score
+    seasonRanked,        // sorted by season total
+    periodDaysPlayed: getDaysForPeriod(allDays, period).length,
+    totalSeasonDays: allDays.length,
   };
 }
 
 /**
- * Build historical comparisons relevant to current standings.
+ * Save today's scrape as a daily JSON file.
  */
-function buildHistoricalContext(standings, period, historical) {
-  // historical.json should be an array of period records
-  // Each: { season, period, teams: { Jason: { FPts, "FP/G", GP }, ... } }
+function saveDailyScore(scrapeData, dateStr) {
+  if (!fs.existsSync(DAILY_DIR)) {
+    fs.mkdirSync(DAILY_DIR, { recursive: true });
+  }
 
-  const leader = standings[0];
-  const last = standings[standings.length - 1];
-  const gap = leader.seasonPts - last.seasonPts;
-
-  // Find same-period historical winners
-  const samePeriodWinners = historical
-    .filter(p => p.period === period)
-    .map(p => {
-      const entries = Object.entries(p.teams || {})
-        .filter(([_, stats]) => stats.FPts > 0)
-        .sort((a, b) => b[1].FPts - a[1].FPts);
-      if (entries.length === 0) return null;
-      return { season: p.season, franchise: entries[0][0], FPts: entries[0][1].FPts };
-    })
-    .filter(Boolean);
-
-  // Leader's historical records
-  const leaderHistory = historical
-    .filter(p => p.teams && p.teams[leader.franchise])
-    .map(p => ({ season: p.season, period: p.period, FPts: p.teams[leader.franchise].FPts }));
-
-  const leaderBest = leaderHistory.length > 0
-    ? leaderHistory.reduce((b, h) => h.FPts > b.FPts ? h : b, leaderHistory[0])
-    : null;
-
-  const leaderAvg = leaderHistory.length > 0
-    ? leaderHistory.reduce((s, h) => s + h.FPts, 0) / leaderHistory.length
-    : 0;
-
-  return {
-    samePeriodWinners,
-    leaderFranchiseBest: leaderBest,
-    leaderFranchiseAvg: leaderAvg.toFixed(1),
-    totalHistoricalPeriods: historical.length
+  const data = {
+    date: dateStr,
+    period: scrapeData.period,
+    teams: scrapeData.teams.map(t => ({
+      franchise: toFranchise(t.name) || t.name,
+      name: t.name,
+      dayPts: t.dayPts || 0,
+      projPts: t.projectedFpg || 0,
+      gp: t.gp || 0,
+    }))
   };
+
+  const filepath = path.join(DAILY_DIR, `${dateStr}.json`);
+  fs.writeFileSync(filepath, JSON.stringify(data, null, 2));
+  console.log(`[analyze] Daily score saved: ${dateStr}.json`);
+  return data;
 }
 
-function timeDiff(isoA, isoB) {
-  const diff = Math.abs(new Date(isoB) - new Date(isoA));
-  const hours = Math.floor(diff / 3600000);
-  const minutes = Math.floor((diff % 3600000) / 60000);
-  if (hours > 0) return `${hours}h ${minutes}m`;
-  return `${minutes}m`;
-}
-
-module.exports = { buildContext, saveSnapshot, resolveFranchise, FRANCHISE_MAP };
+module.exports = {
+  loadAllDailyScores,
+  buildNightlyAnalysis,
+  saveDailyScore,
+  rollingAvgPPG,
+  seasonPPG,
+  computeStreaks,
+  projectPeriodFinish,
+};
