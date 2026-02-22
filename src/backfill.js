@@ -217,6 +217,7 @@ function saveDailyFile(data) {
 async function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes("--dry-run");
+  const force = args.includes("--force");
   const singleDate = args.find((_, i) => args[i - 1] === "--date");
   const fromDate = args.find((_, i) => args[i - 1] === "--from");
 
@@ -240,9 +241,9 @@ async function main() {
     dates = dates.filter(d => d.date >= fromDate);
   }
 
-  // Skip dates we already have
+  // Skip dates we already have (unless --force)
   const existing = new Set();
-  if (fs.existsSync(DAILY_DIR)) {
+  if (!force && fs.existsSync(DAILY_DIR)) {
     fs.readdirSync(DAILY_DIR).forEach(f => {
       if (f.endsWith(".json")) existing.add(f.replace(".json", ""));
     });
