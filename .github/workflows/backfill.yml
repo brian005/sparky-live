@@ -81,11 +81,11 @@ jobs:
           path: debug-*.png
           if-no-files-found: ignore
 
-      - name: Commit daily files
+      - name: Final commit (any remaining files)
         if: ${{ inputs.dry_run != 'true' }}
         run: |
           git config user.name "SparkyBot"
           git config user.email "sparkybot@users.noreply.github.com"
           git add data/daily/
-          git diff --staged --quiet || git commit -m "📊 Backfill: daily scores"
-          git push
+          git diff --staged --quiet || git commit -m "📊 Backfill: final batch"
+          git push || true

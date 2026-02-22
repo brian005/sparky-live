@@ -308,8 +308,16 @@ async function main() {
   try {
     const page = await login(browser, username, password);
 
+    // Configure git for batch commits
+    try {
+      const { execSync } = require("child_process");
+      execSync('git config user.name "SparkyBot"', { stdio: "pipe" });
+      execSync('git config user.email "sparkybot@users.noreply.github.com"', { stdio: "pipe" });
+    } catch (e) { /* not in a git repo, skip batch commits */ }
+
     let success = 0;
     let failures = 0;
+    const BATCH_SIZE = 20;
 
     for (let i = 0; i < toScrape.length; i++) {
       const { date, period } = toScrape[i];
@@ -334,6 +342,18 @@ async function main() {
       } catch (err) {
         console.log(`❌ ${err.message}`);
         failures++;
+      }
+
+      // Batch commit every N dates to save progress
+      if ((i + 1) % BATCH_SIZE === 0 || i === toScrape.length - 1) {
+        try {
+          const { execSync } = require("child_process");
+          execSync(`git add data/daily/ && git diff --staged --quiet || git commit -m "📊 Backfill batch: ${i + 1}/${toScrape.length}"`, { stdio: "pipe" });
+          execSync("git push", { stdio: "pipe" });
+          console.log(`  💾 Committed & pushed (${i + 1}/${toScrape.length})`);
+        } catch (gitErr) {
+          console.log(`  ⚠️  Git commit skipped: ${gitErr.message.substring(0, 80)}`);
+        }
       }
 
       // Delay between pages
