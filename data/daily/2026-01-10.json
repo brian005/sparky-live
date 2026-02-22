@@ -1,0 +1,48 @@
+{
+  "date": "2026-01-10",
+  "period": 7,
+  "teams": [
+    {
+      "franchise": "JGC",
+      "name": "Jason's Gaucho Chudpumpers",
+      "dayPts": 11,
+      "projPts": 9.33,
+      "gp": 0
+    },
+    {
+      "franchise": "MPP",
+      "name": "Matt's mid tier perpetual projects",
+      "dayPts": 7,
+      "projPts": 10.38,
+      "gp": 0
+    },
+    {
+      "franchise": "GDD",
+      "name": "Graeme's Downtown Demons",
+      "dayPts": 12,
+      "projPts": 13.47,
+      "gp": 0
+    },
+    {
+      "franchise": "PWN",
+      "name": "Cmack's PWN",
+      "dayPts": 8,
+      "projPts": 11.73,
+      "gp": 0
+    },
+    {
+      "franchise": "RMS",
+      "name": "Richie's Meatspinners",
+      "dayPts": 14,
+      "projPts": 10.24,
+      "gp": 0
+    },
+    {
+      "franchise": "Brian's.Endless.Win ter.S13E01.720p.mp4",
+      "name": "Brian's.Endless.Win ter.S13E01.720p.mp4",
+      "dayPts": 13,
+      "projPts": 9.87,
+      "gp": 0
+    }
+  ]
+}
