@@ -246,17 +246,31 @@ async function scrapeLiveScoring({ username, password, period, headless = true }
         const nameEl = section.querySelector("h4.matchup-list__name");
         const name = nameEl ? nameEl.textContent.trim() : `Unknown Team ${index + 1}`;
 
-        // Season score — in h2.matchup-list__score-primary--title
-        const seasonEl = section.querySelector("h2.matchup-list__score-primary--title");
-        const seasonPts = seasonEl ? parseFloat(seasonEl.textContent.trim()) || 0 : 0;
+        // Season score — h2 text is like "Season 771"
+        const seasonEl = section.querySelector("h2.matchup-list__score-primary--title") ||
+                         section.querySelector("h2:not([class*='alt'])");
+        let seasonPts = 0;
+        if (seasonEl) {
+          const nums = seasonEl.textContent.match(/[\d.]+/g);
+          if (nums && nums.length > 0) seasonPts = parseFloat(nums[nums.length - 1]) || 0;
+        }
 
-        // Day score — in h2.matchup-list__score-primary--alt
-        const dayEl = section.querySelector("h2.matchup-list__score-primary--alt");
-        const dayPts = dayEl ? parseFloat(dayEl.textContent.trim()) || 0 : 0;
+        // Day score — h2 text is like "Day 9"
+        const dayEl = section.querySelector("h2.matchup-list__score-primary--alt") ||
+                      section.querySelector("[class*='score-primary--alt']");
+        let dayPts = 0;
+        if (dayEl) {
+          const nums = dayEl.textContent.match(/[\d.]+/g);
+          if (nums && nums.length > 0) dayPts = parseFloat(nums[nums.length - 1]) || 0;
+        }
 
-        // Projected points — in h3.matchup-list__score-secondary
+        // Projected points
         const projEl = section.querySelector("h3.matchup-list__score-secondary");
-        const projectedFpg = projEl ? parseFloat(projEl.textContent.trim()) || 0 : 0;
+        let projectedFpg = 0;
+        if (projEl) {
+          const nums = projEl.textContent.match(/[\d.]+/g);
+          if (nums && nums.length > 0) projectedFpg = parseFloat(nums[nums.length - 1]) || 0;
+        }
 
         results.push({
           rank: index + 1,

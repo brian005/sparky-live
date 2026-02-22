@@ -165,15 +165,22 @@ async function scrapeDate(page, dateStr, period) {
         text: el.textContent.trim()
       }));
 
-      // Day score — try multiple selectors
+      // Day score — h2 text is like "Day 9" or "Day\n9"
       const dayEl = section.querySelector("h2.matchup-list__score-primary--alt") ||
-                    section.querySelector("[class*='score-primary--alt']") ||
-                    section.querySelector("[class*='score-primary'][class*='alt']");
-      const dayPts = dayEl ? parseFloat(dayEl.textContent.trim()) || 0 : 0;
+                    section.querySelector("[class*='score-primary--alt']");
+      let dayPts = 0;
+      if (dayEl) {
+        const nums = dayEl.textContent.match(/[\d.]+/g);
+        if (nums && nums.length > 0) dayPts = parseFloat(nums[nums.length - 1]) || 0;
+      }
 
       // Projected points
       const projEl = section.querySelector("h3.matchup-list__score-secondary");
-      const projPts = projEl ? parseFloat(projEl.textContent.trim()) || 0 : 0;
+      let projPts = 0;
+      if (projEl) {
+        const nums = projEl.textContent.match(/[\d.]+/g);
+        if (nums && nums.length > 0) projPts = parseFloat(nums[nums.length - 1]) || 0;
+      }
 
       // GP
       let gp = 0;
