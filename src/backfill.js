@@ -155,18 +155,28 @@ async function scrapeDate(page, dateStr, period) {
       const nameEl = section.querySelector("h4.matchup-list__name");
       const name = nameEl ? nameEl.textContent.trim() : `Unknown Team ${index + 1}`;
 
-      // Day score — in h2.matchup-list__score-primary--alt
-      const dayEl = section.querySelector("h2.matchup-list__score-primary--alt");
+      // Debug: dump all h2 and h3 elements in this section
+      const h2s = Array.from(section.querySelectorAll("h2")).map(el => ({
+        class: el.className,
+        text: el.textContent.trim()
+      }));
+      const h3s = Array.from(section.querySelectorAll("h3")).map(el => ({
+        class: el.className,
+        text: el.textContent.trim()
+      }));
+
+      // Day score — try multiple selectors
+      const dayEl = section.querySelector("h2.matchup-list__score-primary--alt") ||
+                    section.querySelector("[class*='score-primary--alt']") ||
+                    section.querySelector("[class*='score-primary'][class*='alt']");
       const dayPts = dayEl ? parseFloat(dayEl.textContent.trim()) || 0 : 0;
 
-      // Projected points — in h3.matchup-list__score-secondary
+      // Projected points
       const projEl = section.querySelector("h3.matchup-list__score-secondary");
       const projPts = projEl ? parseFloat(projEl.textContent.trim()) || 0 : 0;
 
-      // GP from roster info line
+      // GP
       let gp = 0;
-      const rosterEls = section.querySelectorAll(".matchup-list__game-info, .player-game-info");
-      // Fallback: look for the small text line with numbers like "13 0 0"
       const infoEl = section.querySelector(".matchup-list__roster-info, .roster-info");
       if (infoEl) {
         const nums = infoEl.textContent.match(/\d+/g);
@@ -178,19 +188,28 @@ async function scrapeDate(page, dateStr, period) {
         name,
         dayPts,
         projPts,
-        gp
+        gp,
+        _debug: { h2s, h3s, dayElClass: dayEl ? dayEl.className : "NOT FOUND" }
       });
     });
 
     return results;
   });
 
-  if (teams.length === 0) return null;
+  // Log debug info for first team
+  if (teams.length > 0) {
+    console.log(`  [${dateStr}] Debug first team:`, JSON.stringify(teams[0]._debug, null, 2));
+  }
+
+  // Strip debug before saving
+  const cleanTeams = teams.map(({ _debug, ...rest }) => rest);
+
+  if (cleanTeams.length === 0) return null;
 
   return {
     date: dateStr,
     period,
-    teams: teams.map(t => ({
+    teams: cleanTeams.map(t => ({
       franchise: toFranchise(t.name) || t.name,
       name: t.name,
       dayPts: t.dayPts,
