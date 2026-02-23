@@ -707,6 +707,6 @@ module.exports = {
   saveDailyScore,
   rollingAvgPPG,
   seasonPPG,
-  computeStreaks,
+  buildNarratives,
   projectPeriodFinish,
 };
