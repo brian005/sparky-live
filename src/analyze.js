@@ -95,7 +95,8 @@ function seasonPPG(allDays, franchise) {
 }
 
 /**
- * Compute streak narratives for a franchise.
+ * Compute streak/narrative items for a franchise.
+ * Guarantees at least one narrative for every team.
  */
 function computeStreaks(allDays, franchise) {
   const narratives = [];
@@ -158,6 +159,31 @@ function computeStreaks(allDays, franchise) {
 }
 
 /**
+ * Build a trending narrative from 3D/7D averages vs season PPG.
+ * Returns a string like "📈 3D avg: 1.14 (up from 0.92 season)"
+ */
+function buildTrendNarrative(avg3d, avg7d, ppg) {
+  if (avg3d == null || ppg == null) return null;
+
+  const diff3 = avg3d - ppg;
+  const pctChange = ppg > 0 ? Math.round((diff3 / ppg) * 100) : 0;
+
+  if (Math.abs(pctChange) < 8) return null; // not significant enough
+
+  if (pctChange >= 20) {
+    return `📈 3D avg ${avg3d.toFixed(2)} — surging (+${pctChange}% above season)`;
+  } else if (pctChange >= 8) {
+    return `📈 3D avg ${avg3d.toFixed(2)} (up from ${ppg.toFixed(2)} season)`;
+  } else if (pctChange <= -20) {
+    return `📉 3D avg ${avg3d.toFixed(2)} — slumping (${pctChange}% below season)`;
+  } else if (pctChange <= -8) {
+    return `📉 3D avg ${avg3d.toFixed(2)} (down from ${ppg.toFixed(2)} season)`;
+  }
+
+  return null;
+}
+
+/**
  * Project period finish based on current pace.
  */
 function projectPeriodFinish(allDays, franchise, period) {
@@ -206,9 +232,19 @@ function buildNightlyAnalysis(todayScrape) {
     const projection = projectPeriodFinish(allDays, franchise, period);
     const vsProj = t.projPts ? +((t.dayPts || 0) - t.projPts).toFixed(2) : null;
 
-    // Fallback narrative
-    if (streaks.length === 0 && projection) {
-      streaks.push(`Proj finish: ${projection.projected} pts`);
+    // Add 3D/7D trend narrative if significant and room for it
+    const trendNar = buildTrendNarrative(avg3d, avg7d, ppg);
+    if (trendNar && streaks.length < 2) {
+      streaks.push(trendNar);
+    }
+
+    // Guarantee at least one narrative
+    if (streaks.length === 0) {
+      if (projection) {
+        streaks.push(`Proj finish: ${projection.projected} pts`);
+      } else if (ppg) {
+        streaks.push(`Season avg: ${ppg.toFixed(2)} PPG`);
+      }
     }
 
     return {

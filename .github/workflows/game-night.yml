@@ -1,23 +1,16 @@
-name: Game Night Live Scoring
+name: Game Night — Nightly Recap
 
 on:
   schedule:
-    - cron: "0 0,1,2,3,4,5,6 * 10-12,1-6 *"
+    # Run at 6am UTC (1am ET) — after last games finish
+    - cron: "0 6 * 10-12,1-4 *"
 
   workflow_dispatch:
     inputs:
-      period:
-        description: "Current scoring period"
-        required: true
-        type: number
-      commentary_type:
-        description: "Commentary type"
+      target_date:
+        description: "Override date (YYYY-MM-DD, blank = today)"
         required: false
-        default: "update"
-        type: choice
-        options:
-          - update
-          - nightly
+        type: string
       dry_run:
         description: "Dry run (no Slack post)"
         required: false
@@ -29,7 +22,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  scrape-and-comment:
+  nightly-recap:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -56,7 +49,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run scraper
+      - name: Run nightly pipeline
         env:
           FANTRAX_USERNAME: ${{ secrets.FANTRAX_USERNAME }}
           FANTRAX_PASSWORD: ${{ secrets.FANTRAX_PASSWORD }}
@@ -64,8 +57,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
-          CURRENT_PERIOD: ${{ inputs.period || vars.CURRENT_PERIOD }}
-          COMMENTARY_TYPE: ${{ inputs.commentary_type || 'update' }}
+          TARGET_DATE: ${{ inputs.target_date || '' }}
           HEADLESS: "true"
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
@@ -79,9 +71,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: debug-screenshots
-          path: |
-            debug-*.png
-            scoreboard.png
+          path: debug-*.png
           if-no-files-found: ignore
 
       - name: Upload scoreboard
@@ -89,13 +79,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: scoreboard
-          path: scoreboard.png
+          path: |
+            scoreboard.png
+            cards/
           if-no-files-found: ignore
 
-      - name: Commit data
+      - name: Commit daily data
         run: |
           git config user.name "SparkyBot"
           git config user.email "sparkybot@users.noreply.github.com"
-          git add data/snapshots/ data/daily/
+          git add data/daily/
           git diff --staged --quiet || git commit -m "📊 Nightly: $(date -u +%Y-%m-%d)"
           git push

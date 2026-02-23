@@ -1,10 +1,9 @@
 // ============================================================
-// SCOREBOARD IMAGE GENERATOR v5 — Card Strips
+// SCOREBOARD IMAGE GENERATOR v6 — 4-Column Card Strips
 // ============================================================
-// Generates one PNG per team (640px wide, ~90px tall).
-// Designed for inline Slack display without thumbnailing.
-// White cards with neon outline borders + glow on podium.
-// Day score as whole number. VS Proj as percentage.
+// 4 stats: DAY, SEASON, PPG, VS PROJ
+// 3D/7D trending info moves to the narrative bar.
+// Bigger fonts, logos, and team names for inline Slack readability.
 // ============================================================
 
 let createCanvas, loadImage, registerFont;
@@ -32,7 +31,6 @@ const PODIUM = {
     badgeBg: ["#FFF8C0", "#FFD000"],
     badgeText: "#5A3A00",
     nameColor: "#B8860B",
-    accent: "rgba(255,208,0,0.10)",
     logoGlow: "rgba(255,208,0,0.35)",
     narrativeTint: "rgba(255,208,0,0.06)",
   },
@@ -43,7 +41,6 @@ const PODIUM = {
     badgeBg: ["#E0B0FF", "#B44DFF"],
     badgeText: "#ffffff",
     nameColor: "#7B2FBE",
-    accent: "rgba(180,77,255,0.08)",
     logoGlow: "rgba(180,77,255,0.30)",
     narrativeTint: "rgba(180,77,255,0.05)",
   },
@@ -54,7 +51,6 @@ const PODIUM = {
     badgeBg: ["#B0F0FF", "#00D4FF"],
     badgeText: "#003844",
     nameColor: "#0090AA",
-    accent: "rgba(0,212,255,0.08)",
     logoGlow: "rgba(0,212,255,0.30)",
     narrativeTint: "rgba(0,212,255,0.05)",
   },
@@ -73,37 +69,27 @@ const T = {
   negative: "#DC2626",
   neutral: "#9CA3AF",
   narrativeText: "#8E95A0",
-  narrativeHighlight: "#E65100",
   narrativeBorder: "#EDF0F3",
 };
 
-// Card strip layout
+// Card strip layout — optimized for 4 columns
 const CARD_W = 640;
-const CARD_PAD = 10;
-const DATA_ROW_H = 56;
-const NARRATIVE_H = 24;
+const CARD_PAD = 12;
+const DATA_ROW_H = 62;
+const NARRATIVE_H = 26;
 const CARD_RADIUS = 10;
-const LOGO_SIZE = 40;
-const BADGE_SIZE = 30;
+const LOGO_SIZE = 48;
+const BADGE_SIZE = 32;
 const ELEM_GAP = 10;
-const GLOW_PAD = 14; // extra padding for glow to not get clipped
+const GLOW_PAD = 14;
 
-// Column positions (right-aligned, with breathing room on right edge)
+// 4 columns — more breathing room
 const COLS = {
-  day:    { x: CARD_W - CARD_PAD - 296 },
-  season: { x: CARD_W - CARD_PAD - 244 },
-  ppg:    { x: CARD_W - CARD_PAD - 192 },
-  avg3:   { x: CARD_W - CARD_PAD - 144 },
-  avg7:   { x: CARD_W - CARD_PAD - 96 },
-  vsProj: { x: CARD_W - CARD_PAD - 40 },
+  day:    { x: CARD_W - CARD_PAD - 230 },
+  season: { x: CARD_W - CARD_PAD - 164 },
+  ppg:    { x: CARD_W - CARD_PAD - 98 },
+  vsProj: { x: CARD_W - CARD_PAD - 38 },
 };
-
-function getTrendColor(avg, seasonPpg) {
-  if (avg === null || seasonPpg === null) return T.neutral;
-  if (avg > seasonPpg + 0.05) return T.positive;
-  if (avg < seasonPpg - 0.05) return T.negative;
-  return T.neutral;
-}
 
 function vsProjPct(team) {
   const proj = team.projPts || 0;
@@ -137,7 +123,7 @@ async function preloadLogos(franchises) {
 }
 
 /**
- * Generate a single card strip PNG for one team.
+ * Render a single card strip onto a canvas context.
  */
 function renderCardStrip(ctx, team, logos, x, y, w) {
   const rank = team.dayRank;
@@ -145,11 +131,10 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
   const p = PODIUM[rank];
   const cardH = DATA_ROW_H + NARRATIVE_H;
 
-  // ---- Card background (white fill) ----
+  // White fill
   drawRoundedRect(ctx, x, y, w, cardH, CARD_RADIUS, T.cardBg);
 
   if (isPodium) {
-    // Neon border with glow
     ctx.save();
     ctx.shadowColor = p.glow;
     ctx.shadowBlur = 12;
@@ -171,7 +156,7 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
   // ---- Data Row ----
   const rowCenterY = y + DATA_ROW_H / 2;
 
-  // Logo
+  // Logo (48px)
   const logoX = x + CARD_PAD;
   const logoY = rowCenterY - LOGO_SIZE / 2;
   const logoImg = logos[team.franchise];
@@ -204,19 +189,19 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
     // Fallback letter circle
     ctx.beginPath();
     ctx.arc(logoX + LOGO_SIZE / 2, rowCenterY, LOGO_SIZE / 2, 0, Math.PI * 2);
-    ctx.fillStyle = isPodium ? p.accent : `${T.rankOther}22`;
+    ctx.fillStyle = isPodium ? `${p.color}18` : `${T.rankOther}22`;
     ctx.fill();
     ctx.strokeStyle = isPodium ? p.color : `${T.rankOther}44`;
     ctx.lineWidth = 2;
     ctx.stroke();
 
     ctx.fillStyle = isPodium ? p.color : T.rankOther;
-    ctx.font = "bold 14px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.font = "bold 16px 'Helvetica Neue', Helvetica, Arial, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(team.franchise.charAt(0), logoX + LOGO_SIZE / 2, rowCenterY + 5);
+    ctx.fillText(team.franchise.charAt(0), logoX + LOGO_SIZE / 2, rowCenterY + 6);
   }
 
-  // Rank badge
+  // Rank badge (32px)
   const badgeX = logoX + LOGO_SIZE + ELEM_GAP;
   const badgeY = rowCenterY - BADGE_SIZE / 2;
 
@@ -227,83 +212,67 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
     ctx.save();
     ctx.shadowColor = p.glow;
     ctx.shadowBlur = 8;
-    drawRoundedRect(ctx, badgeX, badgeY, BADGE_SIZE, BADGE_SIZE, 6, null);
+    drawRoundedRect(ctx, badgeX, badgeY, BADGE_SIZE, BADGE_SIZE, 7, null);
     ctx.fillStyle = badgeGrad;
     ctx.fill();
     ctx.restore();
   } else {
-    drawRoundedRect(ctx, badgeX, badgeY, BADGE_SIZE, BADGE_SIZE, 6, T.rankOther);
+    drawRoundedRect(ctx, badgeX, badgeY, BADGE_SIZE, BADGE_SIZE, 7, T.rankOther);
   }
 
   ctx.fillStyle = isPodium ? p.badgeText : "#fff";
-  ctx.font = "bold 15px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.font = "bold 17px 'Helvetica Neue', Helvetica, Arial, sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText(String(rank), badgeX + BADGE_SIZE / 2, badgeY + BADGE_SIZE / 2 + 5);
+  ctx.fillText(String(rank), badgeX + BADGE_SIZE / 2, badgeY + BADGE_SIZE / 2 + 6);
 
-  // Team name
-  const nameX = badgeX + BADGE_SIZE + 10;
-  const nameMaxW = COLS.day.x - nameX - 10;
+  // Team name (bigger)
+  const nameX = badgeX + BADGE_SIZE + 12;
+  const nameMaxW = COLS.day.x - nameX - 14;
   ctx.fillStyle = isPodium ? p.nameColor : T.teamName;
-  ctx.font = `${isPodium ? "bold" : "600"} 14px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+  ctx.font = `${isPodium ? "bold" : "600"} 16px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
   ctx.textAlign = "left";
-  truncateText(ctx, team.name, nameX, rowCenterY + 5, nameMaxW);
+  truncateText(ctx, team.name, nameX, rowCenterY + 6, nameMaxW);
 
-  // ---- Column values with labels ----
+  // ---- 4 Column Values ----
   ctx.textAlign = "center";
 
-  // Day
+  // DAY — hero number
   ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 9px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("DAY", COLS.day.x, rowCenterY - 10);
+  ctx.font = "bold 10px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("DAY", COLS.day.x, rowCenterY - 12);
   ctx.fillStyle = T.dayValue;
-  ctx.font = "bold 20px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText(String(Math.round(team.dayPts || 0)), COLS.day.x, rowCenterY + 12);
+  ctx.font = "bold 24px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText(String(Math.round(team.dayPts || 0)), COLS.day.x, rowCenterY + 14);
 
-  // Season
+  // SEASON
   ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 9px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("SEASON", COLS.season.x, rowCenterY - 10);
+  ctx.font = "bold 10px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("SEASON", COLS.season.x, rowCenterY - 12);
   ctx.fillStyle = T.colValue;
-  ctx.font = "600 15px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText(fmtNum(team.seasonPts), COLS.season.x, rowCenterY + 12);
+  ctx.font = "600 17px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText(fmtNum(team.seasonPts), COLS.season.x, rowCenterY + 14);
 
   // PPG
   ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 9px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("PPG", COLS.ppg.x, rowCenterY - 10);
+  ctx.font = "bold 10px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("PPG", COLS.ppg.x, rowCenterY - 12);
   ctx.fillStyle = T.colValue;
-  ctx.font = "500 13px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText(team.ppg != null ? team.ppg.toFixed(2) : "-", COLS.ppg.x, rowCenterY + 12);
+  ctx.font = "600 17px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText(team.ppg != null ? team.ppg.toFixed(2) : "-", COLS.ppg.x, rowCenterY + 14);
 
-  // 3D
+  // VS PROJ (percentage)
   ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 9px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("3D", COLS.avg3.x, rowCenterY - 10);
-  ctx.fillStyle = getTrendColor(team.avg3d, team.ppg);
-  ctx.font = "600 13px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText(team.avg3d != null ? team.avg3d.toFixed(2) : "-", COLS.avg3.x, rowCenterY + 12);
-
-  // 7D
-  ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 9px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("7D", COLS.avg7.x, rowCenterY - 10);
-  ctx.fillStyle = getTrendColor(team.avg7d, team.ppg);
-  ctx.font = "600 13px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText(team.avg7d != null ? team.avg7d.toFixed(2) : "-", COLS.avg7.x, rowCenterY + 12);
-
-  // VS Proj (percentage)
-  ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 9px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("VS PROJ", COLS.vsProj.x, rowCenterY - 10);
+  ctx.font = "bold 10px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("VS PROJ", COLS.vsProj.x, rowCenterY - 12);
   const pct = vsProjPct(team);
   if (pct != null) {
     ctx.fillStyle = pct >= 100 ? T.positive : T.negative;
-    ctx.font = "bold 15px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-    ctx.fillText(`${pct}%`, COLS.vsProj.x, rowCenterY + 12);
+    ctx.font = "bold 17px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.fillText(`${pct}%`, COLS.vsProj.x, rowCenterY + 14);
   } else {
     ctx.fillStyle = T.neutral;
-    ctx.font = "500 13px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-    ctx.fillText("-", COLS.vsProj.x, rowCenterY + 12);
+    ctx.font = "600 17px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.fillText("-", COLS.vsProj.x, rowCenterY + 14);
   }
 
   // ---- Narrative Bar ----
@@ -322,24 +291,21 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
 
   ctx.textAlign = "left";
   const streaks = team.streaks || [];
-  let narX = x + 12;
+  let narX = x + 14;
 
   if (streaks.length === 0) {
-    // Fallback: show projection
     const projText = team.projection
       ? `Proj finish: ${team.projection.projected} pts`
       : `Season avg: ${(team.ppg || 0).toFixed(2)} PPG`;
     ctx.fillStyle = T.narrativeText;
     ctx.font = "italic 11px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-    ctx.fillText(projText, narX, narY + 15);
+    ctx.fillText(projText, narX, narY + 17);
   } else {
     for (const s of streaks) {
-      const isHot = s.includes("🔥") || s.includes("📈") || s.includes("⭐");
-      const isCold = s.includes("📉") || s.includes("⚠️");
-      ctx.fillStyle = isHot ? (isPodium ? p.nameColor : T.narrativeHighlight) :
-                      isCold ? T.negative : T.narrativeText;
-      ctx.font = `${isHot ? "600" : "400"} 11px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
-      ctx.fillText(s, narX, narY + 15);
+      const isBad = s.includes("⚠️") || s.includes("📉");
+      ctx.fillStyle = isBad ? T.negative : "#2C3E50";
+      ctx.font = `${isBad ? "600" : "500"} 11px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+      ctx.fillText(s, narX, narY + 17);
       narX += ctx.measureText(s).width + 14;
     }
   }
@@ -349,7 +315,7 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
 
 /**
  * Generate individual card strip PNGs for each team.
- * Returns array of { franchise, filepath } objects.
+ * Returns array of { franchise, rank, filepath, name }.
  */
 async function generateCardStrips(analysis, options = {}) {
   if (!createCanvas) {
@@ -375,8 +341,6 @@ async function generateCardStrips(analysis, options = {}) {
   for (const team of teams) {
     const canvas = createCanvas(canvasW, canvasH);
     const ctx = canvas.getContext("2d");
-
-    // Transparent background — card floats
     ctx.clearRect(0, 0, canvasW, canvasH);
 
     renderCardStrip(ctx, team, logos, GLOW_PAD, GLOW_PAD, CARD_W);
@@ -399,7 +363,6 @@ async function generateCardStrips(analysis, options = {}) {
 
 /**
  * Legacy: generate a single combined scoreboard image.
- * Still available if needed.
  */
 async function generateScoreboard(analysis, options = {}) {
   if (!createCanvas) {
@@ -422,7 +385,6 @@ async function generateScoreboard(analysis, options = {}) {
   const canvas = createCanvas(CARD_W, totalH);
   const ctx = canvas.getContext("2d");
 
-  // Background
   ctx.fillStyle = "#F4F5F7";
   ctx.fillRect(0, 0, CARD_W, totalH);
 
@@ -445,7 +407,6 @@ async function generateScoreboard(analysis, options = {}) {
   ctx.font = "11px 'Helvetica Neue', Helvetica, Arial, sans-serif";
   ctx.fillText("Sparky League • 2025-26", hx + 14, hy + 40);
 
-  // Cards
   let cardY = hy + HEADER_H + 8;
   for (const team of teams) {
     renderCardStrip(ctx, team, logos, PADDING, cardY, CARD_W - PADDING * 2);
