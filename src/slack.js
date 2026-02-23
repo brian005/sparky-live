@@ -51,7 +51,7 @@ async function uploadImageToSlack(botToken, channelId, filePath, title, comment)
   const { upload_url, file_id } = uploadUrlResponse;
 
   // Step 2: Upload file data to the URL
-  await httpPut(upload_url, fileData, "image/png");
+  await httpUpload(upload_url, fileData, "image/png");
 
   // Step 3: Complete the upload and share to channel
   const completeResponse = await slackApiJson(botToken, "files.completeUploadExternal", {
@@ -175,16 +175,25 @@ function httpPost(url, jsonPayload) {
   });
 }
 
-function httpPut(url, buffer, contentType) {
+function httpUpload(url, buffer, contentType) {
   return new Promise((resolve, reject) => {
     const parsed = new URL(url);
+    const proto = parsed.protocol === "https:" ? https : require("http");
 
-    const req = https.request({
+    const req = proto.request({
       hostname: parsed.hostname,
       path: parsed.pathname + (parsed.search || ""),
-      method: "PUT",
+      method: "POST",
       headers: { "Content-Type": contentType, "Content-Length": buffer.length }
     }, (res) => {
+      // Follow redirects
+      if (res.statusCode === 301 || res.statusCode === 302 || res.statusCode === 307) {
+        const redirectUrl = res.headers.location;
+        if (redirectUrl) {
+          httpUpload(redirectUrl, buffer, contentType).then(resolve).catch(reject);
+          return;
+        }
+      }
       let body = "";
       res.on("data", chunk => body += chunk);
       res.on("end", () => {
