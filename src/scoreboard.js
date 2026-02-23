@@ -73,23 +73,23 @@ const T = {
   narrativeBorder: "#EDF0F3",
 };
 
-// Card strip layout — optimized for 4 columns
-const CARD_W = 640;
-const CARD_PAD = 12;
-const DATA_ROW_H = 62;
-const NARRATIVE_H = 32;
-const CARD_RADIUS = 10;
-const LOGO_SIZE = 48;
-const BADGE_SIZE = 32;
-const ELEM_GAP = 10;
-const GLOW_PAD = 14;
+// Card strip layout — 2x resolution for crisp text
+const CARD_W = 1280;
+const CARD_PAD = 24;
+const DATA_ROW_H = 124;
+const NARRATIVE_H = 80;  // room for 2 lines of narrative
+const CARD_RADIUS = 20;
+const LOGO_SIZE = 96;
+const BADGE_SIZE = 64;
+const ELEM_GAP = 20;
+const GLOW_PAD = 28;
 
 // 4 columns — more breathing room
 const COLS = {
-  day:    { x: CARD_W - CARD_PAD - 230 },
-  season: { x: CARD_W - CARD_PAD - 164 },
-  ppg:    { x: CARD_W - CARD_PAD - 98 },
-  vsProj: { x: CARD_W - CARD_PAD - 38 },
+  day:    { x: CARD_W - CARD_PAD - 460 },
+  season: { x: CARD_W - CARD_PAD - 328 },
+  ppg:    { x: CARD_W - CARD_PAD - 196 },
+  vsProj: { x: CARD_W - CARD_PAD - 76 },
 };
 
 function vsProjPct(team) {
@@ -138,26 +138,26 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
   if (isPodium) {
     ctx.save();
     ctx.shadowColor = p.glow;
-    ctx.shadowBlur = 12;
+    ctx.shadowBlur = 24;
     drawRoundedRect(ctx, x, y, w, cardH, CARD_RADIUS, null);
     ctx.strokeStyle = p.color;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 4;
     ctx.stroke();
     ctx.shadowColor = p.glowFar;
-    ctx.shadowBlur = 20;
+    ctx.shadowBlur = 40;
     ctx.stroke();
     ctx.restore();
   } else {
     drawRoundedRect(ctx, x, y, w, cardH, CARD_RADIUS, null);
     ctx.strokeStyle = T.cardBorder;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     ctx.stroke();
   }
 
   // ---- Data Row ----
   const rowCenterY = y + DATA_ROW_H / 2;
 
-  // Logo (48px)
+  // Logo
   const logoX = x + CARD_PAD;
   const logoY = rowCenterY - LOGO_SIZE / 2;
   const logoImg = logos[team.franchise];
@@ -176,14 +176,14 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
     if (isPodium) {
       ctx.save();
       ctx.shadowColor = p.logoGlow;
-      ctx.shadowBlur = 8;
+      ctx.shadowBlur = 16;
       ctx.strokeStyle = p.color;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 4;
       ctx.stroke();
       ctx.restore();
     } else {
       ctx.strokeStyle = "#ddd";
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 3;
       ctx.stroke();
     }
   } else {
@@ -193,16 +193,16 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
     ctx.fillStyle = isPodium ? `${p.color}18` : `${T.rankOther}22`;
     ctx.fill();
     ctx.strokeStyle = isPodium ? p.color : `${T.rankOther}44`;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.stroke();
 
     ctx.fillStyle = isPodium ? p.color : T.rankOther;
-    ctx.font = "bold 16px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.font = "bold 32px 'Helvetica Neue', Helvetica, Arial, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(team.franchise.charAt(0), logoX + LOGO_SIZE / 2, rowCenterY + 6);
+    ctx.fillText(team.franchise.charAt(0), logoX + LOGO_SIZE / 2, rowCenterY + 12);
   }
 
-  // Rank badge (32px)
+  // Rank badge
   const badgeX = logoX + LOGO_SIZE + ELEM_GAP;
   const badgeY = rowCenterY - BADGE_SIZE / 2;
 
@@ -212,103 +212,105 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
     badgeGrad.addColorStop(1, p.badgeBg[1]);
     ctx.save();
     ctx.shadowColor = p.glow;
-    ctx.shadowBlur = 8;
-    drawRoundedRect(ctx, badgeX, badgeY, BADGE_SIZE, BADGE_SIZE, 7, null);
+    ctx.shadowBlur = 16;
+    drawRoundedRect(ctx, badgeX, badgeY, BADGE_SIZE, BADGE_SIZE, 14, null);
     ctx.fillStyle = badgeGrad;
     ctx.fill();
     ctx.restore();
   } else {
-    drawRoundedRect(ctx, badgeX, badgeY, BADGE_SIZE, BADGE_SIZE, 7, T.rankOther);
+    drawRoundedRect(ctx, badgeX, badgeY, BADGE_SIZE, BADGE_SIZE, 14, T.rankOther);
   }
 
   ctx.fillStyle = isPodium ? p.badgeText : "#fff";
-  ctx.font = "bold 17px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.font = "bold 34px 'Helvetica Neue', Helvetica, Arial, sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText(String(rank), badgeX + BADGE_SIZE / 2, badgeY + BADGE_SIZE / 2 + 6);
+  ctx.fillText(String(rank), badgeX + BADGE_SIZE / 2, badgeY + BADGE_SIZE / 2 + 12);
 
-  // Team name (bigger)
-  const nameX = badgeX + BADGE_SIZE + 12;
-  const nameMaxW = COLS.day.x - nameX - 14;
+  // Team name
+  const nameX = badgeX + BADGE_SIZE + 24;
+  const nameMaxW = COLS.day.x - nameX - 28;
   ctx.fillStyle = isPodium ? p.nameColor : T.teamName;
-  ctx.font = `${isPodium ? "bold" : "600"} 16px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+  ctx.font = `${isPodium ? "bold" : "600"} 32px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
   ctx.textAlign = "left";
   const displayName = FRANCHISE_NAMES[team.franchise] || team.name || team.franchise;
-  truncateText(ctx, displayName, nameX, rowCenterY + 6, nameMaxW);
+  truncateText(ctx, displayName, nameX, rowCenterY + 12, nameMaxW);
 
   // ---- 4 Column Values ----
   ctx.textAlign = "center";
 
   // DAY — hero number
   ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 10px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("DAY", COLS.day.x, rowCenterY - 12);
+  ctx.font = "bold 20px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("DAY", COLS.day.x, rowCenterY - 24);
   ctx.fillStyle = T.dayValue;
-  ctx.font = "bold 24px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText(String(Math.round(team.dayPts || 0)), COLS.day.x, rowCenterY + 14);
+  ctx.font = "bold 48px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText(String(Math.round(team.dayPts || 0)), COLS.day.x, rowCenterY + 28);
 
   // PERIOD
   ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 10px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("PERIOD", COLS.season.x, rowCenterY - 12);
+  ctx.font = "bold 20px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("PERIOD", COLS.season.x, rowCenterY - 24);
   ctx.fillStyle = T.colValue;
-  ctx.font = "600 17px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText(fmtNum(team.periodPts), COLS.season.x, rowCenterY + 14);
+  ctx.font = "600 34px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText(fmtNum(team.periodPts), COLS.season.x, rowCenterY + 28);
 
   // PPG
   ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 10px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("PPG", COLS.ppg.x, rowCenterY - 12);
+  ctx.font = "bold 20px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("PPG", COLS.ppg.x, rowCenterY - 24);
   ctx.fillStyle = T.colValue;
-  ctx.font = "600 17px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText(team.ppg != null ? team.ppg.toFixed(2) : "-", COLS.ppg.x, rowCenterY + 14);
+  ctx.font = "600 34px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText(team.ppg != null ? team.ppg.toFixed(2) : "-", COLS.ppg.x, rowCenterY + 28);
 
   // VS PROJ (percentage)
   ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 10px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("VS PROJ", COLS.vsProj.x, rowCenterY - 12);
+  ctx.font = "bold 20px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("VS PROJ", COLS.vsProj.x, rowCenterY - 24);
   const pct = vsProjPct(team);
   if (pct != null) {
     ctx.fillStyle = pct >= 100 ? T.positive : T.negative;
-    ctx.font = "bold 17px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-    ctx.fillText(`${pct}%`, COLS.vsProj.x, rowCenterY + 14);
+    ctx.font = "bold 34px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.fillText(`${pct}%`, COLS.vsProj.x, rowCenterY + 28);
   } else {
     ctx.fillStyle = T.neutral;
-    ctx.font = "600 17px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-    ctx.fillText("-", COLS.vsProj.x, rowCenterY + 14);
+    ctx.font = "600 34px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.fillText("-", COLS.vsProj.x, rowCenterY + 28);
   }
 
-  // ---- Narrative Bar ----
+  // ---- Narrative Bar (2 lines) ----
   const narY = y + DATA_ROW_H;
   ctx.strokeStyle = isPodium ? `${p.color}30` : T.narrativeBorder;
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(x + 4, narY);
-  ctx.lineTo(x + w - 4, narY);
+  ctx.moveTo(x + 8, narY);
+  ctx.lineTo(x + w - 8, narY);
   ctx.stroke();
 
   if (isPodium) {
     ctx.fillStyle = p.narrativeTint;
-    ctx.fillRect(x + 1, narY + 1, w - 2, NARRATIVE_H - 2);
+    ctx.fillRect(x + 2, narY + 2, w - 4, NARRATIVE_H - 4);
   }
 
   ctx.textAlign = "left";
   const streaks = team.streaks || [];
-  let narX = x + 14;
+  const narX = x + 28;
+  const LINE_H = 30;
+  const firstLineY = narY + 30;
 
   if (streaks.length === 0) {
     const projText = team.projection
       ? `Proj finish: ${team.projection.projected} pts`
       : `Season avg: ${(team.ppg || 0).toFixed(2)} PPG`;
     ctx.fillStyle = T.narrativeText;
-    ctx.font = "italic 14px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-    ctx.fillText(projText, narX, narY + 21);
+    ctx.font = "italic 24px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.fillText(projText, narX, firstLineY);
   } else {
-    for (const s of streaks) {
-      const isBad = s.includes("⚠️") || s.includes("📉");
+    for (let i = 0; i < Math.min(streaks.length, 2); i++) {
+      const s = streaks[i];
+      const isBad = s.includes("⚠️") || s.includes("📉") || s.includes("⬇️") || s.includes("🏜️");
       ctx.fillStyle = isBad ? T.negative : "#2C3E50";
-      ctx.font = `${isBad ? "600" : "500"} 14px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
-      ctx.fillText(s, narX, narY + 21);
-      narX += ctx.measureText(s).width + 14;
+      ctx.font = `${isBad ? "600" : "500"} 24px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+      ctx.fillText(s, narX, firstLineY + i * LINE_H);
     }
   }
 
@@ -385,10 +387,10 @@ async function generateScoreboard(analysis, options = {}) {
   const logos = await preloadLogos(franchises);
 
   const cardH = DATA_ROW_H + NARRATIVE_H;
-  const PADDING = 16;
-  const HEADER_H = 50;
-  const FOOTER_H = 30;
-  const GAP = 6;
+  const PADDING = 32;
+  const HEADER_H = 100;
+  const FOOTER_H = 60;
+  const GAP = 12;
   const totalH = PADDING + HEADER_H + (cardH + GAP) * teams.length + FOOTER_H + PADDING;
 
   const canvas = createCanvas(CARD_W, totalH);
@@ -400,21 +402,21 @@ async function generateScoreboard(analysis, options = {}) {
   // Header
   const hx = PADDING;
   const hy = PADDING;
-  drawRoundedRect(ctx, hx, hy, CARD_W - PADDING * 2, HEADER_H, 8, "#FFFFFF");
+  drawRoundedRect(ctx, hx, hy, CARD_W - PADDING * 2, HEADER_H, 16, "#FFFFFF");
   ctx.strokeStyle = T.cardBorder;
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 2;
   ctx.stroke();
   ctx.fillStyle = "#E65100";
-  ctx.fillRect(hx, hy, 3, HEADER_H);
+  ctx.fillRect(hx, hy, 6, HEADER_H);
 
   const dateStr = new Date(date + "T12:00:00Z").toLocaleDateString("en-US", { month: "long", day: "numeric" });
   ctx.fillStyle = T.dayValue;
-  ctx.font = "bold 16px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.font = "bold 32px 'Helvetica Neue', Helvetica, Arial, sans-serif";
   ctx.textAlign = "left";
-  ctx.fillText(`P${period}: ${dateStr} — Nightly Recap`, hx + 14, hy + 22);
+  ctx.fillText(`P${period}: ${dateStr} — Nightly Recap`, hx + 28, hy + 44);
   ctx.fillStyle = T.neutral;
-  ctx.font = "11px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("Sparky League • 2025-26", hx + 14, hy + 40);
+  ctx.font = "22px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("Sparky League • 2025-26", hx + 28, hy + 80);
 
   let cardY = hy + HEADER_H + 8;
   for (const team of teams) {
@@ -424,9 +426,9 @@ async function generateScoreboard(analysis, options = {}) {
 
   // Footer
   ctx.fillStyle = T.neutral;
-  ctx.font = "10px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.font = "20px 'Helvetica Neue', Helvetica, Arial, sans-serif";
   ctx.textAlign = "left";
-  ctx.fillText("SparkyBot", PADDING, cardY + 14);
+  ctx.fillText("SparkyBot", PADDING, cardY + 28);
   ctx.textAlign = "right";
   if (seasonRanked && seasonRanked.length >= 2) {
     const first = seasonRanked[0];
@@ -434,7 +436,7 @@ async function generateScoreboard(analysis, options = {}) {
     const gap = (first.seasonPts - last.seasonPts).toFixed(1);
     ctx.fillText(
       `Season: ${first.franchise} ${first.seasonPts.toFixed(1)} — ${last.franchise} ${last.seasonPts.toFixed(1)} (${gap} pt gap)`,
-      CARD_W - PADDING, cardY + 14
+      CARD_W - PADDING, cardY + 28
     );
   }
 
