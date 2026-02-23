@@ -101,6 +101,13 @@ async function main() {
       console.log(`    ${t.dayRank}. ${t.franchise}: ${t.dayPts} day | ${t.seasonPts} season | 3d=${t.avg3d} 7d=${t.avg7d}`);
     });
 
+    // Check if any games were played today
+    const totalGP = analysis.teams.reduce((sum, t) => sum + (t.gp || 0), 0);
+    if (totalGP === 0) {
+      console.log("\n⏸️  No games played today (0 GP across all teams). Skipping.");
+      process.exit(0);
+    }
+
     // Step 4: Generate card strip images
     console.log("\n━━━ STEP 4: GENERATING CARD STRIPS ━━━");
     const cardsDir = path.join(__dirname, "..", "cards");
