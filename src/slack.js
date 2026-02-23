@@ -116,9 +116,12 @@ async function postCardStrips({ botToken, channelId, headerText, cardPaths, foot
 
   await new Promise(r => setTimeout(r, 500));
 
-  // 2. Upload each card strip sorted by rank — no text label
+  // 2. Upload each card strip sorted by rank
+  // Large delay between uploads to ensure Slack displays them in order.
+  // Slack's file processing is async — shorter delays cause reordering.
   const sorted = [...cardPaths].sort((a, b) => a.rank - b.rank);
-  for (const card of sorted) {
+  for (let i = 0; i < sorted.length; i++) {
+    const card = sorted[i];
     if (fs.existsSync(card.filepath)) {
       await uploadImageToSlack(
         botToken,
@@ -128,7 +131,10 @@ async function postCardStrips({ botToken, channelId, headerText, cardPaths, foot
         ""
       );
       console.log(`[slack] Card ${card.rank} (${card.franchise}) uploaded.`);
-      await new Promise(r => setTimeout(r, 500));
+      // Wait 2s between uploads to let Slack fully process each one
+      if (i < sorted.length - 1) {
+        await new Promise(r => setTimeout(r, 2000));
+      }
     }
   }
 
