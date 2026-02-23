@@ -325,7 +325,14 @@ async function generateCardStrips(analysis, options = {}) {
   const { teams } = analysis;
   const outputDir = options.outputDir || path.join(__dirname, "..", "cards");
 
-  if (!fs.existsSync(outputDir)) {
+  // Clean out stale cards from previous runs
+  if (fs.existsSync(outputDir)) {
+    for (const f of fs.readdirSync(outputDir)) {
+      if (f.startsWith("card-") && f.endsWith(".png")) {
+        fs.unlinkSync(path.join(outputDir, f));
+      }
+    }
+  } else {
     fs.mkdirSync(outputDir, { recursive: true });
   }
 
