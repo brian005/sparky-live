@@ -57,10 +57,10 @@ async function main() {
     process.exit(0);
   }
 
-  if (!dryRun && !config.apiKey) {
-    console.error("❌ ANTHROPIC_API_KEY is required for live runs.");
-    process.exit(1);
-  }
+  // if (!dryRun && !config.apiKey) {
+  //   console.error("❌ ANTHROPIC_API_KEY is required for live runs.");
+  //   process.exit(1);
+  // }
   if (!dryRun && !config.webhookUrl && !config.botToken) {
     console.error("❌ SLACK_WEBHOOK_URL or SLACK_BOT_TOKEN required for live runs.");
     process.exit(1);

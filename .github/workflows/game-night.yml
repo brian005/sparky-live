@@ -2,8 +2,8 @@ name: Game Night — Nightly Recap
 
 on:
   schedule:
-    # Run at 3:30am UTC (10:30pm ET) every night during hockey season
-    - cron: "30 3 * 10-12,1-4 *"
+    # Run at 6:30am UTC (10:30pm PT) every night during hockey season
+    - cron: "30 6 * 10-12,1-4 *"
 
   workflow_dispatch:
     inputs:
