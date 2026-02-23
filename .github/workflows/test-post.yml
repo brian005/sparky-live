@@ -1,0 +1,64 @@
+name: Test Post — Replay Historical Day
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_date:
+        description: "Date to replay (YYYY-MM-DD)"
+        required: true
+        type: string
+      dry_run:
+        description: "Dry run (generate cards only, no Slack)"
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: sparky-live
+  cancel-in-progress: true
+
+jobs:
+  test-post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential libcairo2-dev libjpeg-dev \
+            libpango1.0-dev libgif-dev librsvg2-dev
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run test post
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        run: |
+          ARGS="${{ inputs.target_date }}"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          node src/test-post.js $ARGS
+
+      - name: Upload cards
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-cards
+          path: |
+            scoreboard.png
+            cards/
+          if-no-files-found: ignore
