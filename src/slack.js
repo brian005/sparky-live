@@ -124,7 +124,7 @@ async function postCardStrips({ botToken, channelId, headerText, cardPaths, foot
         botToken,
         channelId,
         card.filepath,
-        `card-${card.rank}.png`,
+        `#${card.rank} ${card.franchise}`,
         ""
       );
       console.log(`[slack] Card ${card.rank} (${card.franchise}) uploaded.`);

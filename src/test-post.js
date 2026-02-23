@@ -18,7 +18,7 @@ const path = require("path");
 const { buildNightlyAnalysis } = require("./analyze");
 const { generateCardStrips, generateScoreboard } = require("./scoreboard");
 const { postCardStrips } = require("./slack");
-const { getPeriodForDate, FRANCHISE_NAMES } = require("./config");
+const { getPeriodForDate } = require("./config");
 
 async function main() {
   const args = process.argv.slice(2);
@@ -98,22 +98,11 @@ async function main() {
   const dateDisplay = new Date(targetDate + "T12:00:00Z").toLocaleDateString("en-US", { month: "long", day: "numeric" });
   const headerText = `🏒 *P${period}: ${dateDisplay} — Nightly Recap*`;
 
-  let footerText = "";
-  if (analysis.seasonRanked && analysis.seasonRanked.length >= 2) {
-    const first = analysis.seasonRanked[0];
-    const last = analysis.seasonRanked[analysis.seasonRanked.length - 1];
-    const firstName = FRANCHISE_NAMES[first.franchise] || first.franchise;
-    const lastName = FRANCHISE_NAMES[last.franchise] || last.franchise;
-    const gap = (first.seasonPts - last.seasonPts).toFixed(1);
-    footerText = `_Season: ${firstName} ${first.seasonPts.toFixed(1)} — ${lastName} ${last.seasonPts.toFixed(1)} (${gap} pt gap)_`;
-  }
-
   await postCardStrips({
     botToken,
     channelId,
     headerText,
     cardPaths,
-    footerText,
   });
 
   console.log("\n✅ Test post complete!");

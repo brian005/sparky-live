@@ -17,42 +17,42 @@ const mockAnalysis = {
 
   teams: [
     {
-      franchise: "JGC", name: "Gaucho Chudpumpers",
+      franchise: "JGC", name: "Gaucho Chudpumpers", periodPts: 89,
       dayPts: 11, projPts: 8, seasonPts: 771, ppg: 0.92, avg3d: 1.14, avg7d: 1.02,
       dayRank: 1, seasonRank: 1,
       streaks: ["🔥 3-day win streak", "📈 3D avg 1.14 (up from 0.92 season)"],
       projection: { projected: 842 },
     },
     {
-      franchise: "MPP", name: "mid tier perpetual projects",
+      franchise: "MPP", name: "mid tier perpetual projects", periodPts: 95,
       dayPts: 8, projPts: 7, seasonPts: 754, ppg: 0.94, avg3d: 0.98, avg7d: 0.95,
       dayRank: 2, seasonRank: 2,
       streaks: ["📈 7-day podium streak"],
       projection: { projected: 821 },
     },
     {
-      franchise: "RMS", name: "Meatspinners",
+      franchise: "RMS", name: "Meatspinners", periodPts: 72,
       dayPts: 5, projPts: 6, seasonPts: 691, ppg: 0.87, avg3d: 0.91, avg7d: 0.85,
       dayRank: 3, seasonRank: 5,
       streaks: ["⚠️ 12-day bottom-half streak", "📉 3D avg 0.65 — slumping (-25% below season)"],
       projection: { projected: 752 },
     },
     {
-      franchise: "GDD", name: "Downtown Demons",
+      franchise: "GDD", name: "Downtown Demons", periodPts: 84,
       dayPts: 5, projPts: 6, seasonPts: 753, ppg: 0.93, avg3d: 0.88, avg7d: 0.91,
       dayRank: 4, seasonRank: 3,
       streaks: ["📉 3D avg 0.88 (down from 0.93 season)"],
       projection: { projected: 819 },
     },
     {
-      franchise: "BEW", name: "Endless Winter",
+      franchise: "BEW", name: "Endless Winter", periodPts: 65,
       dayPts: 4, projPts: 4, seasonPts: 674, ppg: 0.82, avg3d: 0.84, avg7d: 0.80,
       dayRank: 5, seasonRank: 6,
       streaks: ["⭐ Best day this period"],
       projection: { projected: 735 },
     },
     {
-      franchise: "PWN", name: "PWN",
+      franchise: "PWN", name: "PWN", periodPts: 78,
       dayPts: 4, projPts: 4, seasonPts: 697, ppg: 0.84, avg3d: 0.79, avg7d: 0.82,
       dayRank: 6, seasonRank: 4,
       streaks: ["Proj finish: 758 pts"],

@@ -246,13 +246,13 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
   ctx.font = "bold 24px 'Helvetica Neue', Helvetica, Arial, sans-serif";
   ctx.fillText(String(Math.round(team.dayPts || 0)), COLS.day.x, rowCenterY + 14);
 
-  // SEASON
+  // PERIOD
   ctx.fillStyle = T.colLabel;
   ctx.font = "bold 10px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("SEASON", COLS.season.x, rowCenterY - 12);
+  ctx.fillText("PERIOD", COLS.season.x, rowCenterY - 12);
   ctx.fillStyle = T.colValue;
   ctx.font = "600 17px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText(fmtNum(team.seasonPts), COLS.season.x, rowCenterY + 14);
+  ctx.fillText(fmtNum(team.periodPts), COLS.season.x, rowCenterY + 14);
 
   // PPG
   ctx.fillStyle = T.colLabel;
