@@ -30,6 +30,7 @@ const FRANCHISE_MAP = {
   "pwn": "PWN",
   "brian's endless winter": "BEW",
   "endless winter": "BEW",
+  "brian's.endless.win ter.s13e01.720p.mp4": "BEW",
   "matt's mid tier perpetual projects": "MPP",
   "mid tier perpetual projects": "MPP",
   "richie's meatspinners": "RMS",
@@ -70,12 +71,25 @@ function getCurrentPeriod() {
  * Resolve a team name to a franchise abbreviation.
  */
 function toFranchise(name) {
+  if (!name) return null;
   const normalized = name.toLowerCase().trim();
   // Try exact match first
   if (FRANCHISE_MAP[normalized]) return FRANCHISE_MAP[normalized];
-  // Try partial match
+  // Try partial match — either direction
   for (const [key, abbr] of Object.entries(FRANCHISE_MAP)) {
     if (normalized.includes(key) || key.includes(normalized)) return abbr;
+  }
+  // Keyword fallback for corrupted names
+  const keywords = {
+    "gaucho": "JGC", "chudpumper": "JGC",
+    "pwn": "PWN",
+    "endless": "BEW", "winter": "BEW",
+    "perpetual": "MPP", "mid tier": "MPP",
+    "meatspinner": "RMS",
+    "downtown": "GDD", "demon": "GDD",
+  };
+  for (const [kw, abbr] of Object.entries(keywords)) {
+    if (normalized.includes(kw)) return abbr;
   }
   return null;
 }

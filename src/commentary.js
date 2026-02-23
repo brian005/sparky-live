@@ -1,34 +1,25 @@
 // ============================================================
-// CLAUDE COMMENTARY ENGINE
+// CLAUDE COMMENTARY ENGINE v2
 // ============================================================
-// Takes the analysis context and generates game-night
-// commentary via the Anthropic API.
+// Takes nightly analysis and generates Bloomberg-style
+// Slack commentary via the Anthropic API.
 // ============================================================
 
 const Anthropic = require("@anthropic-ai/sdk");
 
-const FRANCHISE_NAMES = {
-  Jason: { full: "Jason's Gaucho Chudpumpers", abbr: "JGC" },
-  Chris: { full: "Cmack's PWN", abbr: "PWN" },
-  Brian: { full: "Brian's Endless Winter", abbr: "BEW" },
-  Matt: { full: "Matt's mid tier perpetual projects", abbr: "MPP" },
-  Richie: { full: "Richie's Meatspinners", abbr: "RMS" },
-  Graeme: { full: "Graeme's Downtown Demons", abbr: "GDD" }
-};
-
 /**
- * Generate commentary for a live scoring update.
- * 
- * @param {object} context - Output from analyze.buildContext()
+ * Generate nightly recap commentary.
+ *
+ * @param {object} analysis - Output from analyze.buildNightlyAnalysis()
  * @param {string} apiKey - Anthropic API key
- * @param {string} commentaryType - "update" for mid-period, "nightly" for end-of-night recap
+ * @param {string} commentaryType - "nightly" (default) or "update"
  * @returns {string} Commentary text for Slack
  */
-async function generateCommentary(context, apiKey, commentaryType = "update") {
+async function generateCommentary(analysis, apiKey, commentaryType = "nightly") {
   const client = new Anthropic({ apiKey });
 
   const systemPrompt = buildSystemPrompt();
-  const userPrompt = buildUserPrompt(context, commentaryType);
+  const userPrompt = buildUserPrompt(analysis, commentaryType);
 
   console.log("[commentary] Calling Claude API...");
 
@@ -49,96 +40,83 @@ async function generateCommentary(context, apiKey, commentaryType = "update") {
 }
 
 function buildSystemPrompt() {
-  return `You are SparkyBot, the live desk analyst for the Sparky League — a 6-team fantasy hockey league running since 2013. You deliver real-time scoring updates to the league's Slack channel.
+  return `You are SparkyBot, the live desk analyst for the Sparky League — a 6-team fantasy hockey league running since 2013. You deliver scoring recaps to the league's Slack channel.
 
 STYLE:
 - Talk like a stock market analyst giving a floor update: direct, high-signal, no fluff.
 - Lead with what changed. Get to the point immediately.
-- Compact delivery. Every sentence should carry information. If a sentence doesn't add new signal, cut it.
+- Compact delivery. Every sentence should carry information.
 - Dry, matter-of-fact tone. Let the numbers tell the story.
-- Save the color commentary for genuinely notable moments — a record being broken, a historic collapse, a lead change. When something IS notable, one sharp line lands harder than three.
+- Save color commentary for genuinely notable moments — a record, a historic collapse, a lead change.
 - No greetings, no sign-offs, no filler phrases like "let's take a look" or "it's worth noting."
 - Use line breaks between distinct items. Dense but scannable.
 
 FORMAT:
-- Keep it to 4-6 lines max. This is a Slack message, not a report.
+- 6-10 lines max. This is a Slack message, not a report.
 - Use franchise abbreviations after first mention (e.g. "Jason's Gaucho Chudpumpers (JGC)" first, then "JGC")
-- Refer to fantasy points as "points" (never "FPts")
-- Use emoji only as functional markers: 🚨 lead change, 📈 surge, 📉 slide, 🔥 streak. Never decorative.
+- Call fantasy points just "points" — never "FPts"
+- Emoji only as functional markers: 🚨 lead change, 📈 surge, 📉 slide, 🔥 streak. Never decorative.
 
 FRANCHISE ABBREVIATIONS:
-- JGC = Jason's Gaucho Chudpumpers
-- PWN = Cmack's PWN
-- BEW = Brian's Endless Winter
-- MPP = Matt's mid tier perpetual projects
-- RMS = Richie's Meatspinners
-- GDD = Graeme's Downtown Demons
+- JGC = Gaucho Chudpumpers
+- PWN = PWN
+- BEW = Endless Winter
+- MPP = mid tier perpetual projects
+- RMS = Meatspinners
+- GDD = Downtown Demons
 
-CONTENT PRIORITY (in order):
-1. Daily scoring movement since last update
-2. Who scored, who didn't, who's gaining ground
-3. Gap between 1st and 2nd — is the lead safe or shrinking?
-4. Highlight relative performance of teams with high points per game played
-5. Historical context ONLY if something is approaching or breaking a record
+CONTENT PRIORITY:
+1. Who won the day and by how much
+2. Streaks and momentum — who's hot, who's cold (reference 3D/7D rolling averages)
+3. Season standings impact — did today change the rankings?
+4. VS Projected: who beat expectations, who underperformed
+5. Period projection if notable (on pace for a record, etc.)
+6. One sharp closing line if the data warrants it
 
 Think Bloomberg terminal, not ESPN.`;
 }
 
-function buildUserPrompt(context, commentaryType) {
-  const { standings, changes, historicalContext, period, scrapedAt } = context;
+function buildUserPrompt(analysis, commentaryType) {
+  const { teams, seasonRanked, period, date, periodDaysPlayed, totalSeasonDays } = analysis;
 
-  let prompt = `Generate a ${commentaryType === "nightly" ? "nightly recap" : "live update"} for the Sparky League.\n\n`;
+  let prompt = `Generate a nightly recap for the Sparky League.\n\n`;
 
-  // Current standings
-  prompt += `CURRENT PERIOD ${period} STANDINGS (as of ${new Date(scrapedAt).toLocaleString("en-US", { timeZone: "America/Vancouver" })}):\n`;
-  standings.forEach((t, i) => {
-    prompt += `  ${i + 1}. ${t.franchise}: ${t.seasonPts} pts (today: ${t.dayPts > 0 ? "+" + t.dayPts : t.dayPts})\n`;
-  });
+  prompt += `DATE: ${date} | PERIOD ${period} (Day ${periodDaysPlayed + 1})\n\n`;
 
-  const leader = standings[0];
-  const last = standings[standings.length - 1];
-  prompt += `\n1st-to-last gap: ${leader.seasonPts - last.seasonPts} points\n`;
-  if (standings.length >= 2) {
-    prompt += `1st-to-2nd gap: ${leader.seasonPts - standings[1].seasonPts} points\n`;
+  // Day rankings
+  prompt += `TODAY'S SCORING (ranked by day score):\n`;
+  for (const t of teams) {
+    const vsStr = t.vsProj != null ? ` | VS Proj: ${t.vsProj >= 0 ? "+" : ""}${t.vsProj.toFixed(2)}` : "";
+    prompt += `  ${t.dayRank}. ${t.franchise}: ${t.dayPts} pts (${t.gp} GP)${vsStr}\n`;
   }
 
-  // Changes since last scrape
-  if (changes && changes.movements.length > 0) {
-    prompt += `\nCHANGES SINCE LAST UPDATE (${changes.timeSinceLast} ago):\n`;
-    for (const m of changes.movements) {
-      let line = `  ${m.franchise}: ${m.ptsDiff >= 0 ? "+" : ""}${m.ptsDiff} pts (${m.prevPts} → ${m.newPts})`;
-      if (m.rankChange > 0) line += ` ↑ moved up to #${m.currentRank}`;
-      else if (m.rankChange < 0) line += ` ↓ dropped to #${m.currentRank}`;
-      prompt += line + "\n";
-    }
-
-    // Flag lead changes
-    const leaderMovement = changes.movements.find(m => m.franchise === leader.franchise);
-    if (leaderMovement && leaderMovement.prevRank > 1) {
-      prompt += `\n🚨 LEAD CHANGE: ${leader.franchise} has taken the lead!\n`;
+  prompt += `\nSEASON STANDINGS:\n`;
+  if (seasonRanked && seasonRanked.length > 0) {
+    for (const t of seasonRanked) {
+      prompt += `  ${t.seasonRank}. ${t.franchise}: ${t.seasonPts.toFixed(1)} pts | PPG: ${t.ppg} | 3D: ${t.avg3d} | 7D: ${t.avg7d}\n`;
     }
   }
 
-  // Historical context
-  if (historicalContext) {
-    prompt += `\nHISTORICAL CONTEXT:\n`;
-    if (historicalContext.samePeriodWinners && historicalContext.samePeriodWinners.length > 0) {
-      const sorted = [...historicalContext.samePeriodWinners].sort((a, b) => b.FPts - a.FPts);
-      prompt += `  Best ever Period ${period} winning score: ${sorted[0].FPts} by ${sorted[0].franchise} (${sorted[0].season})\n`;
-      prompt += `  Worst ever Period ${period} winning score: ${sorted[sorted.length - 1].FPts} by ${sorted[sorted.length - 1].franchise} (${sorted[sorted.length - 1].season})\n`;
-    }
-    if (historicalContext.leaderFranchiseBest) {
-      const lb = historicalContext.leaderFranchiseBest;
-      prompt += `  ${leader.franchise}'s all-time best: ${lb.FPts} (${lb.season} P${lb.period})\n`;
-      prompt += `  ${leader.franchise}'s average: ${historicalContext.leaderFranchiseAvg}\n`;
+  // Streaks
+  const notableStreaks = teams.filter(t => t.streaks && t.streaks.length > 0 && !t.streaks[0].startsWith("Proj"));
+  if (notableStreaks.length > 0) {
+    prompt += `\nACTIVE STREAKS:\n`;
+    for (const t of notableStreaks) {
+      prompt += `  ${t.franchise}: ${t.streaks.join(", ")}\n`;
     }
   }
 
-  if (commentaryType === "nightly") {
-    prompt += `\nThis is the end-of-night recap. Summarize how tonight's games shifted the standings and preview what to watch for tomorrow.`;
-  } else {
-    prompt += `\nThis is a mid-game update. Focus on what's happening right now — who's scoring, who's moving, what's at stake.`;
+  // Projections
+  const projs = teams.filter(t => t.projection);
+  if (projs.length > 0) {
+    prompt += `\nPERIOD ${period} PROJECTIONS:\n`;
+    for (const t of projs) {
+      const p = t.projection;
+      prompt += `  ${t.franchise}: ${p.periodPts} actual → proj ${p.projected} (${p.daysRemaining} days left)\n`;
+    }
   }
+
+  prompt += `\nDeliver the nightly recap. The scoreboard image is already attached — your job is the narrative.`;
 
   return prompt;
 }
