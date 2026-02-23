@@ -102,46 +102,42 @@ async function postUpdate({ webhookUrl, botToken, channelId, commentary, scorebo
  * @param {string} opts.commentary - Claude commentary text
  * @param {string} opts.footerText - Footer summary line
  */
-async function postCardStrips({ botToken, channelId, headerText, cardPaths, commentary, footerText }) {
+async function postCardStrips({ botToken, channelId, headerText, cardPaths, footerText }) {
   if (!botToken || !channelId) {
     throw new Error("SLACK_BOT_TOKEN and SLACK_CHANNEL_ID required for card strip posting.");
   }
 
-  // 1. Post header + commentary
-  const headerMsg = headerText + (commentary ? `\n\n${commentary}` : "");
+  // 1. Post header only (no commentary)
   await slackApiJson(botToken, "chat.postMessage", {
     channel: channelId,
-    text: headerMsg,
-    username: "SparkyBot",
-    icon_emoji: ":hockey:",
+    text: headerText,
   });
   console.log("[slack] Header posted.");
 
-  // Small delay between posts
   await new Promise(r => setTimeout(r, 500));
 
-  // 2. Upload each card strip
-  for (const card of cardPaths) {
+  // 2. Upload each card strip sorted by rank — no text label
+  const sorted = [...cardPaths].sort((a, b) => a.rank - b.rank);
+  for (const card of sorted) {
     if (fs.existsSync(card.filepath)) {
       await uploadImageToSlack(
         botToken,
         channelId,
         card.filepath,
-        `#${card.rank} ${card.franchise}`,
-        "" // no comment per card — image speaks for itself
+        `card-${card.rank}.png`,
+        ""
       );
       console.log(`[slack] Card ${card.rank} (${card.franchise}) uploaded.`);
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 500));
     }
   }
 
-  // 3. Post footer
+  // 3. Post footer after all cards
   if (footerText) {
+    await new Promise(r => setTimeout(r, 300));
     await slackApiJson(botToken, "chat.postMessage", {
       channel: channelId,
       text: footerText,
-      username: "SparkyBot",
-      icon_emoji: ":hockey:",
     });
     console.log("[slack] Footer posted.");
   }

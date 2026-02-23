@@ -17,9 +17,8 @@ const fs = require("fs");
 const path = require("path");
 const { buildNightlyAnalysis } = require("./analyze");
 const { generateCardStrips, generateScoreboard } = require("./scoreboard");
-const { generateCommentary } = require("./commentary");
 const { postCardStrips } = require("./slack");
-const { getPeriodForDate } = require("./config");
+const { getPeriodForDate, FRANCHISE_NAMES } = require("./config");
 
 async function main() {
   const args = process.argv.slice(2);
@@ -88,20 +87,11 @@ async function main() {
   }
 
   // Check env vars
-  const apiKey = process.env.ANTHROPIC_API_KEY;
   const botToken = process.env.SLACK_BOT_TOKEN;
   const channelId = process.env.SLACK_CHANNEL_ID;
 
-  if (!apiKey) { console.error("❌ ANTHROPIC_API_KEY required"); process.exit(1); }
   if (!botToken) { console.error("❌ SLACK_BOT_TOKEN required"); process.exit(1); }
   if (!channelId) { console.error("❌ SLACK_CHANNEL_ID required"); process.exit(1); }
-
-  // Generate commentary
-  console.log("\n━━━ GENERATING COMMENTARY ━━━");
-  const commentary = await generateCommentary(analysis, apiKey, "nightly");
-  console.log("\n--- Commentary ---");
-  console.log(commentary);
-  console.log("--- End ---\n");
 
   // Post to Slack
   console.log("━━━ POSTING TO SLACK ━━━");
@@ -112,8 +102,10 @@ async function main() {
   if (analysis.seasonRanked && analysis.seasonRanked.length >= 2) {
     const first = analysis.seasonRanked[0];
     const last = analysis.seasonRanked[analysis.seasonRanked.length - 1];
+    const firstName = FRANCHISE_NAMES[first.franchise] || first.franchise;
+    const lastName = FRANCHISE_NAMES[last.franchise] || last.franchise;
     const gap = (first.seasonPts - last.seasonPts).toFixed(1);
-    footerText = `_Season: ${first.franchise} ${first.seasonPts.toFixed(1)} — ${last.franchise} ${last.seasonPts.toFixed(1)} (${gap} pt gap)_`;
+    footerText = `_Season: ${firstName} ${first.seasonPts.toFixed(1)} — ${lastName} ${last.seasonPts.toFixed(1)} (${gap} pt gap)_`;
   }
 
   await postCardStrips({
@@ -121,7 +113,6 @@ async function main() {
     channelId,
     headerText,
     cardPaths,
-    commentary,
     footerText,
   });
 

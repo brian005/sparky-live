@@ -26,7 +26,7 @@ const { buildNightlyAnalysis, saveDailyScore } = require("./analyze");
 const { generateCardStrips, generateScoreboard } = require("./scoreboard");
 const { generateCommentary } = require("./commentary");
 const { postUpdate, postCardStrips } = require("./slack");
-const { getCurrentPeriod, getPeriodForDate, buildDateScoringUrl, buildPeriodScoringUrl, toFranchise } = require("./config");
+const { getCurrentPeriod, getPeriodForDate, buildDateScoringUrl, buildPeriodScoringUrl, toFranchise, FRANCHISE_NAMES } = require("./config");
 const path = require("path");
 
 async function main() {
@@ -128,12 +128,8 @@ async function main() {
       return;
     }
 
-    // Step 5: Generate commentary
-    console.log("\n━━━ STEP 5: GENERATING COMMENTARY ━━━");
-    const commentary = await generateCommentary(analysis, config.apiKey, "nightly");
-    console.log("\n--- Commentary ---");
-    console.log(commentary);
-    console.log("--- End ---\n");
+    // Step 5: Commentary (disabled for now — focusing on card quality)
+    // const commentary = await generateCommentary(analysis, config.apiKey, "nightly");
 
     // Step 6: Post to Slack
     console.log("━━━ STEP 6: POSTING TO SLACK ━━━");
@@ -146,18 +142,18 @@ async function main() {
     if (analysis.seasonRanked && analysis.seasonRanked.length >= 2) {
       const first = analysis.seasonRanked[0];
       const last = analysis.seasonRanked[analysis.seasonRanked.length - 1];
+      const firstName = FRANCHISE_NAMES[first.franchise] || first.franchise;
+      const lastName = FRANCHISE_NAMES[last.franchise] || last.franchise;
       const gap = (first.seasonPts - last.seasonPts).toFixed(1);
-      footerText = `_Season: ${first.franchise} ${first.seasonPts.toFixed(1)} — ${last.franchise} ${last.seasonPts.toFixed(1)} (${gap} pt gap)_`;
+      footerText = `_Season: ${firstName} ${first.seasonPts.toFixed(1)} — ${lastName} ${last.seasonPts.toFixed(1)} (${gap} pt gap)_`;
     }
 
     if (config.botToken && config.channelId && cardPaths.length > 0) {
-      // Card strip mode — post individual images
       await postCardStrips({
         botToken: config.botToken,
         channelId: config.channelId,
         headerText,
         cardPaths,
-        commentary,
         footerText,
       });
     } else {

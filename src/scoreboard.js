@@ -19,6 +19,7 @@ try {
 
 const fs = require("fs");
 const path = require("path");
+const { FRANCHISE_NAMES } = require("./config");
 
 const LOGOS_DIR = path.join(__dirname, "..", "data", "logos");
 
@@ -76,7 +77,7 @@ const T = {
 const CARD_W = 640;
 const CARD_PAD = 12;
 const DATA_ROW_H = 62;
-const NARRATIVE_H = 26;
+const NARRATIVE_H = 32;
 const CARD_RADIUS = 10;
 const LOGO_SIZE = 48;
 const BADGE_SIZE = 32;
@@ -231,7 +232,8 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
   ctx.fillStyle = isPodium ? p.nameColor : T.teamName;
   ctx.font = `${isPodium ? "bold" : "600"} 16px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
   ctx.textAlign = "left";
-  truncateText(ctx, team.name, nameX, rowCenterY + 6, nameMaxW);
+  const displayName = FRANCHISE_NAMES[team.franchise] || team.name || team.franchise;
+  truncateText(ctx, displayName, nameX, rowCenterY + 6, nameMaxW);
 
   // ---- 4 Column Values ----
   ctx.textAlign = "center";
@@ -298,14 +300,14 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
       ? `Proj finish: ${team.projection.projected} pts`
       : `Season avg: ${(team.ppg || 0).toFixed(2)} PPG`;
     ctx.fillStyle = T.narrativeText;
-    ctx.font = "italic 11px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-    ctx.fillText(projText, narX, narY + 17);
+    ctx.font = "italic 14px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.fillText(projText, narX, narY + 21);
   } else {
     for (const s of streaks) {
       const isBad = s.includes("⚠️") || s.includes("📉");
       ctx.fillStyle = isBad ? T.negative : "#2C3E50";
-      ctx.font = `${isBad ? "600" : "500"} 11px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
-      ctx.fillText(s, narX, narY + 17);
+      ctx.font = `${isBad ? "600" : "500"} 14px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+      ctx.fillText(s, narX, narY + 21);
       narX += ctx.measureText(s).width + 14;
     }
   }
