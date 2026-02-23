@@ -39,12 +39,12 @@ const FRANCHISE_MAP = {
 };
 
 const FRANCHISE_NAMES = {
-  JGC: "Jason's Gaucho Chudpumpers",
-  PWN: "Cmack's PWN",
-  BEW: "Brian's Endless Winter",
-  MPP: "Matt's mid tier perpetual projects",
-  RMS: "Richie's Meatspinners",
-  GDD: "Graeme's Downtown Demons",
+  JGC: "Gaucho Chudpumpers",
+  PWN: "PWN",
+  BEW: "Endless Winter",
+  MPP: "mid tier perpetual projects",
+  RMS: "Meatspinners",
+  GDD: "Downtown Demons",
 };
 
 /**

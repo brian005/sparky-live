@@ -88,14 +88,14 @@ const BADGE_SIZE = 30;
 const ELEM_GAP = 10;
 const GLOW_PAD = 14; // extra padding for glow to not get clipped
 
-// Column positions (right-aligned)
+// Column positions (right-aligned, with breathing room on right edge)
 const COLS = {
-  day:    { x: CARD_W - CARD_PAD - 280, labelW: 44 },
-  season: { x: CARD_W - CARD_PAD - 228, labelW: 44 },
-  ppg:    { x: CARD_W - CARD_PAD - 176, labelW: 38 },
-  avg3:   { x: CARD_W - CARD_PAD - 130, labelW: 42 },
-  avg7:   { x: CARD_W - CARD_PAD - 80,  labelW: 42 },
-  vsProj: { x: CARD_W - CARD_PAD - 26,  labelW: 48 },
+  day:    { x: CARD_W - CARD_PAD - 296 },
+  season: { x: CARD_W - CARD_PAD - 244 },
+  ppg:    { x: CARD_W - CARD_PAD - 192 },
+  avg3:   { x: CARD_W - CARD_PAD - 144 },
+  avg7:   { x: CARD_W - CARD_PAD - 96 },
+  vsProj: { x: CARD_W - CARD_PAD - 40 },
 };
 
 function getTrendColor(avg, seasonPpg) {
@@ -323,14 +323,25 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
   ctx.textAlign = "left";
   const streaks = team.streaks || [];
   let narX = x + 12;
-  for (const s of streaks) {
-    const isHot = s.includes("🔥") || s.includes("📈") || s.includes("⭐");
-    const isCold = s.includes("📉") || s.includes("⚠️");
-    ctx.fillStyle = isHot ? (isPodium ? p.nameColor : T.narrativeHighlight) :
-                    isCold ? T.negative : T.narrativeText;
-    ctx.font = `${isHot ? "600" : "400"} 11px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
-    ctx.fillText(s, narX, narY + 15);
-    narX += ctx.measureText(s).width + 14;
+
+  if (streaks.length === 0) {
+    // Fallback: show projection
+    const projText = team.projection
+      ? `Proj finish: ${team.projection.projected} pts`
+      : `Season avg: ${(team.ppg || 0).toFixed(2)} PPG`;
+    ctx.fillStyle = T.narrativeText;
+    ctx.font = "italic 11px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.fillText(projText, narX, narY + 15);
+  } else {
+    for (const s of streaks) {
+      const isHot = s.includes("🔥") || s.includes("📈") || s.includes("⭐");
+      const isCold = s.includes("📉") || s.includes("⚠️");
+      ctx.fillStyle = isHot ? (isPodium ? p.nameColor : T.narrativeHighlight) :
+                      isCold ? T.negative : T.narrativeText;
+      ctx.font = `${isHot ? "600" : "400"} 11px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+      ctx.fillText(s, narX, narY + 15);
+      narX += ctx.measureText(s).width + 14;
+    }
   }
 
   return cardH;

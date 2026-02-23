@@ -17,40 +17,41 @@ const mockAnalysis = {
 
   teams: [
     {
-      franchise: "JGC", name: "Jason's Gaucho Chudpumpers",
+      franchise: "JGC", name: "Gaucho Chudpumpers",
       dayPts: 11, projPts: 8, seasonPts: 771, ppg: 0.92, avg3d: 1.14, avg7d: 1.02,
       dayRank: 1, seasonRank: 1,
       streaks: ["🔥 3-day win streak", "📈 On pace for #2 all-time P9"],
     },
     {
-      franchise: "MPP", name: "Matt's mid tier perpetual projects",
+      franchise: "MPP", name: "mid tier perpetual projects",
       dayPts: 8, projPts: 7, seasonPts: 754, ppg: 0.94, avg3d: 0.98, avg7d: 0.95,
       dayRank: 2, seasonRank: 2,
       streaks: ["📈 7-day podium streak"],
     },
     {
-      franchise: "RMS", name: "Richie's Meatspinners",
+      franchise: "RMS", name: "Meatspinners",
       dayPts: 5, projPts: 6, seasonPts: 691, ppg: 0.87, avg3d: 0.91, avg7d: 0.85,
       dayRank: 3, seasonRank: 5,
       streaks: ["⚠️ 12-day bottom-half streak"],
     },
     {
-      franchise: "GDD", name: "Graeme's Downtown Demons",
+      franchise: "GDD", name: "Downtown Demons",
       dayPts: 5, projPts: 6, seasonPts: 753, ppg: 0.93, avg3d: 0.88, avg7d: 0.91,
       dayRank: 4, seasonRank: 3,
       streaks: ["📉 3-day avg falling"],
     },
     {
-      franchise: "BEW", name: "Brian's Endless Winter",
+      franchise: "BEW", name: "Endless Winter",
       dayPts: 4, projPts: 4, seasonPts: 674, ppg: 0.82, avg3d: 0.84, avg7d: 0.80,
       dayRank: 5, seasonRank: 6,
       streaks: ["⭐ Best day this period"],
     },
     {
-      franchise: "PWN", name: "Cmack's PWN",
+      franchise: "PWN", name: "PWN",
       dayPts: 4, projPts: 4, seasonPts: 697, ppg: 0.84, avg3d: 0.79, avg7d: 0.82,
       dayRank: 6, seasonRank: 4,
       streaks: [],
+      projection: { projected: 758 },
     },
   ],
 
