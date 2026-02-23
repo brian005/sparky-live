@@ -77,7 +77,7 @@ const T = {
 const CARD_W = 1280;
 const CARD_PAD = 24;
 const DATA_ROW_H = 124;
-const NARRATIVE_H = 80;  // room for 2 lines of narrative
+const NARRATIVE_H = 104;  // room for 2 lines of 36px narrative
 const CARD_RADIUS = 20;
 const LOGO_SIZE = 96;
 const BADGE_SIZE = 64;
@@ -294,22 +294,22 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
   ctx.textAlign = "left";
   const streaks = team.streaks || [];
   const narX = x + 28;
-  const LINE_H = 30;
-  const firstLineY = narY + 30;
+  const LINE_H = 42;
+  const firstLineY = narY + 38;
 
   if (streaks.length === 0) {
     const projText = team.projection
       ? `Proj finish: ${team.projection.projected} pts`
       : `Season avg: ${(team.ppg || 0).toFixed(2)} PPG`;
     ctx.fillStyle = T.narrativeText;
-    ctx.font = "italic 24px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.font = "italic 36px 'Helvetica Neue', Helvetica, Arial, sans-serif";
     ctx.fillText(projText, narX, firstLineY);
   } else {
     for (let i = 0; i < Math.min(streaks.length, 2); i++) {
       const s = streaks[i];
       const isBad = s.includes("⚠️") || s.includes("📉") || s.includes("⬇️") || s.includes("🏜️");
       ctx.fillStyle = isBad ? T.negative : "#2C3E50";
-      ctx.font = `${isBad ? "600" : "500"} 24px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+      ctx.font = `${isBad ? "600" : "500"} 36px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
       ctx.fillText(s, narX, firstLineY + i * LINE_H);
     }
   }
