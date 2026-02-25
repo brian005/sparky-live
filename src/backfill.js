@@ -24,7 +24,7 @@ const path = require("path");
 const { getAllSeasonDates, buildDateScoringUrl, toFranchise } = require("./config");
 
 const DAILY_DIR = path.join(__dirname, "..", "data", "daily");
-const DELAY = parseInt(process.env.DELAY) || 5000;
+const DELAY = parseInt(process.env.DELAY) || 8000;
 
 /**
  * Login to Fantrax — reuses the same proven login flow from scrape.js.
@@ -129,22 +129,64 @@ async function login(browser, username, password) {
 
 /**
  * Scrape a single date's scoring data from the live scoring page.
+ * Uses DOM stability detection to ensure the Angular SPA has fully
+ * rendered the target date's data before scraping.
  */
-async function scrapeDate(page, dateStr, period) {
+async function scrapeDate(page, dateStr, period, prevFingerprint) {
   const url = buildDateScoringUrl(dateStr);
   await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
 
-  // Wait for cards
+  // Wait for cards to appear in DOM
   try {
     await page.waitForSelector("section.matchup-list", { timeout: 15000 });
   } catch (e) {
-    // Maybe no games that day — try to detect empty page
     console.log(`  [${dateStr}] No team cards found — checking page...`);
     await page.screenshot({ path: `debug-backfill-${dateStr}.png`, fullPage: true });
-    return null;
+    return { data: null, fingerprint: prevFingerprint };
   }
 
-  await new Promise(r => setTimeout(r, 2000));
+  // --- SPA data-change detection ---
+  // The cards exist in the DOM from the previous page load. We need to
+  // wait until the Angular SPA has re-fetched and rendered the NEW date's
+  // data. We do this by fingerprinting the visible scores and waiting
+  // until (a) they differ from the previous page's fingerprint, and
+  // (b) they stabilize across consecutive polls.
+  const getFingerprint = () => page.evaluate(() => {
+    const sections = document.querySelectorAll("section.matchup-list");
+    return Array.from(sections).map(s => {
+      const h2s = Array.from(s.querySelectorAll("h2"));
+      return h2s.map(h => h.textContent.trim()).join(",");
+    }).join("|");
+  });
+
+  let fingerprint = "";
+  let stableCount = 0;
+  const maxAttempts = 15; // up to 15 seconds of polling
+  for (let i = 0; i < maxAttempts; i++) {
+    await new Promise(r => setTimeout(r, 1000));
+    const current = await getFingerprint();
+    
+    // Check: has data changed from previous date AND stabilized?
+    const changedFromPrev = !prevFingerprint || current !== prevFingerprint;
+    if (current === fingerprint && current.length > 0) {
+      stableCount++;
+      if (changedFromPrev && stableCount >= 2) {
+        break; // Data changed from prev page and stable for 2+ checks
+      }
+    } else {
+      fingerprint = current;
+      stableCount = 0;
+    }
+    
+    if (i === maxAttempts - 1) {
+      console.log(`  [${dateStr}] ⚠️  DOM did not change/stabilize after ${maxAttempts}s — scraping current state`);
+      // This can happen legitimately on consecutive no-game days
+      // where the fingerprint is truly the same
+    }
+  }
+
+  // Extra buffer for any trailing renders
+  await new Promise(r => setTimeout(r, 1000));
 
   // Extract team data
   const teams = await page.evaluate(() => {
@@ -211,18 +253,21 @@ async function scrapeDate(page, dateStr, period) {
   // Strip debug before saving
   const cleanTeams = teams.map(({ _debug, ...rest }) => rest);
 
-  if (cleanTeams.length === 0) return null;
+  if (cleanTeams.length === 0) return { data: null, fingerprint };
 
   return {
-    date: dateStr,
-    period,
-    teams: cleanTeams.map(t => ({
-      franchise: toFranchise(t.name) || t.name,
-      name: t.name,
-      dayPts: t.dayPts,
-      projPts: t.projPts,
-      gp: t.gp,
-    }))
+    data: {
+      date: dateStr,
+      period,
+      teams: cleanTeams.map(t => ({
+        franchise: toFranchise(t.name) || t.name,
+        name: t.name,
+        dayPts: t.dayPts,
+        projPts: t.projPts,
+        gp: t.gp,
+      }))
+    },
+    fingerprint
   };
 }
 
@@ -283,7 +328,7 @@ async function main() {
   console.log(`   Already scraped:    ${skipped}`);
   console.log(`   To scrape:          ${toScrape.length}`);
   console.log(`   Delay between:      ${DELAY}ms`);
-  console.log(`   Est. time:          ${Math.round(toScrape.length * DELAY / 60000)} min\n`);
+  console.log(`   Est. time:          ${Math.round(toScrape.length * (DELAY + 5000) / 60000)} min (incl. SPA wait)\n`);
 
   if (toScrape.length === 0) {
     console.log("✅ Nothing to backfill — all dates already scraped.");
@@ -318,6 +363,7 @@ async function main() {
     let success = 0;
     let failures = 0;
     const BATCH_SIZE = 20;
+    let prevFingerprint = null;
 
     for (let i = 0; i < toScrape.length; i++) {
       const { date, period } = toScrape[i];
@@ -326,12 +372,15 @@ async function main() {
       try {
         process.stdout.write(`${progress} ${date} (P${period})... `);
 
-        const data = await scrapeDate(page, date, period);
+        const result = await scrapeDate(page, date, period, prevFingerprint);
+        const data = result ? result.data : null;
+        prevFingerprint = result ? result.fingerprint : prevFingerprint;
 
         if (data && data.teams.length > 0) {
           const filepath = saveDailyFile(data);
           const totalPts = data.teams.reduce((sum, t) => sum + t.dayPts, 0);
-          console.log(`✅ ${data.teams.length} teams, ${totalPts.toFixed(1)} total pts`);
+          const teamSummary = data.teams.map(t => `${t.franchise}:${t.dayPts}`).join(" ");
+          console.log(`✅ ${data.teams.length} teams, ${totalPts.toFixed(1)} total pts [${teamSummary}]`);
           success++;
         } else {
           console.log(`⚠️  No data (possibly no games)`);
