@@ -7,14 +7,14 @@
       "name": "Jason's Gaucho Chudpumpers",
       "dayPts": 3,
       "projPts": 1.89,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "MPP",
       "name": "Matt's mid tier perpetual projects",
       "dayPts": 4,
       "projPts": 3.82,
-      "gp": 0
+      "gp": 5
     },
     {
       "franchise": "GDD",
@@ -28,21 +28,21 @@
       "name": "Cmack's PWN",
       "dayPts": 2,
       "projPts": 2.74,
-      "gp": 0
+      "gp": 2
     },
     {
       "franchise": "RMS",
       "name": "Richie's Meatspinners",
       "dayPts": 5,
       "projPts": 4.32,
-      "gp": 0
+      "gp": 5
     },
     {
       "franchise": "BEW",
       "name": "Brian's Endless Winter",
       "dayPts": 7,
       "projPts": 4.72,
-      "gp": 0
+      "gp": 5
     }
   ]
 }
