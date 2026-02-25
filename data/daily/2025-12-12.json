@@ -14,7 +14,7 @@
       "name": "Matt's mid tier perpetual projects",
       "dayPts": 1,
       "projPts": 0.64,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "GDD",
@@ -28,21 +28,21 @@
       "name": "Cmack's PWN",
       "dayPts": 1,
       "projPts": 0.57,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "RMS",
       "name": "Richie's Meatspinners",
       "dayPts": 2,
       "projPts": 2.16,
-      "gp": 0
+      "gp": 2
     },
     {
-      "franchise": "Brian's.Endless.Win ter.S13E01.720p.mp4",
-      "name": "Brian's.Endless.Win ter.S13E01.720p.mp4",
+      "franchise": "BEW",
+      "name": "Brian's Endless Winter",
       "dayPts": 3,
       "projPts": 1.34,
-      "gp": 0
+      "gp": 1
     }
   ]
 }
