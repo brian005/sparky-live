@@ -11,6 +11,7 @@
 const fs = require("fs");
 const path = require("path");
 const { getPeriodForDate, toFranchise, PERIODS, FRANCHISE_NAMES } = require("./config");
+const { getLeaguePeriodRecord, getFranchisePeriodBest, getFranchiseCareerStats } = require("./historical");
 
 const DAILY_DIR = path.join(__dirname, "..", "data", "daily");
 
@@ -122,7 +123,7 @@ function seasonPPG(allDays, franchise) {
  *  14. Projection fallback
  * ================================================================
  */
-function buildNarratives(allDays, franchise, period, todayDayPts, todayGP, projection, avg3d, ppg) {
+async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP, projection, avg3d, ppg, todayScrapeTeams) {
   const candidates = []; // { priority, text, isBad }
 
   if (allDays.length < 2) return [];
@@ -331,19 +332,22 @@ function buildNarratives(allDays, franchise, period, todayDayPts, todayGP, proje
     const fallbacks = [];
 
     // Lens 1: Today vs other teams — day rank context
-    // Use the actual today data from periodDays (last day in period)
-    const todayData = periodDays.length > 0 ? periodDays[periodDays.length - 1] : null;
-    if (todayData && todayDayPts > 0) {
-      const todaySorted = [...todayData.teams].sort((a, b) => (b.dayPts || 0) - (a.dayPts || 0));
-      const myRankToday = todaySorted.findIndex(t => t.franchise === franchise) + 1;
+    // Use the live scraped data from today (passed in), not historical files
+    if (todayScrapeTeams && todayScrapeTeams.length > 0 && todayDayPts > 0) {
+      const todaySorted = [...todayScrapeTeams].sort((a, b) => (b.dayPts || 0) - (a.dayPts || 0));
+      const myRankToday = todaySorted.findIndex(t => {
+        const f = toFranchise(t.franchise) || toFranchise(t.name) || t.franchise;
+        return f === franchise;
+      }) + 1;
       const leader = todaySorted[0];
+      const leaderFranchise = toFranchise(leader.franchise) || toFranchise(leader.name) || leader.franchise;
 
       if (myRankToday === 1 && todaySorted.length > 1) {
         const margin = todayDayPts - (todaySorted[1]?.dayPts || 0);
         if (margin > 0) fallbacks.push(`Won the day by ${Math.round(margin)} pts`);
-      } else if (leader && leader.franchise !== franchise) {
+      } else if (leader && leaderFranchise !== franchise) {
         const gap = (leader.dayPts || 0) - todayDayPts;
-        const leaderName = FRANCHISE_NAMES[leader.franchise] || leader.franchise;
+        const leaderName = FRANCHISE_NAMES[leaderFranchise] || leaderFranchise;
         if (gap > 0) fallbacks.push(`${Math.round(gap)} pts behind today's leader (${leaderName})`);
       }
     }
@@ -414,29 +418,47 @@ function buildNarratives(allDays, franchise, period, todayDayPts, todayGP, proje
       }
     }
 
-    // Lens 5: Projected vs best/worst ANY team has done this period number
+    // Lens 5: Projected vs all-time league record for this period number (13-year history)
     if (projection && projection.projected > 0) {
-      const allTeamPeriodTotals = computeAllTeamPeriodTotals(allDays, currentPeriod);
-      if (allTeamPeriodTotals.length > 0) {
-        const leagueBest = Math.max(...allTeamPeriodTotals);
-        const leagueWorst = Math.min(...allTeamPeriodTotals);
-        if (projection.projected > leagueBest * 1.05) {
-          fallbacks.push(`Proj ${projection.projected} — would be best-ever P${currentPeriod}`);
-        } else if (projection.projected < leagueWorst * 0.95 && allTeamPeriodTotals.length >= 3) {
-          fallbacks.push(`Proj ${projection.projected} — tracking worst-ever P${currentPeriod}`);
+      try {
+        const leagueRecord = await getLeaguePeriodRecord(currentPeriod);
+        if (leagueRecord && leagueRecord.fpts > 0) {
+          const recordHolder = FRANCHISE_NAMES[leagueRecord.franchise] || leagueRecord.franchise;
+          if (projection.projected > leagueRecord.fpts) {
+            fallbacks.push(`Proj ${projection.projected} — would beat all-time P${currentPeriod} record (${Math.round(leagueRecord.fpts)} by ${recordHolder}, ${leagueRecord.season})`);
+          } else if (projection.projected >= leagueRecord.fpts * 0.9) {
+            // Within 10% of the record — still noteworthy
+            fallbacks.push(`Proj ${projection.projected} — closing on P${currentPeriod} record (${Math.round(leagueRecord.fpts)} by ${recordHolder}, ${leagueRecord.season})`);
+          }
         }
+      } catch (e) {
+        // Historical data unavailable — skip silently
       }
     }
 
-    // Lens 6: Projected vs own best/worst in same period number historically
-    // (We only have current season data, so compare across this season's periods)
-    if (projection && ownPeriodTotals.length >= 2) {
-      const bestOwn = Math.max(...ownPeriodTotals.map(p => p.total));
-      const worstOwn = Math.min(...ownPeriodTotals.map(p => p.total));
-      if (projection.projected > bestOwn * 1.03 && bestOwn > 0) {
-        fallbacks.push(`On pace for personal best period (${projection.projected} proj)`);
-      } else if (projection.projected < worstOwn * 0.97 && ownPeriodTotals.length >= 3) {
-        fallbacks.push(`On pace for personal worst period (${projection.projected} proj)`);
+    // Lens 6: Projected vs franchise's own best for this period number (13-year history)
+    if (projection && projection.projected > 0) {
+      try {
+        const myBest = await getFranchisePeriodBest(currentPeriod, franchise);
+        if (myBest && myBest.fpts > 0) {
+          if (projection.projected > myBest.fpts) {
+            fallbacks.push(`Proj ${projection.projected} — would be personal best P${currentPeriod} (prev: ${Math.round(myBest.fpts)} in ${myBest.season})`);
+          }
+        } else {
+          // No historical P{N} for this franchise — compare against career avg
+          const career = await getFranchiseCareerStats(franchise);
+          if (career && projection.projected > career.avgFpts * 1.15) {
+            fallbacks.push(`Proj ${projection.projected} — ${Math.round(((projection.projected - career.avgFpts) / career.avgFpts) * 100)}% above career avg (${career.avgFpts})`);
+          }
+        }
+      } catch (e) {
+        // Historical data unavailable — fall back to current-season comparison
+        if (ownPeriodTotals.length >= 2) {
+          const bestOwn = Math.max(...ownPeriodTotals.map(p => p.total));
+          if (projection.projected > bestOwn * 1.03 && bestOwn > 0) {
+            fallbacks.push(`On pace for season-best period (${projection.projected} proj)`);
+          }
+        }
       }
     }
 
@@ -534,12 +556,9 @@ function computeAllPeriodTotals(allDays, franchise) {
  * Used for Lens 5: "what's the best/worst anyone has done in this period?"
  */
 function computeAllTeamPeriodTotals(allDays, periodNumber) {
-  // Find all days in the same period number from previous completions
-  // (only same period number, not current — we want historical benchmarks)
+  // DEPRECATED — kept for backward compat but use computeCompletedPeriodTotals instead
   const periodDays = allDays.filter(d => d.period === periodNumber);
-  if (periodDays.length < 7) return []; // not enough data
-
-  // Sum per franchise
+  if (periodDays.length < 7) return [];
   const totals = {};
   for (const day of periodDays) {
     for (const t of day.teams) {
@@ -547,8 +566,31 @@ function computeAllTeamPeriodTotals(allDays, periodNumber) {
       totals[t.franchise] += t.dayPts || 0;
     }
   }
-
   return Object.values(totals).filter(v => v > 0);
+}
+
+/**
+ * Compute per-team totals for all COMPLETED periods (excluding current).
+ * Returns array of totals — one per team per completed period.
+ */
+function computeCompletedPeriodTotals(allDays, currentPeriod) {
+  // Find all periods that appear in the data, excluding current
+  const completedPeriods = [...new Set(allDays.map(d => d.period))].filter(p => p < currentPeriod);
+  if (completedPeriods.length === 0) return [];
+
+  const totals = [];
+  for (const p of completedPeriods) {
+    const periodDays = allDays.filter(d => d.period === p);
+    const teamTotals = {};
+    for (const day of periodDays) {
+      for (const t of day.teams) {
+        if (!teamTotals[t.franchise]) teamTotals[t.franchise] = 0;
+        teamTotals[t.franchise] += t.dayPts || 0;
+      }
+    }
+    totals.push(...Object.values(teamTotals).filter(v => v > 0));
+  }
+  return totals;
 }
 
 /**
@@ -584,13 +626,13 @@ function projectPeriodFinish(allDays, franchise, period) {
 /**
  * Build the full nightly analysis from daily data + today's scrape.
  */
-function buildNightlyAnalysis(todayScrape) {
+async function buildNightlyAnalysis(todayScrape) {
   const allDays = loadAllDailyScores();
   const period = todayScrape.period;
   const today = todayScrape.date || new Date().toISOString().split("T")[0];
 
   // Build stats for each team
-  const teamStats = todayScrape.teams.map(t => {
+  const teamStats = await Promise.all(todayScrape.teams.map(async t => {
     const franchise = toFranchise(t.franchise) || toFranchise(t.name) || t.franchise || t.name;
 
     const avg3d = rollingAvgPPG(allDays, franchise, 3);
@@ -600,7 +642,7 @@ function buildNightlyAnalysis(todayScrape) {
     const vsProj = t.projPts ? +((t.dayPts || 0) - t.projPts).toFixed(2) : null;
 
     // Build rich narratives (picks best 1-2 automatically)
-    const streaks = buildNarratives(allDays, franchise, period, t.dayPts || 0, t.gp || 0, projection, avg3d, ppg);
+    const streaks = await buildNarratives(allDays, franchise, period, t.dayPts || 0, t.gp || 0, projection, avg3d, ppg, todayScrape.teams);
 
     return {
       franchise,
@@ -616,7 +658,7 @@ function buildNightlyAnalysis(todayScrape) {
       projection,
       periodPts: projection ? projection.periodPts : 0,
     };
-  });
+  }));
 
   // Rank by day score
   const ranked = [...teamStats].sort((a, b) => b.dayPts - a.dayPts);

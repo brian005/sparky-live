@@ -92,7 +92,7 @@ async function main() {
 
     // Step 3: Build analysis from full history
     console.log("\n━━━ STEP 3: ANALYZING ━━━");
-    const analysis = buildNightlyAnalysis(dailyData);
+    const analysis = await buildNightlyAnalysis(dailyData);
 
     console.log(`  Season days loaded: ${analysis.totalSeasonDays}`);
     console.log(`  Period ${period} days: ${analysis.periodDaysPlayed}`);
