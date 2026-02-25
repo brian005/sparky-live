@@ -272,12 +272,33 @@ async function scrapeLiveScoring({ username, password, period, headless = true }
           if (nums && nums.length > 0) projectedFpg = parseFloat(nums[nums.length - 1]) || 0;
         }
 
+        // GP — from the roster info line (person icon followed by GP count)
+        let gp = 0;
+        // Primary: use the roster-info class (same as backfill)
+        const rosterInfoEl = section.querySelector(".matchup-list__roster-info, .roster-info");
+        if (rosterInfoEl) {
+          const nums = rosterInfoEl.textContent.match(/\d+/g);
+          if (nums && nums.length >= 1) gp = parseInt(nums[0], 10) || 0;
+        }
+        // Fallback: scan for "N 0 0" pattern in any child element
+        if (gp === 0) {
+          const infoEls = section.querySelectorAll("span, div, p");
+          for (const el of infoEls) {
+            const text = el.textContent.trim();
+            if (/^\d+\s+\d+\s+\d+$/.test(text)) {
+              gp = parseInt(text.split(/\s+/)[0], 10) || 0;
+              break;
+            }
+          }
+        }
+
         results.push({
           rank: index + 1,
           name,
           seasonPts,
           dayPts,
-          projectedFpg
+          projectedFpg,
+          gp
         });
       });
 
@@ -302,12 +323,25 @@ async function scrapeLiveScoring({ username, password, period, headless = true }
           const numbers = text.match(/[\d,]+\.?\d*/g) || [];
           const parsed = numbers.map(n => parseFloat(n.replace(/,/g, "")));
 
+          // Try to find GP in the text — pattern "N 0 0" after scores
+          let gp = 0;
+          const gpMatch = text.match(/(\d+)\s+\d+\s+\d+/);
+          if (gpMatch) {
+            // The first "N 0 0" pattern after the scores is the roster line
+            // But we need to skip score numbers — look for the last such pattern
+            const allGpMatches = [...text.matchAll(/(\d+)\s+0\s+0/g)];
+            if (allGpMatches.length > 0) {
+              gp = parseInt(allGpMatches[allGpMatches.length - 1][1], 10) || 0;
+            }
+          }
+
           results.push({
             rank: index + 1,
             name,
             seasonPts: parsed[0] || 0,
             dayPts: parsed[1] || 0,
-            projectedFpg: parsed[2] || 0
+            projectedFpg: parsed[2] || 0,
+            gp
           });
         });
 
