@@ -224,12 +224,25 @@ async function scrapeDate(page, dateStr, period, prevFingerprint) {
         if (nums && nums.length > 0) projPts = parseFloat(nums[nums.length - 1]) || 0;
       }
 
-      // GP
+      // GP — lives in player-game-info > mark > first <i> tag
+      // DOM: <player-game-info class="player-game-info matchup-list__game-info">
+      //        <mark class="mat-mdc-tooltip-trigger">
+      //          <mat-icon>people</mat-icon>
+      //          <i>15</i> <i>0</i> <i>0</i>
+      //        </mark>
       let gp = 0;
-      const infoEl = section.querySelector(".matchup-list__roster-info, .roster-info");
-      if (infoEl) {
-        const nums = infoEl.textContent.match(/\d+/g);
-        if (nums && nums.length >= 1) gp = parseInt(nums[0]);
+      const gameInfoEl = section.querySelector("player-game-info, .player-game-info, .matchup-list__game-info");
+      if (gameInfoEl) {
+        const iTags = gameInfoEl.querySelectorAll("i");
+        if (iTags.length >= 1) gp = parseInt(iTags[0].textContent.trim()) || 0;
+      }
+      // Fallback: try old selector
+      if (gp === 0) {
+        const infoEl = section.querySelector(".matchup-list__roster-info, .roster-info");
+        if (infoEl) {
+          const nums = infoEl.textContent.match(/\d+/g);
+          if (nums && nums.length >= 1) gp = parseInt(nums[0]) || 0;
+        }
       }
 
       results.push({
@@ -379,7 +392,7 @@ async function main() {
         if (data && data.teams.length > 0) {
           const filepath = saveDailyFile(data);
           const totalPts = data.teams.reduce((sum, t) => sum + t.dayPts, 0);
-          const teamSummary = data.teams.map(t => `${t.franchise}:${t.dayPts}`).join(" ");
+          const teamSummary = data.teams.map(t => `${t.franchise}:${t.dayPts}(gp${t.gp})`).join(" ");
           console.log(`✅ ${data.teams.length} teams, ${totalPts.toFixed(1)} total pts [${teamSummary}]`);
           success++;
         } else {
