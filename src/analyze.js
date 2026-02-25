@@ -11,7 +11,9 @@
 const fs = require("fs");
 const path = require("path");
 const { getPeriodForDate, toFranchise, PERIODS, FRANCHISE_NAMES } = require("./config");
-const { getLeaguePeriodRecord, getFranchisePeriodBest, getFranchiseCareerStats } = require("./historical");
+const { getLeaguePeriodRecord, getFranchisePeriodBest, getFranchiseCareerStats,
+        getCareerTotalPoints, getPeriodDominance, getH2HPeriodRecord,
+        getFranchiseMatchupStreak, getSeasonPace, FRANCHISE_TO_OWNER } = require("./historical");
 
 const DAILY_DIR = path.join(__dirname, "..", "data", "daily");
 
@@ -323,6 +325,119 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
   // ---- Sort by priority and pick top 2 ----
   candidates.sort((a, b) => a.priority - b.priority);
   const picked = candidates.slice(0, 2).map(c => c.text);
+
+  // ---- Historical color tier ----
+  // Fun facts from 13 years of league history. Fires if we still need narratives.
+  // These are more interesting than the reactive fallbacks but shouldn't override
+  // genuine performance detections (streaks, personal bests, etc).
+
+  if (picked.length < 2) {
+    const histNarratives = [];
+
+    try {
+      // 1. Career milestone proximity
+      const career = await getCareerTotalPoints(franchise);
+      if (career.totalPts > 0) {
+        const milestones = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 12500, 15000];
+        // Add current period points to career total for "distance to next milestone"
+        const currentPeriodPts = projection ? projection.periodPts : 0;
+        const approxCurrentTotal = career.totalPts + currentPeriodPts;
+        for (const m of milestones) {
+          const remaining = m - approxCurrentTotal;
+          if (remaining > 0 && remaining <= 100) {
+            histNarratives.push(`🏅 ${remaining} pts from ${m.toLocaleString()} career points`);
+            break;
+          } else if (remaining <= 0 && remaining > -5) {
+            // Just crossed it
+            histNarratives.push(`🏅 Just crossed ${m.toLocaleString()} career points!`);
+            break;
+          }
+        }
+      }
+
+      // 2. Season pace vs historical seasons
+      if (projection && currentPeriod >= 3) {
+        // Sum current season's period totals from daily data
+        const currentSeasonPts = allDays.reduce((sum, day) => {
+          const team = day.teams.find(t => t.franchise === franchise);
+          return sum + (team ? team.dayPts : 0);
+        }, 0);
+
+        const pace = await getSeasonPace(franchise, currentPeriod, Math.round(currentSeasonPts));
+        if (pace && pace.historicalPaces.length >= 2) {
+          const bestEver = pace.bestPace;
+          const worstEver = pace.worstPace;
+          if (currentSeasonPts > bestEver.totalThroughPeriod) {
+            histNarratives.push(`📈 Best-ever pace through P${currentPeriod} (prev: ${bestEver.totalThroughPeriod} in ${bestEver.season})`);
+          } else if (currentSeasonPts >= bestEver.totalThroughPeriod * 0.95) {
+            histNarratives.push(`📈 Tracking near best-ever pace through P${currentPeriod} (record: ${bestEver.totalThroughPeriod} in ${bestEver.season})`);
+          } else if (currentSeasonPts < worstEver.totalThroughPeriod * 1.05 && pace.historicalPaces.length >= 4) {
+            histNarratives.push(`📉 Slowest pace through P${currentPeriod} since ${worstEver.season}`);
+          }
+        }
+      }
+
+      // 3. Period dominance — who owns this period number
+      const dominance = await getPeriodDominance(currentPeriod, franchise);
+      if (dominance.totalOccurrences >= 3) {
+        if (dominance.wins >= 3) {
+          histNarratives.push(`👑 Has won P${currentPeriod} ${dominance.wins} times — most in league history`);
+        } else if (dominance.wins === 0 && dominance.totalOccurrences >= 5) {
+          histNarratives.push(`🏜️ Has never won a P${currentPeriod} (0-for-${dominance.totalOccurrences} all-time)`);
+        } else if (dominance.topWinner && dominance.topWinner !== franchise && dominance.topWinnerWins >= 3) {
+          const ownerName = FRANCHISE_TO_OWNER[dominance.topWinner] || dominance.topWinner;
+          histNarratives.push(`📊 P${currentPeriod} belongs to ${ownerName} (${dominance.topWinnerWins} wins all-time)`);
+        }
+      }
+
+      // 4. H2H "never beaten" — only if this team is top 2 in current period
+      if (todayScrapeTeams && todayScrapeTeams.length > 0) {
+        const periodStandings = computePeriodStandings(periodDays, franchise);
+        if (periodStandings && periodStandings.currentRank <= 2) {
+          // Find the other team in top 2
+          const allPeriodRanks = [];
+          for (const t of todayScrapeTeams) {
+            const f = toFranchise(t.franchise) || toFranchise(t.name) || t.franchise;
+            const standing = computePeriodStandings(periodDays, f);
+            if (standing) allPeriodRanks.push({ franchise: f, rank: standing.currentRank });
+          }
+          allPeriodRanks.sort((a, b) => a.rank - b.rank);
+          const rival = allPeriodRanks.find(r => r.franchise !== franchise && r.rank <= 2);
+
+          if (rival) {
+            const h2h = await getH2HPeriodRecord(currentPeriod, franchise, rival.franchise);
+            if (h2h) {
+              const rivalName = FRANCHISE_NAMES[rival.franchise] || rival.franchise;
+              if (h2h.neverBeatenByB && h2h.total >= 3) {
+                histNarratives.push(`💪 Undefeated vs ${rivalName} in P${currentPeriod} (${h2h.winsA}-0 all-time)`);
+              } else if (h2h.neverBeatenByA && h2h.total >= 3) {
+                histNarratives.push(`😬 Never beaten ${rivalName} in P${currentPeriod} (0-${h2h.winsB} all-time)`);
+              }
+            }
+          }
+        }
+      }
+
+      // 5. Franchise hot/cold streak across periods
+      const streak = await getFranchiseMatchupStreak(franchise);
+      if (streak) {
+        if (streak.type === "W" && streak.streak >= 3) {
+          histNarratives.push(`🔥 ${streak.streak}-period win streak`);
+        } else if (streak.type === "L" && streak.streak >= 3 && streak.lastWin) {
+          histNarratives.push(`❄️ Hasn't won a period since P${streak.lastWin.period} ${streak.lastWin.season}`);
+        }
+      }
+    } catch (e) {
+      // Historical data unavailable — skip silently
+      console.log(`  ⚠️ Historical data fetch failed: ${e.message}`);
+    }
+
+    // Add historical narratives to picked (up to 2 total)
+    for (const hn of histNarratives) {
+      if (picked.length >= 2) break;
+      picked.push(hn);
+    }
+  }
 
   // ---- Fallback cascade — 6 lenses to fill gaps ----
   // Only fires if we have fewer than 2 narratives from the main detections.
