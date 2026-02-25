@@ -10,7 +10,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { getPeriodForDate, toFranchise, PERIODS } = require("./config");
+const { getPeriodForDate, toFranchise, PERIODS, FRANCHISE_NAMES } = require("./config");
 
 const DAILY_DIR = path.join(__dirname, "..", "data", "daily");
 
@@ -122,7 +122,7 @@ function seasonPPG(allDays, franchise) {
  *  14. Projection fallback
  * ================================================================
  */
-function buildNarratives(allDays, franchise, period, todayDayPts, projection, avg3d, ppg) {
+function buildNarratives(allDays, franchise, period, todayDayPts, todayGP, projection, avg3d, ppg) {
   const candidates = []; // { priority, text, isBad }
 
   if (allDays.length < 2) return [];
@@ -176,7 +176,7 @@ function buildNarratives(allDays, franchise, period, todayDayPts, projection, av
     candidates.push({ priority: 3, text: `⚠️ ${bottomStreak}-day bottom-half streak`, isBad: true });
   }
 
-  // ---- 4. Best day this period ----
+  // ---- 4. Best day this period (own personal best) ----
   if (periodDays.length > 1 && todayDayPts > 0) {
     const allPeriodPts = periodDays.map(day => {
       const t = day.teams.find(t => t.franchise === franchise);
@@ -184,7 +184,7 @@ function buildNarratives(allDays, franchise, period, todayDayPts, projection, av
     });
     const bestInPeriod = Math.max(...allPeriodPts);
     if (todayDayPts >= bestInPeriod) {
-      candidates.push({ priority: 4, text: "⭐ Best day this period" });
+      candidates.push({ priority: 4, text: `⭐ Personal best day in P${currentPeriod}` });
     }
   }
 
@@ -202,21 +202,23 @@ function buildNarratives(allDays, franchise, period, todayDayPts, projection, av
     }
   }
 
-  // ---- 6. Day score vs period average ----
-  if (periodDays.length >= 3 && todayDayPts > 0) {
+  // ---- 6. Today's PPG vs period PPG average ----
+  if (periodDays.length >= 3 && todayGP > 0) {
+    const todayPPG = todayDayPts / todayGP;
+    // Compute this team's period PPG
     let periodTotal = 0;
-    let periodCount = 0;
+    let periodGP = 0;
     for (const day of periodDays) {
       const t = day.teams.find(t => t.franchise === franchise);
-      if (t) { periodTotal += t.dayPts || 0; periodCount++; }
+      if (t) { periodTotal += t.dayPts || 0; periodGP += t.gp || 0; }
     }
-    const periodAvg = periodCount > 0 ? periodTotal / periodCount : 0;
-    if (periodAvg > 0) {
-      const pct = Math.round(((todayDayPts - periodAvg) / periodAvg) * 100);
-      if (pct >= 40) {
-        candidates.push({ priority: 6, text: `💥 ${todayDayPts} pts today vs ${periodAvg.toFixed(1)} period avg` });
-      } else if (pct <= -40) {
-        candidates.push({ priority: 6, text: `📉 ${todayDayPts} pts today vs ${periodAvg.toFixed(1)} period avg`, isBad: true });
+    const periodPPG = periodGP > 0 ? periodTotal / periodGP : 0;
+    if (periodPPG > 0) {
+      const pct = Math.round(((todayPPG - periodPPG) / periodPPG) * 100);
+      if (pct >= 30) {
+        candidates.push({ priority: 6, text: `💥 ${todayPPG.toFixed(2)} PPG today vs ${periodPPG.toFixed(2)} period avg` });
+      } else if (pct <= -30) {
+        candidates.push({ priority: 6, text: `📉 ${todayPPG.toFixed(2)} PPG today vs ${periodPPG.toFixed(2)} period avg`, isBad: true });
       }
     }
   }
@@ -329,44 +331,31 @@ function buildNarratives(allDays, franchise, period, todayDayPts, projection, av
     const fallbacks = [];
 
     // Lens 1: Today vs other teams — day rank context
-    const todayRank = rankedDays.length > 0 ? rankedDays[rankedDays.length - 1].rank : null;
-    const numTeams = rankedDays.length > 0 ? rankedDays[rankedDays.length - 1].numTeams : 6;
-    if (todayRank && todayDayPts > 0) {
-      // Find who scored most today
-      const todayData = allDays[allDays.length - 1];
-      if (todayData) {
-        const todaySorted = [...todayData.teams].sort((a, b) => (b.dayPts || 0) - (a.dayPts || 0));
-        const leader = todaySorted[0];
-        if (todayRank === 1 && todaySorted.length > 1) {
-          const margin = todayDayPts - (todaySorted[1]?.dayPts || 0);
-          if (margin > 0) fallbacks.push(`Won the day by ${Math.round(margin)} pts`);
-        } else if (leader && leader.franchise !== franchise) {
-          const gap = (leader.dayPts || 0) - todayDayPts;
-          if (gap > 0) fallbacks.push(`${Math.round(gap)} pts behind day leader`);
-        }
+    // Use the actual today data from periodDays (last day in period)
+    const todayData = periodDays.length > 0 ? periodDays[periodDays.length - 1] : null;
+    if (todayData && todayDayPts > 0) {
+      const todaySorted = [...todayData.teams].sort((a, b) => (b.dayPts || 0) - (a.dayPts || 0));
+      const myRankToday = todaySorted.findIndex(t => t.franchise === franchise) + 1;
+      const leader = todaySorted[0];
+
+      if (myRankToday === 1 && todaySorted.length > 1) {
+        const margin = todayDayPts - (todaySorted[1]?.dayPts || 0);
+        if (margin > 0) fallbacks.push(`Won the day by ${Math.round(margin)} pts`);
+      } else if (leader && leader.franchise !== franchise) {
+        const gap = (leader.dayPts || 0) - todayDayPts;
+        const leaderName = FRANCHISE_NAMES[leader.franchise] || leader.franchise;
+        if (gap > 0) fallbacks.push(`${Math.round(gap)} pts behind today's leader (${leaderName})`);
       }
     }
 
-    // Lens 2: Today vs own history — day score relative to own average
-    if (todayDayPts > 0 && ppg && ppg > 0) {
-      const pctVsSeason = Math.round(((todayDayPts - ppg) / ppg) * 100);
+    // Lens 2: Today's PPG vs own history
+    if (todayGP > 0 && ppg && ppg > 0) {
+      const todayPPG = todayDayPts / todayGP;
+      const pctVsSeason = Math.round(((todayPPG - ppg) / ppg) * 100);
       if (pctVsSeason >= 25) {
-        fallbacks.push(`${pctVsSeason}% above season average today`);
+        fallbacks.push(`${todayPPG.toFixed(2)} PPG today — ${pctVsSeason}% above season avg`);
       } else if (pctVsSeason <= -25) {
-        fallbacks.push(`${Math.abs(pctVsSeason)}% below season average today`);
-      }
-    }
-    // Also: today vs last 7 days
-    if (todayDayPts > 0 && recent.length >= 7) {
-      const last7Pts = recent.slice(-7).map(d => d.dayPts);
-      const avg7 = last7Pts.reduce((s, p) => s + p, 0) / last7Pts.length;
-      if (avg7 > 0) {
-        const pctVs7 = Math.round(((todayDayPts - avg7) / avg7) * 100);
-        if (pctVs7 >= 40) {
-          fallbacks.push(`Big day — ${pctVs7}% above 7-day avg`);
-        } else if (pctVs7 <= -40) {
-          fallbacks.push(`Quiet day — ${Math.abs(pctVs7)}% below 7-day avg`);
-        }
+        fallbacks.push(`${todayPPG.toFixed(2)} PPG today — ${Math.abs(pctVsSeason)}% below season avg`);
       }
     }
 
@@ -391,7 +380,7 @@ function buildNarratives(allDays, franchise, period, todayDayPts, projection, av
           } else {
             fallbacks.push(`#${currentPeriodRank} in P${currentPeriod} (${Math.round(myPeriodPts)} pts)`);
           }
-        } else if (currentPeriodRank >= numTeams - 1) {
+        } else if (currentPeriodRank >= periodSorted.length - 1) {
           fallbacks.push(`#${currentPeriodRank} in P${currentPeriod} (${Math.round(myPeriodPts)} pts)`);
         }
       }
@@ -611,7 +600,7 @@ function buildNightlyAnalysis(todayScrape) {
     const vsProj = t.projPts ? +((t.dayPts || 0) - t.projPts).toFixed(2) : null;
 
     // Build rich narratives (picks best 1-2 automatically)
-    const streaks = buildNarratives(allDays, franchise, period, t.dayPts || 0, projection, avg3d, ppg);
+    const streaks = buildNarratives(allDays, franchise, period, t.dayPts || 0, t.gp || 0, projection, avg3d, ppg);
 
     return {
       franchise,

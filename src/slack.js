@@ -131,9 +131,9 @@ async function postCardStrips({ botToken, channelId, headerText, cardPaths, foot
         ""
       );
       console.log(`[slack] Card ${card.rank} (${card.franchise}) uploaded.`);
-      // Wait 2s between uploads to let Slack fully process each one
+      // Wait 4s between uploads to let Slack fully process each one
       if (i < sorted.length - 1) {
-        await new Promise(r => setTimeout(r, 2000));
+        await new Promise(r => setTimeout(r, 4000));
       }
     }
   }
