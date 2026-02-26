@@ -12,9 +12,9 @@ puppeteer.use(StealthPlugin());
 const FANTRAX_LOGIN_URL = "https://www.fantrax.com/login";
 const LEAGUE_ID = "264ojs1imd3nogmp";
 
-// Build live scoring URL for a given period
-function buildLiveScoringUrl(period) {
-  return `https://www.fantrax.com/fantasy/league/${LEAGUE_ID}/livescoring;period=${period};viewType=1`;
+// Build live scoring URL for a given date (YYYY-MM-DD)
+function buildLiveScoringUrl(date) {
+  return `https://www.fantrax.com/fantasy/league/${LEAGUE_ID}/livescoring;viewType=1;date=${date}`;
 }
 
 // Build standings URL (By Period view)
@@ -33,7 +33,7 @@ function buildStandingsUrl() {
  *   ]
  * }
  */
-async function scrapeLiveScoring({ username, password, period, headless = true }) {
+async function scrapeLiveScoring({ username, password, period, date, headless = true }) {
   console.log(`[scrape] Launching browser (headless: ${headless})...`);
 
   const browser = await puppeteer.launch({
@@ -223,8 +223,8 @@ async function scrapeLiveScoring({ username, password, period, headless = true }
     }
     console.log("[scrape] Login successful.");
 
-    // Step 2: Navigate to live scoring
-    const liveUrl = buildLiveScoringUrl(period);
+    // Step 2: Navigate to live scoring for the specific date
+    const liveUrl = buildLiveScoringUrl(date);
     console.log(`[scrape] Navigating to live scoring: ${liveUrl}`);
     await page.goto(liveUrl, { waitUntil: "networkidle2", timeout: 30000 });
 
@@ -232,8 +232,8 @@ async function scrapeLiveScoring({ username, password, period, headless = true }
     console.log("[scrape] Waiting for team cards to render...");
     await page.waitForSelector("section.matchup-list", { timeout: 20000 });
 
-    // Give Angular a moment to fully populate
-    await new Promise(r => setTimeout(r, 2000));
+    // Give Angular time to fully populate data for the target date
+    await new Promise(r => setTimeout(r, 5000));
 
     // Step 3: Extract team data from sidebar
     console.log("[scrape] Extracting team data...");
@@ -272,23 +272,21 @@ async function scrapeLiveScoring({ username, password, period, headless = true }
           if (nums && nums.length > 0) projectedFpg = parseFloat(nums[nums.length - 1]) || 0;
         }
 
-        // GP — from the roster info line (person icon followed by GP count)
+        // GP — lives in player-game-info > mark > first <i> tag
+        // DOM: <player-game-info class="player-game-info matchup-list__game-info">
+        //        <mark><mat-icon>people</mat-icon><i>15</i><i>0</i><i>0</i></mark>
         let gp = 0;
-        // Primary: use the roster-info class (same as backfill)
-        const rosterInfoEl = section.querySelector(".matchup-list__roster-info, .roster-info");
-        if (rosterInfoEl) {
-          const nums = rosterInfoEl.textContent.match(/\d+/g);
-          if (nums && nums.length >= 1) gp = parseInt(nums[0], 10) || 0;
+        const gameInfoEl = section.querySelector("player-game-info, .player-game-info, .matchup-list__game-info");
+        if (gameInfoEl) {
+          const iTags = gameInfoEl.querySelectorAll("i");
+          if (iTags.length >= 1) gp = parseInt(iTags[0].textContent.trim()) || 0;
         }
-        // Fallback: scan for "N 0 0" pattern in any child element
+        // Fallback: try old selectors
         if (gp === 0) {
-          const infoEls = section.querySelectorAll("span, div, p");
-          for (const el of infoEls) {
-            const text = el.textContent.trim();
-            if (/^\d+\s+\d+\s+\d+$/.test(text)) {
-              gp = parseInt(text.split(/\s+/)[0], 10) || 0;
-              break;
-            }
+          const rosterInfoEl = section.querySelector(".matchup-list__roster-info, .roster-info");
+          if (rosterInfoEl) {
+            const nums = rosterInfoEl.textContent.match(/\d+/g);
+            if (nums && nums.length >= 1) gp = parseInt(nums[0], 10) || 0;
           }
         }
 

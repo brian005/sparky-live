@@ -78,6 +78,7 @@ async function main() {
       username: config.username,
       password: config.password,
       period,
+      date: today,
       headless: config.headless
     });
 

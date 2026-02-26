@@ -37,9 +37,9 @@ for (const [owner, code] of Object.entries(OWNER_TO_FRANCHISE)) {
   FRANCHISE_TO_OWNER[code] = owner;
 }
 
-// Caches
-let _dbCache = null;
-let _histCache = null;
+// Caches — use promises to prevent duplicate fetches from Promise.all
+let _dbPromise = null;
+let _histPromise = null;
 
 /**
  * Parse CSV text into array of objects using header row.
@@ -69,43 +69,46 @@ function parseCSV(text) {
  * [{ season, period, teams: { JGC: { fpts, fpg, gp, sr }, ... } }, ...]
  */
 async function fetchHistoricalData() {
-  if (_dbCache) return _dbCache;
+  if (_dbPromise) return _dbPromise;
 
-  const resp = await fetch(DATABASE_URL);
-  if (!resp.ok) {
-    console.error(`Failed to fetch historical data: ${resp.status}`);
-    return [];
-  }
+  _dbPromise = (async () => {
+    const resp = await fetch(DATABASE_URL);
+    if (!resp.ok) {
+      console.error(`Failed to fetch historical data: ${resp.status}`);
+      _dbPromise = null;
+      return [];
+    }
 
-  const text = await resp.text();
-  const rawRows = parseCSV(text);
+    const text = await resp.text();
+    const rawRows = parseCSV(text);
 
-  const records = [];
-  for (const row of rawRows) {
-    const season = parseInt(row.Season);
-    const period = parseInt(row.Period);
-    if (isNaN(season) || isNaN(period)) continue;
+    const records = [];
+    for (const row of rawRows) {
+      const season = parseInt(row.Season);
+      const period = parseInt(row.Period);
+      if (isNaN(season) || isNaN(period)) continue;
 
-    const teams = {};
-    for (const [owner, franchise] of Object.entries(OWNER_TO_FRANCHISE)) {
-      const fpts = parseFloat(row[`${owner}_FPts`]) || 0;
-      const fpg = parseFloat(row[`${owner}_FP/G`]) || 0;
-      const gp = parseInt(row[`${owner}_GP`]) || 0;
+      const teams = {};
+      for (const [owner, franchise] of Object.entries(OWNER_TO_FRANCHISE)) {
+        const fpts = parseFloat(row[`${owner}_FPts`]) || 0;
+        const fpg = parseFloat(row[`${owner}_FP/G`]) || 0;
+        const gp = parseInt(row[`${owner}_GP`]) || 0;
 
-      // Only include if there's data (Richie may not have early seasons)
-      if (fpts > 0 || gp > 0) {
-        teams[franchise] = { fpts, fpg, gp };
+        if (fpts > 0 || gp > 0) {
+          teams[franchise] = { fpts, fpg, gp };
+        }
+      }
+
+      if (Object.keys(teams).length > 0) {
+        records.push({ season, period, teams });
       }
     }
 
-    if (Object.keys(teams).length > 0) {
-      records.push({ season, period, teams });
-    }
-  }
+    console.log(`📚 Loaded ${records.length} historical period records (${rawRows.length} rows)`);
+    return records;
+  })();
 
-  _dbCache = records;
-  console.log(`📚 Loaded ${records.length} historical period records (${rawRows.length} rows)`);
-  return records;
+  return _dbPromise;
 }
 
 /**
@@ -113,44 +116,48 @@ async function fetchHistoricalData() {
  * Returns: [{ season, period, winner, loser, winnerFpts, loserFpts, winnerFpg, loserFpg }, ...]
  */
 async function fetchMatchupHistory() {
-  if (_histCache) return _histCache;
+  if (_histPromise) return _histPromise;
 
-  const resp = await fetch(HISTORICAL_URL);
-  if (!resp.ok) {
-    console.error(`Failed to fetch matchup history: ${resp.status}`);
-    return [];
-  }
+  _histPromise = (async () => {
+    const resp = await fetch(HISTORICAL_URL);
+    if (!resp.ok) {
+      console.error(`Failed to fetch matchup history: ${resp.status}`);
+      _histPromise = null;
+      return [];
+    }
 
-  const text = await resp.text();
-  const rawRows = parseCSV(text);
+    const text = await resp.text();
+    const rawRows = parseCSV(text);
 
-  const records = [];
-  for (const row of rawRows) {
-    const season = parseInt(row.Season);
-    const period = parseInt(row.Period);
-    if (isNaN(season) || isNaN(period)) continue;
+    const records = [];
+    for (const row of rawRows) {
+      const season = parseInt(row.Season);
+      const period = parseInt(row.Period);
+      if (isNaN(season) || isNaN(period)) continue;
 
-    const winnerName = (row.Winner || "").trim();
-    const loserName = (row.Loser || "").trim();
-    const winner = WINNER_NAME_TO_FRANCHISE[winnerName];
-    const loser = WINNER_NAME_TO_FRANCHISE[loserName];
-    if (!winner || !loser) continue;
+      const winnerName = (row.Winner || "").trim();
+      const loserName = (row.Loser || "").trim();
+      const winner = WINNER_NAME_TO_FRANCHISE[winnerName];
+      const loser = WINNER_NAME_TO_FRANCHISE[loserName];
+      if (!winner || !loser) continue;
 
-    records.push({
-      season,
-      period,
-      winner,
-      loser,
-      winnerFpts: parseFloat(row.Winner_FPts) || 0,
-      loserFpts: parseFloat(row.Loser_FPts) || 0,
-      winnerFpg: parseFloat(row["Winner_FP/G"]) || 0,
-      loserFpg: parseFloat(row["Loser_FP/G"]) || 0,
-    });
-  }
+      records.push({
+        season,
+        period,
+        winner,
+        loser,
+        winnerFpts: parseFloat(row.Winner_FPts) || 0,
+        loserFpts: parseFloat(row.Loser_FPts) || 0,
+        winnerFpg: parseFloat(row["Winner_FP/G"]) || 0,
+        loserFpg: parseFloat(row["Loser_FP/G"]) || 0,
+      });
+    }
 
-  _histCache = records;
-  console.log(`📜 Loaded ${records.length} historical matchup records`);
-  return records;
+    console.log(`📜 Loaded ${records.length} historical matchup records`);
+    return records;
+  })();
+
+  return _histPromise;
 }
 
 /**
