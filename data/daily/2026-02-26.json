@@ -3,46 +3,46 @@
   "period": 10,
   "teams": [
     {
-      "franchise": "BEW",
-      "name": "Brian's Endless Winter",
-      "dayPts": 0,
-      "projPts": 0,
-      "gp": 0
-    },
-    {
-      "franchise": "PWN",
-      "name": "Cmack's PWN",
-      "dayPts": 0,
-      "projPts": 0,
-      "gp": 0
-    },
-    {
-      "franchise": "GDD",
-      "name": "Graeme's Downtown Demons",
-      "dayPts": 0,
-      "projPts": 0,
-      "gp": 0
-    },
-    {
       "franchise": "JGC",
       "name": "Jason's Gaucho Chudpumpers",
-      "dayPts": 0,
-      "projPts": 0,
-      "gp": 0
+      "dayPts": 12,
+      "projPts": 10.26,
+      "gp": 10
     },
     {
       "franchise": "MPP",
       "name": "Matt's mid tier perpetual projects",
-      "dayPts": 0,
-      "projPts": 0,
-      "gp": 0
+      "dayPts": 12,
+      "projPts": 10.92,
+      "gp": 13
+    },
+    {
+      "franchise": "GDD",
+      "name": "Graeme's Downtown Demons",
+      "dayPts": 11,
+      "projPts": 10.46,
+      "gp": 12
+    },
+    {
+      "franchise": "PWN",
+      "name": "Cmack's PWN",
+      "dayPts": 12,
+      "projPts": 7.11,
+      "gp": 11
     },
     {
       "franchise": "RMS",
       "name": "Richie's Meatspinners",
-      "dayPts": 0,
-      "projPts": 0,
-      "gp": 0
+      "dayPts": 7,
+      "projPts": 6.43,
+      "gp": 9
+    },
+    {
+      "franchise": "BEW",
+      "name": "Brian's Endless Winter",
+      "dayPts": 15,
+      "projPts": 8.58,
+      "gp": 12
     }
   ]
 }
