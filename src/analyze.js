@@ -13,7 +13,7 @@ const path = require("path");
 const { getPeriodForDate, toFranchise, PERIODS, FRANCHISE_NAMES } = require("./config");
 const { getLeaguePeriodRecord, getFranchisePeriodBest, getFranchiseCareerStats,
         getCareerTotalPoints, getPeriodDominance, getH2HPeriodRecord,
-        getFranchiseMatchupStreak, getSeasonPace, FRANCHISE_TO_OWNER } = require("./historical");
+        getFranchiseMatchupStreak, getSeasonPace, getPeriodHistory, FRANCHISE_TO_OWNER } = require("./historical");
 
 const DAILY_DIR = path.join(__dirname, "..", "data", "daily");
 
@@ -452,6 +452,54 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
         candidates.push({ score, text: `❄️ Hasn't won a period since P${streak.lastWin.period} ${streak.lastWin.season}` });
       }
     }
+    // Projected vs all-time league record for this period number (13-year history)
+    if (projection && projection.projected > 0) {
+      const leagueRecord = await getLeaguePeriodRecord(currentPeriod);
+      if (leagueRecord && leagueRecord.fpts > 0) {
+        const recordHolder = FRANCHISE_NAMES[leagueRecord.franchise] || leagueRecord.franchise;
+        if (projection.projected > leagueRecord.fpts) {
+          candidates.push({ score: 80, text: `🏆 Proj ${projection.projected} — would beat all-time P${currentPeriod} record (${Math.round(leagueRecord.fpts)} by ${recordHolder}, ${leagueRecord.season})` });
+        } else if (projection.projected >= leagueRecord.fpts * 0.9) {
+          candidates.push({ score: 60, text: `🏆 Proj ${projection.projected} — closing on P${currentPeriod} record (${Math.round(leagueRecord.fpts)} by ${recordHolder}, ${leagueRecord.season})` });
+        }
+      }
+
+      // Also check league worst for this period number
+      const periodHistory = await getPeriodHistory(currentPeriod);
+      if (periodHistory.length >= 6) {
+        const leagueWorst = periodHistory.reduce((worst, entry) =>
+          entry.fpts < worst.fpts ? entry : worst
+        );
+        if (leagueWorst && projection.projected < leagueWorst.fpts) {
+          const worstHolder = FRANCHISE_NAMES[leagueWorst.franchise] || leagueWorst.franchise;
+          candidates.push({ score: 65, text: `📉 Proj ${projection.projected} — tracking worst P${currentPeriod} in league history (${Math.round(leagueWorst.fpts)} by ${worstHolder}, ${leagueWorst.season})` });
+        }
+      }
+    }
+
+    // Projected vs franchise's own best/worst for this period number (13-year history)
+    if (projection && projection.projected > 0) {
+      const myBest = await getFranchisePeriodBest(currentPeriod, franchise);
+      if (myBest && myBest.fpts > 0) {
+        if (projection.projected > myBest.fpts) {
+          candidates.push({ score: 70, text: `📈 Proj ${projection.projected} — would be personal best P${currentPeriod} (prev: ${Math.round(myBest.fpts)} in ${myBest.season})` });
+        } else if (projection.projected >= myBest.fpts * 0.9) {
+          candidates.push({ score: 45, text: `📈 Proj ${projection.projected} — nearing personal best P${currentPeriod} (${Math.round(myBest.fpts)} in ${myBest.season})` });
+        }
+      }
+
+      // Franchise's own worst for this period number
+      const periodHistory = await getPeriodHistory(currentPeriod);
+      const myHistory = periodHistory.filter(h => h.franchise === franchise);
+      if (myHistory.length >= 3) {
+        const myWorst = myHistory.reduce((worst, entry) =>
+          entry.fpts < worst.fpts ? entry : worst
+        );
+        if (myWorst && projection.projected < myWorst.fpts) {
+          candidates.push({ score: 55, text: `📉 Proj ${projection.projected} — tracking personal worst P${currentPeriod} (prev: ${Math.round(myWorst.fpts)} in ${myWorst.season})` });
+        }
+      }
+    }
   } catch (e) {
     console.log(`  ⚠️ Historical data fetch failed: ${e.message}`);
   }
@@ -552,49 +600,7 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       }
     }
 
-    // Lens 5: Projected vs all-time league record for this period number (13-year history)
-    if (projection && projection.projected > 0) {
-      try {
-        const leagueRecord = await getLeaguePeriodRecord(currentPeriod);
-        if (leagueRecord && leagueRecord.fpts > 0) {
-          const recordHolder = FRANCHISE_NAMES[leagueRecord.franchise] || leagueRecord.franchise;
-          if (projection.projected > leagueRecord.fpts) {
-            fallbacks.push(`Proj ${projection.projected} — would beat all-time P${currentPeriod} record (${Math.round(leagueRecord.fpts)} by ${recordHolder}, ${leagueRecord.season})`);
-          } else if (projection.projected >= leagueRecord.fpts * 0.9) {
-            // Within 10% of the record — still noteworthy
-            fallbacks.push(`Proj ${projection.projected} — closing on P${currentPeriod} record (${Math.round(leagueRecord.fpts)} by ${recordHolder}, ${leagueRecord.season})`);
-          }
-        }
-      } catch (e) {
-        // Historical data unavailable — skip silently
-      }
-    }
-
-    // Lens 6: Projected vs franchise's own best for this period number (13-year history)
-    if (projection && projection.projected > 0) {
-      try {
-        const myBest = await getFranchisePeriodBest(currentPeriod, franchise);
-        if (myBest && myBest.fpts > 0) {
-          if (projection.projected > myBest.fpts) {
-            fallbacks.push(`Proj ${projection.projected} — would be personal best P${currentPeriod} (prev: ${Math.round(myBest.fpts)} in ${myBest.season})`);
-          }
-        } else {
-          // No historical P{N} for this franchise — compare against career avg
-          const career = await getFranchiseCareerStats(franchise);
-          if (career && projection.projected > career.avgFpts * 1.15) {
-            fallbacks.push(`Proj ${projection.projected} — ${Math.round(((projection.projected - career.avgFpts) / career.avgFpts) * 100)}% above career avg (${career.avgFpts})`);
-          }
-        }
-      } catch (e) {
-        // Historical data unavailable — fall back to current-season comparison
-        if (ownPeriodTotals.length >= 2) {
-          const bestOwn = Math.max(...ownPeriodTotals.map(p => p.total));
-          if (projection.projected > bestOwn * 1.03 && bestOwn > 0) {
-            fallbacks.push(`On pace for season-best period (${projection.projected} proj)`);
-          }
-        }
-      }
-    }
+    // (Lens 5 and 6 — historical period comparisons — moved to main impact scoring)
 
     // Fill remaining slots from fallbacks
     for (const fb of fallbacks) {
