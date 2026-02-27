@@ -149,6 +149,19 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
   const periodDays = allDays.filter(d => d.period === currentPeriod);
   const periodRanked = rankedDays.filter(d => d.period === currentPeriod);
 
+  // ============================================================
+  // IMPACT SCORING — each narrative gets a dynamic score (0-100)
+  // based on how remarkable/interesting it actually is.
+  // Higher score = more interesting. Top 2 scores win.
+  // ============================================================
+
+  const periodConfig = PERIODS.find(p => p.period === currentPeriod);
+  const periodTotalDays = periodConfig
+    ? Math.round((new Date(periodConfig.end) - new Date(periodConfig.start)) / 86400000) + 1
+    : 14;
+  const periodProgress = periodDays.length / periodTotalDays; // 0.0 to 1.0
+  const inBackHalf = periodProgress >= 0.5;
+
   // ---- 1. Win streak ----
   let winStreak = 0;
   for (let i = recent.length - 1; i >= 0; i--) {
@@ -156,7 +169,9 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     else break;
   }
   if (winStreak >= 2) {
-    candidates.push({ priority: 1, text: `🔥 ${winStreak}-day win streak` });
+    // 2-day = 55, 3-day = 70, 5-day = 90+
+    const score = Math.min(95, 40 + winStreak * 15);
+    candidates.push({ score, text: `🔥 ${winStreak}-day win streak` });
   }
 
   // ---- 2. Podium streak ----
@@ -166,7 +181,9 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     else break;
   }
   if (podiumStreak >= 3 && winStreak < 2) {
-    candidates.push({ priority: 2, text: `📈 ${podiumStreak}-day podium streak` });
+    // 3-day = 45, 5-day = 65, 7-day = 85
+    const score = Math.min(90, 25 + podiumStreak * 10);
+    candidates.push({ score, text: `📈 ${podiumStreak}-day podium streak` });
   }
 
   // ---- 3. Bottom-half streak ----
@@ -176,31 +193,42 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     else break;
   }
   if (bottomStreak >= 5) {
-    candidates.push({ priority: 3, text: `⚠️ ${bottomStreak}-day bottom-half streak`, isBad: true });
+    const score = Math.min(85, 30 + bottomStreak * 7);
+    candidates.push({ score, text: `⚠️ ${bottomStreak}-day bottom-half streak`, isBad: true });
   }
 
-  // ---- 4. Best day this period (own personal best) ----
-  if (periodDays.length > 1 && todayDayPts > 0) {
+  // ---- 4. Best day this period ----
+  // Only in back half; score increases with how deep into the period we are
+  if (inBackHalf && periodDays.length > 1 && todayDayPts > 0) {
     const allPeriodPts = periodDays.map(day => {
       const t = day.teams.find(t => t.franchise === franchise);
       return t ? (t.dayPts || 0) : 0;
     });
     const bestInPeriod = Math.max(...allPeriodPts);
     if (todayDayPts >= bestInPeriod) {
-      candidates.push({ priority: 4, text: `⭐ Personal best day in P${currentPeriod}` });
+      // Day 8 of 14 = 40, Day 13 of 14 = 60
+      const score = 30 + Math.round(periodProgress * 35);
+      candidates.push({ score, text: `⭐ Best day this period (so far)` });
     }
   }
 
   // ---- 5. Period rank change ----
+  // Score depends on magnitude of change AND period depth
   if (periodRanked.length >= 2) {
-    // Compute cumulative period standings today vs yesterday
     const periodStandings = computePeriodStandings(periodDays, franchise);
     if (periodStandings) {
       const { currentRank, previousRank } = periodStandings;
+      const change = Math.abs(currentRank - previousRank);
       if (currentRank < previousRank) {
-        candidates.push({ priority: 5, text: `⬆️ Climbed to #${currentRank} in P${currentPeriod}` });
+        // Climbing to #1 is exciting; climbing to #5 early in period is boring
+        // Base: 15, + change magnitude, + period depth, + bonus for top positions
+        const positionBonus = currentRank <= 2 ? 15 : 0;
+        const score = 15 + change * 10 + Math.round(periodProgress * 20) + positionBonus;
+        candidates.push({ score, text: `⬆️ Climbed to #${currentRank} in P${currentPeriod}` });
       } else if (currentRank > previousRank) {
-        candidates.push({ priority: 5, text: `⬇️ Dropped to #${currentRank} in P${currentPeriod}`, isBad: true });
+        const positionPenalty = currentRank >= 5 ? 10 : 0;
+        const score = 15 + change * 10 + Math.round(periodProgress * 20) + positionPenalty;
+        candidates.push({ score, text: `⬇️ Dropped to #${currentRank} in P${currentPeriod}`, isBad: true });
       }
     }
   }
@@ -208,7 +236,6 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
   // ---- 6. Today's PPG vs period PPG average ----
   if (periodDays.length >= 3 && todayGP > 0) {
     const todayPPG = todayDayPts / todayGP;
-    // Compute this team's period PPG
     let periodTotal = 0;
     let periodGP = 0;
     for (const day of periodDays) {
@@ -219,15 +246,18 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     if (periodPPG > 0) {
       const pct = Math.round(((todayPPG - periodPPG) / periodPPG) * 100);
       if (pct >= 30) {
-        candidates.push({ priority: 6, text: `💥 ${todayPPG.toFixed(2)} PPG today vs ${periodPPG.toFixed(2)} period avg` });
+        // 30% over = 40, 60% over = 55, 100% over = 70
+        const score = Math.min(75, 30 + Math.round(Math.abs(pct) * 0.4));
+        candidates.push({ score, text: `💥 ${todayPPG.toFixed(2)} PPG today vs ${periodPPG.toFixed(2)} period avg` });
       } else if (pct <= -30) {
-        candidates.push({ priority: 6, text: `📉 ${todayPPG.toFixed(2)} PPG today vs ${periodPPG.toFixed(2)} period avg`, isBad: true });
+        const score = Math.min(75, 30 + Math.round(Math.abs(pct) * 0.4));
+        candidates.push({ score, text: `📉 ${todayPPG.toFixed(2)} PPG today vs ${periodPPG.toFixed(2)} period avg`, isBad: true });
       }
     }
   }
 
   // ---- 7. Season rank ----
-  // Compute from allDays
+  // Only interesting as context, low score unless it's a dramatic position
   const seasonTotals = {};
   for (const day of allDays) {
     for (const t of day.teams) {
@@ -238,34 +268,35 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
   const seasonSorted = Object.entries(seasonTotals).sort((a, b) => b[1] - a[1]);
   const seasonRank = seasonSorted.findIndex(([f]) => f === franchise) + 1;
   if (seasonRank === 1) {
-    candidates.push({ priority: 7, text: `👑 1st overall (${Math.round(seasonTotals[franchise])} pts)` });
+    candidates.push({ score: 35, text: `👑 1st overall (${Math.round(seasonTotals[franchise])} pts)` });
   } else if (seasonRank === seasonSorted.length) {
-    candidates.push({ priority: 7, text: `📊 Last overall (${Math.round(seasonTotals[franchise])} pts)`, isBad: true });
+    candidates.push({ score: 30, text: `📊 Last overall (${Math.round(seasonTotals[franchise])} pts)`, isBad: true });
   }
 
   // ---- 8. 3D trending ----
   if (avg3d != null && ppg != null && ppg > 0) {
     const pctChange = Math.round(((avg3d - ppg) / ppg) * 100);
     if (pctChange >= 20) {
-      candidates.push({ priority: 8, text: `📈 3D avg ${avg3d.toFixed(2)} — surging (+${pctChange}% vs season)` });
+      const score = Math.min(70, 40 + Math.round(Math.abs(pctChange) * 0.5));
+      candidates.push({ score, text: `📈 3D avg ${avg3d.toFixed(2)} — surging (+${pctChange}% vs season)` });
     } else if (pctChange >= 8) {
-      candidates.push({ priority: 8, text: `📈 3D avg ${avg3d.toFixed(2)} (up from ${ppg.toFixed(2)} season)` });
+      candidates.push({ score: 30, text: `📈 3D avg ${avg3d.toFixed(2)} (up from ${ppg.toFixed(2)} season)` });
     } else if (pctChange <= -20) {
-      candidates.push({ priority: 8, text: `📉 3D avg ${avg3d.toFixed(2)} — slumping (${pctChange}% vs season)`, isBad: true });
+      const score = Math.min(70, 40 + Math.round(Math.abs(pctChange) * 0.5));
+      candidates.push({ score, text: `📉 3D avg ${avg3d.toFixed(2)} — slumping (${pctChange}% vs season)`, isBad: true });
     } else if (pctChange <= -8) {
-      candidates.push({ priority: 8, text: `📉 3D avg ${avg3d.toFixed(2)} (down from ${ppg.toFixed(2)} season)`, isBad: true });
+      candidates.push({ score: 30, text: `📉 3D avg ${avg3d.toFixed(2)} (down from ${ppg.toFixed(2)} season)`, isBad: true });
     }
   }
 
-  // ---- 9. Consistency — hit projection X of last 7 ----
+  // ---- 9. Consistency ----
   if (recent.length >= 7) {
     const last7 = recent.slice(-7);
-    // Approximate: "above average" days as a proxy for hitting projection
     const aboveAvg = last7.filter(d => d.rank <= 3).length;
     if (aboveAvg >= 6) {
-      candidates.push({ priority: 9, text: `🎯 Top 3 in ${aboveAvg} of last 7 days` });
+      candidates.push({ score: 45, text: `🎯 Top 3 in ${aboveAvg} of last 7 days` });
     } else if (aboveAvg <= 1) {
-      candidates.push({ priority: 9, text: `🎯 Top 3 only ${aboveAvg}x in last 7 days`, isBad: true });
+      candidates.push({ score: 40, text: `🎯 Top 3 only ${aboveAvg}x in last 7 days`, isBad: true });
     }
   }
 
@@ -278,9 +309,9 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       const currentPace = projection.projected;
 
       if (currentPace > bestPeriod * 1.05) {
-        candidates.push({ priority: 10, text: `🚀 On pace for best period (${currentPace} proj vs ${Math.round(bestPeriod)} prev best)` });
+        candidates.push({ score: 55, text: `🚀 On pace for best period (${currentPace} proj vs ${Math.round(bestPeriod)} prev best)` });
       } else if (currentPace < worstPeriod * 0.95 && allPeriodProjections.length >= 3) {
-        candidates.push({ priority: 10, text: `⚠️ On pace for worst period (${currentPace} proj vs ${Math.round(worstPeriod)} prev worst)`, isBad: true });
+        candidates.push({ score: 50, text: `⚠️ On pace for worst period (${currentPace} proj vs ${Math.round(worstPeriod)} prev worst)`, isBad: true });
       }
     }
   }
@@ -291,157 +322,145 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     const midRank = computePeriodRankAtDay(periodDays.slice(0, midpoint), franchise);
     const currentRankInPeriod = computePeriodRankAtDay(periodDays, franchise);
     if (midRank && currentRankInPeriod) {
-      const jump = midRank - currentRankInPeriod; // positive = improved
+      const jump = midRank - currentRankInPeriod;
       if (jump >= 3) {
-        candidates.push({ priority: 11, text: `🔄 Was #${midRank} mid-period, now #${currentRankInPeriod}` });
+        candidates.push({ score: 55, text: `🔄 Was #${midRank} mid-period, now #${currentRankInPeriod}` });
       } else if (jump <= -3) {
-        candidates.push({ priority: 11, text: `🔄 Was #${midRank} mid-period, now #${currentRankInPeriod}`, isBad: true });
+        candidates.push({ score: 50, text: `🔄 Was #${midRank} mid-period, now #${currentRankInPeriod}`, isBad: true });
       }
     }
   }
 
-  // ---- 12. Longest drought since top 3 ----
+  // ---- 12. Drought ----
   let drought = 0;
   for (let i = recent.length - 1; i >= 0; i--) {
     if (recent[i].rank > 3) drought++;
     else break;
   }
-  if (drought >= 8 && bottomStreak < 5) { // don't double up with bottom-half streak
-    candidates.push({ priority: 12, text: `🏜️ ${drought} days since finishing top 3`, isBad: true });
+  if (drought >= 8 && bottomStreak < 5) {
+    const score = Math.min(60, 30 + drought * 3);
+    candidates.push({ score, text: `🏜️ ${drought} days since finishing top 3`, isBad: true });
   }
 
-  // ---- 13. All-time period record proximity ----
+  // ---- 13. Period record proximity (this season) ----
   if (projection && periodDays.length >= 5) {
     const allPeriodTotals = computeAllPeriodTotals(allDays, franchise);
     const allTimeBest = allPeriodTotals.length > 0 ? Math.max(...allPeriodTotals.map(p => p.total)) : 0;
     if (allTimeBest > 0 && projection.periodPts > 0) {
       const remaining = allTimeBest - projection.periodPts;
       if (remaining > 0 && remaining <= projection.daysRemaining * 2) {
-        candidates.push({ priority: 13, text: `🏆 ${Math.round(remaining)} pts from matching personal best period` });
+        candidates.push({ score: 50, text: `🏆 ${Math.round(remaining)} pts from matching personal best period` });
       }
     }
   }
 
-  // ---- Sort by priority and pick top 2 ----
-  candidates.sort((a, b) => a.priority - b.priority);
-  const picked = candidates.slice(0, 2).map(c => c.text);
-
-  // ---- Historical color tier ----
-  // Fun facts from 13 years of league history. Fires if we still need narratives.
-  // These are more interesting than the reactive fallbacks but shouldn't override
-  // genuine performance detections (streaks, personal bests, etc).
-
-  if (picked.length < 2) {
-    const histNarratives = [];
-
-    try {
-      // 1. Career milestone proximity
-      const career = await getCareerTotalPoints(franchise);
-      if (career.totalPts > 0) {
-        const milestones = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 12500, 15000];
-        // Add current period points to career total for "distance to next milestone"
-        const currentPeriodPts = projection ? projection.periodPts : 0;
-        const approxCurrentTotal = career.totalPts + currentPeriodPts;
-        for (const m of milestones) {
-          const remaining = m - approxCurrentTotal;
-          if (remaining > 0 && remaining <= 100) {
-            histNarratives.push(`🏅 ${remaining} pts from ${m.toLocaleString()} career points`);
-            break;
-          } else if (remaining <= 0 && remaining > -5) {
-            // Just crossed it
-            histNarratives.push(`🏅 Just crossed ${m.toLocaleString()} career points!`);
-            break;
-          }
+  // ---- HISTORICAL COLOR — compete on equal footing ----
+  try {
+    // Career milestone proximity (very rare, very high impact)
+    const career = await getCareerTotalPoints(franchise);
+    if (career.totalPts > 0) {
+      const milestones = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 12500, 15000];
+      const currentPeriodPts = projection ? projection.periodPts : 0;
+      const approxCurrentTotal = career.totalPts + currentPeriodPts;
+      for (const m of milestones) {
+        const remaining = m - approxCurrentTotal;
+        if (remaining > 0 && remaining <= 20) {
+          candidates.push({ score: 85, text: `🏅 ${remaining} pts from ${m.toLocaleString()} career points` });
+          break;
+        } else if (remaining > 0 && remaining <= 50) {
+          candidates.push({ score: 70, text: `🏅 ${remaining} pts from ${m.toLocaleString()} career points` });
+          break;
+        } else if (remaining > 0 && remaining <= 100) {
+          candidates.push({ score: 55, text: `🏅 ${remaining} pts from ${m.toLocaleString()} career points` });
+          break;
+        } else if (remaining <= 0 && remaining > -5) {
+          candidates.push({ score: 90, text: `🏅 Just crossed ${m.toLocaleString()} career points!` });
+          break;
         }
       }
+    }
 
-      // 2. Season pace vs historical seasons
-      if (projection && currentPeriod >= 3) {
-        // Sum current season's period totals from daily data
-        const currentSeasonPts = allDays.reduce((sum, day) => {
-          const team = day.teams.find(t => t.franchise === franchise);
-          return sum + (team ? team.dayPts : 0);
-        }, 0);
+    // Season pace vs historical seasons
+    if (projection && currentPeriod >= 3) {
+      const currentSeasonPts = allDays.reduce((sum, day) => {
+        const team = day.teams.find(t => t.franchise === franchise);
+        return sum + (team ? team.dayPts : 0);
+      }, 0);
 
-        const pace = await getSeasonPace(franchise, currentPeriod, Math.round(currentSeasonPts));
-        if (pace && pace.historicalPaces.length >= 2) {
-          const bestEver = pace.bestPace;
-          const worstEver = pace.worstPace;
-          if (currentSeasonPts > bestEver.totalThroughPeriod) {
-            histNarratives.push(`📈 Best-ever pace through P${currentPeriod} (prev: ${bestEver.totalThroughPeriod} in ${bestEver.season})`);
-          } else if (currentSeasonPts >= bestEver.totalThroughPeriod * 0.95) {
-            histNarratives.push(`📈 Tracking near best-ever pace through P${currentPeriod} (record: ${bestEver.totalThroughPeriod} in ${bestEver.season})`);
-          } else if (currentSeasonPts < worstEver.totalThroughPeriod * 1.05 && pace.historicalPaces.length >= 4) {
-            histNarratives.push(`📉 Slowest pace through P${currentPeriod} since ${worstEver.season}`);
-          }
+      const pace = await getSeasonPace(franchise, currentPeriod, Math.round(currentSeasonPts));
+      if (pace && pace.historicalPaces.length >= 2) {
+        const bestEver = pace.bestPace;
+        const worstEver = pace.worstPace;
+        if (currentSeasonPts > bestEver.totalThroughPeriod) {
+          candidates.push({ score: 65, text: `📈 Best-ever pace through P${currentPeriod} (prev: ${bestEver.totalThroughPeriod} in ${bestEver.season})` });
+        } else if (currentSeasonPts >= bestEver.totalThroughPeriod * 0.95) {
+          candidates.push({ score: 50, text: `📈 Tracking near best-ever pace through P${currentPeriod} (record: ${bestEver.totalThroughPeriod} in ${bestEver.season})` });
+        } else if (currentSeasonPts < worstEver.totalThroughPeriod * 1.05 && pace.historicalPaces.length >= 4) {
+          candidates.push({ score: 50, text: `📉 Slowest pace through P${currentPeriod} since ${worstEver.season}` });
         }
       }
+    }
 
-      // 3. Period dominance — who owns this period number
-      const dominance = await getPeriodDominance(currentPeriod, franchise);
-      if (dominance.totalOccurrences >= 3) {
-        if (dominance.wins >= 3) {
-          histNarratives.push(`👑 Has won P${currentPeriod} ${dominance.wins} times — most in league history`);
-        } else if (dominance.wins === 0 && dominance.totalOccurrences >= 5) {
-          histNarratives.push(`🏜️ Has never won a P${currentPeriod} (0-for-${dominance.totalOccurrences} all-time)`);
-        } else if (dominance.topWinner && dominance.topWinner !== franchise && dominance.topWinnerWins >= 3) {
-          const ownerName = FRANCHISE_TO_OWNER[dominance.topWinner] || dominance.topWinner;
-          histNarratives.push(`📊 P${currentPeriod} belongs to ${ownerName} (${dominance.topWinnerWins} wins all-time)`);
-        }
+    // Period dominance
+    const dominance = await getPeriodDominance(currentPeriod, franchise);
+    if (dominance.totalOccurrences >= 3) {
+      if (dominance.wins >= 3) {
+        candidates.push({ score: 55, text: `👑 Has won P${currentPeriod} ${dominance.wins} times — most in league history` });
+      } else if (dominance.wins === 0 && dominance.totalOccurrences >= 5) {
+        candidates.push({ score: 50, text: `🏜️ Has never won a P${currentPeriod} (0-for-${dominance.totalOccurrences} all-time)` });
+      } else if (dominance.topWinner && dominance.topWinner !== franchise && dominance.topWinnerWins >= 3) {
+        const ownerName = FRANCHISE_TO_OWNER[dominance.topWinner] || dominance.topWinner;
+        candidates.push({ score: 40, text: `📊 P${currentPeriod} belongs to ${ownerName} (${dominance.topWinnerWins} wins all-time)` });
       }
+    }
 
-      // 4. H2H "never beaten" — only if this team is top 2 in current period
-      if (todayScrapeTeams && todayScrapeTeams.length > 0) {
-        const periodStandings = computePeriodStandings(periodDays, franchise);
-        if (periodStandings && periodStandings.currentRank <= 2) {
-          // Find the other team in top 2
-          const allPeriodRanks = [];
-          for (const t of todayScrapeTeams) {
-            const f = toFranchise(t.franchise) || toFranchise(t.name) || t.franchise;
-            const standing = computePeriodStandings(periodDays, f);
-            if (standing) allPeriodRanks.push({ franchise: f, rank: standing.currentRank });
-          }
-          allPeriodRanks.sort((a, b) => a.rank - b.rank);
-          const rival = allPeriodRanks.find(r => r.franchise !== franchise && r.rank <= 2);
+    // H2H "never beaten" — only if top 2 in current period
+    if (todayScrapeTeams && todayScrapeTeams.length > 0 && periodDays.length >= 3) {
+      const periodStandings = computePeriodStandings(periodDays, franchise);
+      if (periodStandings && periodStandings.currentRank <= 2) {
+        const allPeriodRanks = [];
+        for (const t of todayScrapeTeams) {
+          const f = toFranchise(t.franchise) || toFranchise(t.name) || t.franchise;
+          const standing = computePeriodStandings(periodDays, f);
+          if (standing) allPeriodRanks.push({ franchise: f, rank: standing.currentRank });
+        }
+        allPeriodRanks.sort((a, b) => a.rank - b.rank);
+        const rival = allPeriodRanks.find(r => r.franchise !== franchise && r.rank <= 2);
 
-          if (rival) {
-            const h2h = await getH2HPeriodRecord(currentPeriod, franchise, rival.franchise);
-            if (h2h) {
-              const rivalName = FRANCHISE_NAMES[rival.franchise] || rival.franchise;
-              if (h2h.neverBeatenByB && h2h.total >= 3) {
-                histNarratives.push(`💪 Undefeated vs ${rivalName} in P${currentPeriod} (${h2h.winsA}-0 all-time)`);
-              } else if (h2h.neverBeatenByA && h2h.total >= 3) {
-                histNarratives.push(`😬 Never beaten ${rivalName} in P${currentPeriod} (0-${h2h.winsB} all-time)`);
-              }
+        if (rival) {
+          const h2h = await getH2HPeriodRecord(currentPeriod, franchise, rival.franchise);
+          if (h2h) {
+            const rivalName = FRANCHISE_NAMES[rival.franchise] || rival.franchise;
+            if (h2h.neverBeatenByB && h2h.total >= 3) {
+              candidates.push({ score: 60, text: `💪 Undefeated vs ${rivalName} in P${currentPeriod} (${h2h.winsA}-0 all-time)` });
+            } else if (h2h.neverBeatenByA && h2h.total >= 3) {
+              candidates.push({ score: 55, text: `😬 Never beaten ${rivalName} in P${currentPeriod} (0-${h2h.winsB} all-time)` });
             }
           }
         }
       }
+    }
 
-      // 5. Franchise hot/cold streak across periods
-      const streak = await getFranchiseMatchupStreak(franchise);
-      if (streak) {
-        if (streak.type === "W" && streak.streak >= 3) {
-          histNarratives.push(`🔥 ${streak.streak}-period win streak`);
-        } else if (streak.type === "L" && streak.streak >= 3 && streak.lastWin) {
-          histNarratives.push(`❄️ Hasn't won a period since P${streak.lastWin.period} ${streak.lastWin.season}`);
-        }
+    // Franchise hot/cold streak across periods
+    const streak = await getFranchiseMatchupStreak(franchise);
+    if (streak) {
+      if (streak.type === "W" && streak.streak >= 3) {
+        const score = Math.min(80, 40 + streak.streak * 10);
+        candidates.push({ score, text: `🔥 ${streak.streak}-period win streak` });
+      } else if (streak.type === "L" && streak.streak >= 3 && streak.lastWin) {
+        const score = Math.min(75, 35 + streak.streak * 10);
+        candidates.push({ score, text: `❄️ Hasn't won a period since P${streak.lastWin.period} ${streak.lastWin.season}` });
       }
-    } catch (e) {
-      // Historical data unavailable — skip silently
-      console.log(`  ⚠️ Historical data fetch failed: ${e.message}`);
     }
-
-    // Add historical narratives to picked (up to 2 total)
-    for (const hn of histNarratives) {
-      if (picked.length >= 2) break;
-      picked.push(hn);
-    }
+  } catch (e) {
+    console.log(`  ⚠️ Historical data fetch failed: ${e.message}`);
   }
 
-  // ---- Fallback cascade — 6 lenses to fill gaps ----
-  // Only fires if we have fewer than 2 narratives from the main detections.
-  // Tries each lens in order until we have 2 narratives.
+  // ---- Pick top 2 by impact score ----
+  candidates.sort((a, b) => b.score - a.score);
+  const picked = candidates.slice(0, 2).map(c => c.text);
+
+  // ---- Fallback lenses (only if still need narratives) ----
 
   if (picked.length < 2) {
     const fallbacks = [];
