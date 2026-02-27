@@ -48,8 +48,10 @@ async function main() {
     process.exit(1);
   }
 
-  // Auto-detect period
-  const today = config.targetDate || new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+  // Auto-detect date and period.
+  // Use Pacific time — the cron targets ~10:30 PM PST, which is still the same
+  // calendar day as the games. Eastern time would roll to the next day.
+  const today = config.targetDate || new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
   const period = getPeriodForDate(today);
 
   if (!period) {
