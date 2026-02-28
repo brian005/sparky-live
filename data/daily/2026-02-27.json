@@ -5,44 +5,44 @@
     {
       "franchise": "JGC",
       "name": "Jason's Gaucho Chudpumpers",
-      "dayPts": 0,
-      "projPts": 3.89,
-      "gp": 0
+      "dayPts": 1,
+      "projPts": 3.82,
+      "gp": 4
     },
     {
       "franchise": "MPP",
       "name": "Matt's mid tier perpetual projects",
-      "dayPts": 0,
-      "projPts": 2.97,
-      "gp": 0
+      "dayPts": 3,
+      "projPts": 3.16,
+      "gp": 3
     },
     {
       "franchise": "GDD",
       "name": "Graeme's Downtown Demons",
-      "dayPts": 0,
-      "projPts": 2.37,
-      "gp": 0
+      "dayPts": 3,
+      "projPts": 2.27,
+      "gp": 3
     },
     {
       "franchise": "PWN",
       "name": "Cmack's PWN",
-      "dayPts": 0,
-      "projPts": 2.83,
-      "gp": 0
+      "dayPts": 1,
+      "projPts": 2.77,
+      "gp": 3
     },
     {
       "franchise": "RMS",
       "name": "Richie's Meatspinners",
-      "dayPts": 0,
-      "projPts": 5.33,
-      "gp": 0
+      "dayPts": 7,
+      "projPts": 5.59,
+      "gp": 6
     },
     {
       "franchise": "BEW",
       "name": "Brian's Endless Winter",
-      "dayPts": 0,
-      "projPts": 3.16,
-      "gp": 0
+      "dayPts": 5,
+      "projPts": 3.36,
+      "gp": 4
     }
   ]
 }
