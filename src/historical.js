@@ -313,17 +313,28 @@ async function getCareerTotalPoints(franchise) {
 }
 
 /**
- * Get period dominance stats — who has won each period number most often.
+ * Get period dominance stats — who has finished #1 for each period number most often.
+ * Uses Database tab FPts to determine the winner of each period.
  * Returns: { wins, totalOccurrences, topWinner, topWinnerWins } for the given franchise + period.
  */
 async function getPeriodDominance(periodNumber, franchise) {
-  const matchups = await fetchMatchupHistory();
-  const periodMatchups = matchups.filter(m => m.period === periodNumber);
+  const records = await fetchHistoricalData();
+  const periodRecords = records.filter(r => r.period === periodNumber);
 
-  // Count wins per franchise for this period number
+  // For each occurrence of this period number, find who had the most FPts
   const winCounts = {};
-  for (const m of periodMatchups) {
-    winCounts[m.winner] = (winCounts[m.winner] || 0) + 1;
+  for (const rec of periodRecords) {
+    let bestFranchise = null;
+    let bestFpts = 0;
+    for (const [f, data] of Object.entries(rec.teams)) {
+      if (data.fpts > bestFpts) {
+        bestFpts = data.fpts;
+        bestFranchise = f;
+      }
+    }
+    if (bestFranchise) {
+      winCounts[bestFranchise] = (winCounts[bestFranchise] || 0) + 1;
+    }
   }
 
   const myWins = winCounts[franchise] || 0;
@@ -340,7 +351,7 @@ async function getPeriodDominance(periodNumber, franchise) {
 
   return {
     wins: myWins,
-    totalOccurrences: periodMatchups.length,
+    totalOccurrences: periodRecords.length,
     topWinner,
     topWinnerWins,
     winCounts,
@@ -378,41 +389,62 @@ async function getH2HPeriodRecord(periodNumber, franchiseA, franchiseB) {
 }
 
 /**
- * Get franchise's recent period win/loss streak (across all period numbers).
- * Looks at the most recent N matchups.
- * Returns: { streak, type: "W"|"L", lastWinSeason, lastWinPeriod }
+ * Get franchise's period win/loss streak.
+ * A "win" = finishing #1 in points for that period.
+ * Derives results from the Database tab (FPts per team per period).
+ * Returns: { streak, type: "W"|"notW", lastWinSeason, lastWinPeriod }
  */
 async function getFranchiseMatchupStreak(franchise) {
-  const matchups = await fetchMatchupHistory();
+  const records = await fetchHistoricalData();
+  if (records.length === 0) return null;
 
-  // Get all matchups involving this franchise, sorted by season+period desc
-  const mine = matchups
-    .filter(m => m.winner === franchise || m.loser === franchise)
-    .sort((a, b) => b.season - a.season || b.period - a.period);
+  // For each period, determine who won (highest FPts)
+  const periodResults = [];
+  for (const rec of records) {
+    let bestFranchise = null;
+    let bestFpts = 0;
+    for (const [f, data] of Object.entries(rec.teams)) {
+      if (data.fpts > bestFpts) {
+        bestFpts = data.fpts;
+        bestFranchise = f;
+      }
+    }
+    if (bestFranchise) {
+      periodResults.push({
+        season: rec.season,
+        period: rec.period,
+        winner: bestFranchise,
+        didWin: bestFranchise === franchise,
+      });
+    }
+  }
 
-  if (mine.length === 0) return null;
+  // Sort by season + period descending (most recent first)
+  periodResults.sort((a, b) => b.season - a.season || b.period - a.period);
 
-  // Count consecutive wins or losses from most recent
-  const firstResult = mine[0].winner === franchise ? "W" : "L";
+  if (periodResults.length === 0) return null;
+
+  // Count consecutive wins or non-wins from most recent
+  const firstResult = periodResults[0].didWin ? "W" : "notW";
   let streak = 0;
-  for (const m of mine) {
-    const result = m.winner === franchise ? "W" : "L";
+  for (const pr of periodResults) {
+    const result = pr.didWin ? "W" : "notW";
     if (result === firstResult) streak++;
     else break;
   }
 
-  // Find last win if currently on a losing streak
+  // Find last win if not currently winning
   let lastWin = null;
-  if (firstResult === "L") {
-    const lastWinMatch = mine.find(m => m.winner === franchise);
-    if (lastWinMatch) {
-      lastWin = { season: lastWinMatch.season, period: lastWinMatch.period };
+  if (firstResult === "notW") {
+    const lastWinPeriod = periodResults.find(pr => pr.didWin);
+    if (lastWinPeriod) {
+      lastWin = { season: lastWinPeriod.season, period: lastWinPeriod.period };
     }
   }
 
   return {
     streak,
-    type: firstResult,
+    type: firstResult === "W" ? "W" : "L",
     lastWin,
   };
 }

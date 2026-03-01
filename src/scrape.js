@@ -272,14 +272,17 @@ async function scrapeLiveScoring({ username, password, period, date, headless = 
           if (nums && nums.length > 0) projectedFpg = parseFloat(nums[nums.length - 1]) || 0;
         }
 
-        // GP — lives in player-game-info > mark > first <i> tag
+        // GP — lives in player-game-info > mark > <i> tags
         // DOM: <player-game-info class="player-game-info matchup-list__game-info">
-        //        <mark><mat-icon>people</mat-icon><i>15</i><i>0</i><i>0</i></mark>
+        //        <mark><mat-icon>people</mat-icon><i>37</i><i>0</i><i>56</i></mark>
+        // Format: GP played | (bench/IR?) | GP remaining
         let gp = 0;
+        let gpRemaining = 0;
         const gameInfoEl = section.querySelector("player-game-info, .player-game-info, .matchup-list__game-info");
         if (gameInfoEl) {
           const iTags = gameInfoEl.querySelectorAll("i");
           if (iTags.length >= 1) gp = parseInt(iTags[0].textContent.trim()) || 0;
+          if (iTags.length >= 3) gpRemaining = parseInt(iTags[2].textContent.trim()) || 0;
         }
         // Fallback: try old selectors
         if (gp === 0) {
@@ -287,6 +290,7 @@ async function scrapeLiveScoring({ username, password, period, date, headless = 
           if (rosterInfoEl) {
             const nums = rosterInfoEl.textContent.match(/\d+/g);
             if (nums && nums.length >= 1) gp = parseInt(nums[0], 10) || 0;
+            if (nums && nums.length >= 3) gpRemaining = parseInt(nums[2], 10) || 0;
           }
         }
 
@@ -296,7 +300,8 @@ async function scrapeLiveScoring({ username, password, period, date, headless = 
           seasonPts,
           dayPts,
           projectedFpg,
-          gp
+          gp,
+          gpRemaining
         });
       });
 
@@ -361,6 +366,54 @@ async function scrapeLiveScoring({ username, password, period, date, headless = 
     }
 
     console.log(`[scrape] Found ${teams.length} teams.`);
+
+    // Step 4: Navigate to period page to get period-level GP totals (played + remaining)
+    const periodUrl = `https://www.fantrax.com/fantasy/league/${LEAGUE_ID}/livescoring;period=${period};viewType=1`;
+    console.log(`[scrape] Navigating to period view for GP totals: ${periodUrl}`);
+    await page.goto(periodUrl, { waitUntil: "networkidle2", timeout: 30000 });
+    await page.waitForSelector("section.matchup-list", { timeout: 20000 });
+    await new Promise(r => setTimeout(r, 5000));
+
+    const periodGPData = await page.evaluate(() => {
+      const sections = document.querySelectorAll("section.matchup-list");
+      const results = [];
+
+      sections.forEach((section) => {
+        const nameEl = section.querySelector("h4") || section.querySelector(".matchup-list__team-name");
+        const name = nameEl ? nameEl.textContent.trim() : "";
+
+        let gpPlayed = 0;
+        let gpRemaining = 0;
+        const gameInfoEl = section.querySelector("player-game-info, .player-game-info, .matchup-list__game-info");
+        if (gameInfoEl) {
+          const iTags = gameInfoEl.querySelectorAll("i");
+          if (iTags.length >= 1) gpPlayed = parseInt(iTags[0].textContent.trim()) || 0;
+          if (iTags.length >= 3) gpRemaining = parseInt(iTags[2].textContent.trim()) || 0;
+        }
+
+        if (name) {
+          results.push({ name, gpPlayed, gpRemaining, totalGP: gpPlayed + gpRemaining });
+        }
+      });
+
+      return results;
+    });
+
+    console.log(`[scrape] Period GP data: ${periodGPData.map(t => `${t.name.split("'")[0]}:${t.gpPlayed}+${t.gpRemaining}=${t.totalGP}`).join(" ")}`);
+
+    // Merge period GP data into teams by matching team names
+    for (const team of teams) {
+      const match = periodGPData.find(pg =>
+        team.name.toLowerCase().includes(pg.name.toLowerCase().split("'")[0]) ||
+        pg.name.toLowerCase().includes(team.name.toLowerCase().split("'")[0])
+      );
+      if (match) {
+        team.periodGP = match.gpPlayed;
+        team.periodGPRemaining = match.gpRemaining;
+        team.periodTotalGP = match.totalGP;
+      }
+    }
+
     return {
       scrapedAt: new Date().toISOString(),
       period,

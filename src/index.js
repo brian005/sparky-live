@@ -86,7 +86,8 @@ async function main() {
 
     console.log(`  Found ${scrapeData.teams.length} teams`);
     scrapeData.teams.forEach(t => {
-      console.log(`    ${t.rank}. ${t.name}: day=${t.dayPts}, proj=${t.projectedFpg}`);
+      const gpInfo = t.periodTotalGP ? ` | periodGP=${t.periodGP}+${t.periodGPRemaining}=${t.periodTotalGP}` : "";
+      console.log(`    ${t.rank}. ${t.name}: day=${t.dayPts}, proj=${t.projectedFpg}${gpInfo}`);
     });
 
     // Step 2: Save daily JSON
