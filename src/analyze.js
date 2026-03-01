@@ -309,9 +309,9 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       const currentPace = projection.projected;
 
       if (currentPace > bestPeriod * 1.05) {
-        candidates.push({ score: 55, text: `🚀 On pace for best period (${currentPace} proj vs ${Math.round(bestPeriod)} prev best)` });
+        candidates.push({ score: 55, cat: "proj", text: `🚀 On pace for best period (${currentPace} proj vs ${Math.round(bestPeriod)} prev best)` });
       } else if (currentPace < worstPeriod * 0.95 && allPeriodProjections.length >= 3) {
-        candidates.push({ score: 50, text: `⚠️ On pace for worst period (${currentPace} proj vs ${Math.round(worstPeriod)} prev worst)`, isBad: true });
+        candidates.push({ score: 50, cat: "proj", text: `⚠️ On pace for worst period (${currentPace} proj vs ${Math.round(worstPeriod)} prev worst)`, isBad: true });
       }
     }
   }
@@ -349,7 +349,7 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     if (allTimeBest > 0 && projection.periodPts > 0) {
       const remaining = allTimeBest - projection.periodPts;
       if (remaining > 0 && remaining <= projection.daysRemaining * 2) {
-        candidates.push({ score: 50, text: `🏆 ${Math.round(remaining)} pts from matching personal best period` });
+        candidates.push({ score: 50, cat: "proj", text: `🏆 ${Math.round(remaining)} pts from matching personal best period` });
       }
     }
   }
@@ -452,15 +452,21 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
         candidates.push({ score, text: `❄️ Hasn't won a period since P${streak.lastWin.period} ${streak.lastWin.season}` });
       }
     }
+    // Projection confidence: scales 0.4 (day 2) → 1.0 (day 10+)
+    // Early projections are noisy and shouldn't dominate
+    const projConfidence = projection
+      ? Math.min(1.0, 0.3 + (projection.daysPlayed / projection.totalDays) * 0.9)
+      : 0;
+
     // Projected vs all-time league record for this period number (13-year history)
     if (projection && projection.projected > 0) {
       const leagueRecord = await getLeaguePeriodRecord(currentPeriod);
       if (leagueRecord && leagueRecord.fpts > 0) {
         const recordHolder = FRANCHISE_NAMES[leagueRecord.franchise] || leagueRecord.franchise;
         if (projection.projected > leagueRecord.fpts) {
-          candidates.push({ score: 80, text: `🏆 Proj ${projection.projected} — would beat all-time P${currentPeriod} record (${Math.round(leagueRecord.fpts)} by ${recordHolder}, ${leagueRecord.season})` });
+          candidates.push({ score: Math.round(80 * projConfidence), cat: "proj", text: `🏆 Proj ${projection.projected} — would beat all-time P${currentPeriod} record (${Math.round(leagueRecord.fpts)} by ${recordHolder}, ${leagueRecord.season})` });
         } else if (projection.projected >= leagueRecord.fpts * 0.9) {
-          candidates.push({ score: 60, text: `🏆 Proj ${projection.projected} — closing on P${currentPeriod} record (${Math.round(leagueRecord.fpts)} by ${recordHolder}, ${leagueRecord.season})` });
+          candidates.push({ score: Math.round(60 * projConfidence), cat: "proj", text: `🏆 Proj ${projection.projected} — closing on P${currentPeriod} record (${Math.round(leagueRecord.fpts)} by ${recordHolder}, ${leagueRecord.season})` });
         }
       }
 
@@ -472,7 +478,7 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
         );
         if (leagueWorst && projection.projected < leagueWorst.fpts) {
           const worstHolder = FRANCHISE_NAMES[leagueWorst.franchise] || leagueWorst.franchise;
-          candidates.push({ score: 65, text: `📉 Proj ${projection.projected} — tracking worst P${currentPeriod} in league history (${Math.round(leagueWorst.fpts)} by ${worstHolder}, ${leagueWorst.season})` });
+          candidates.push({ score: Math.round(65 * projConfidence), cat: "proj", text: `📉 Proj ${projection.projected} — tracking worst P${currentPeriod} in league history (${Math.round(leagueWorst.fpts)} by ${worstHolder}, ${leagueWorst.season})` });
         }
       }
     }
@@ -482,9 +488,9 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       const myBest = await getFranchisePeriodBest(currentPeriod, franchise);
       if (myBest && myBest.fpts > 0) {
         if (projection.projected > myBest.fpts) {
-          candidates.push({ score: 70, text: `📈 Proj ${projection.projected} — would be personal best P${currentPeriod} (prev: ${Math.round(myBest.fpts)} in ${myBest.season})` });
+          candidates.push({ score: Math.round(70 * projConfidence), cat: "proj", text: `📈 Proj ${projection.projected} — would be personal best P${currentPeriod} (prev: ${Math.round(myBest.fpts)} in ${myBest.season})` });
         } else if (projection.projected >= myBest.fpts * 0.9) {
-          candidates.push({ score: 45, text: `📈 Proj ${projection.projected} — nearing personal best P${currentPeriod} (${Math.round(myBest.fpts)} in ${myBest.season})` });
+          candidates.push({ score: Math.round(45 * projConfidence), cat: "proj", text: `📈 Proj ${projection.projected} — nearing personal best P${currentPeriod} (${Math.round(myBest.fpts)} in ${myBest.season})` });
         }
       }
 
@@ -496,7 +502,7 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
           entry.fpts < worst.fpts ? entry : worst
         );
         if (myWorst && projection.projected < myWorst.fpts) {
-          candidates.push({ score: 55, text: `📉 Proj ${projection.projected} — tracking personal worst P${currentPeriod} (prev: ${Math.round(myWorst.fpts)} in ${myWorst.season})` });
+          candidates.push({ score: Math.round(55 * projConfidence), cat: "proj", text: `📉 Proj ${projection.projected} — tracking personal worst P${currentPeriod} (prev: ${Math.round(myWorst.fpts)} in ${myWorst.season})` });
         }
       }
     }
@@ -504,9 +510,17 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     console.log(`  ⚠️ Historical data fetch failed: ${e.message}`);
   }
 
-  // ---- Pick top 2 by impact score ----
+  // ---- Pick top 2 by impact score, avoiding duplicate categories ----
   candidates.sort((a, b) => b.score - a.score);
-  const picked = candidates.slice(0, 2).map(c => c.text);
+  const picked = [];
+  const usedCats = new Set();
+  for (const c of candidates) {
+    if (picked.length >= 2) break;
+    // If this candidate has a category and we already used it, skip
+    if (c.cat && usedCats.has(c.cat)) continue;
+    picked.push(c.text);
+    if (c.cat) usedCats.add(c.cat);
+  }
 
   // ---- Fallback lenses (only if still need narratives) ----
 
