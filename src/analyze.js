@@ -415,19 +415,21 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     }
 
     // Franchise hot/cold streak across periods
+    // Database tab already has current season P1-P9 results, so no need to derive from daily files
     const streak = await getFranchiseMatchupStreak(franchise);
     if (streak) {
       if (streak.type === "W" && streak.streak >= 3) {
         const score = Math.min(80, 40 + streak.streak * 10);
         candidates.push({ score, text: `🔥 Won ${streak.streak} straight periods` });
-      } else if (streak.type === "L" && streak.streak >= 3 && streak.lastWin) {
-        const score = Math.min(75, 35 + streak.streak * 10);
-        // Determine if last win was this season or earlier
+      } else if (streak.type === "L" && streak.streak >= 5 && streak.lastWin) {
+        // Only show cold streaks of 5+ periods to avoid overuse (most teams in a 6-team league
+        // won't have won recently, so 3 periods without winning isn't remarkable)
+        const score = Math.min(75, 25 + streak.streak * 7);
         const currentSeasonYear = parseInt(PERIODS[0].start.substring(0, 4));
         if (streak.lastWin.season >= currentSeasonYear) {
-          candidates.push({ score, text: `❄️ Hasn't won a period since P${streak.lastWin.period} this season (${streak.streak} periods ago)` });
+          candidates.push({ score, cat: "cold", text: `❄️ Hasn't won a period since P${streak.lastWin.period} this season (${streak.streak} periods ago)` });
         } else {
-          candidates.push({ score, text: `❄️ Hasn't won a period since P${streak.lastWin.period} ${streak.lastWin.season} (${streak.streak} periods ago)` });
+          candidates.push({ score, cat: "cold", text: `❄️ Hasn't won a period since P${streak.lastWin.period} ${streak.lastWin.season} (${streak.streak} periods ago)` });
         }
       }
     }

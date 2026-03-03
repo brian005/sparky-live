@@ -392,7 +392,7 @@ async function getH2HPeriodRecord(periodNumber, franchiseA, franchiseB) {
  * Get franchise's period win/loss streak.
  * A "win" = finishing #1 in points for that period.
  * Derives results from the Database tab (FPts per team per period).
- * Returns: { streak, type: "W"|"notW", lastWinSeason, lastWinPeriod }
+ * Returns: { streak, type: "W"|"L", lastWin }
  */
 async function getFranchiseMatchupStreak(franchise) {
   const records = await fetchHistoricalData();
