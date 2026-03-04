@@ -1,10 +1,8 @@
 name: Game Night — Nightly Recap
-
 on:
   schedule:
     # Run at 6:30 AM UTC (10:30 PM PST) — after last games finish
     - cron: "30 6 * 10-12,1-4 *"
-
   workflow_dispatch:
     inputs:
       target_date:
@@ -16,25 +14,20 @@ on:
         required: false
         default: false
         type: boolean
-
 concurrency:
   group: sparky-live
   cancel-in-progress: true
-
 jobs:
   nightly-recap:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-
       - name: Install system dependencies
         run: |
           sudo apt-get update
@@ -45,10 +38,8 @@ jobs:
             libpangocairo-1.0-0 libgtk-3-0 \
             build-essential libcairo2-dev libjpeg-dev \
             libpango1.0-dev libgif-dev librsvg2-dev
-
       - name: Install dependencies
         run: npm install
-
       - name: Run nightly pipeline
         env:
           FANTRAX_USERNAME: ${{ secrets.FANTRAX_USERNAME }}
@@ -65,7 +56,6 @@ jobs:
           else
             node src/index.js
           fi
-
       - name: Upload debug screenshots
         if: failure()
         uses: actions/upload-artifact@v4
@@ -73,7 +63,6 @@ jobs:
           name: debug-screenshots
           path: debug-*.png
           if-no-files-found: ignore
-
       - name: Upload scoreboard
         if: always()
         uses: actions/upload-artifact@v4
@@ -81,7 +70,6 @@ jobs:
           name: scoreboard
           path: scoreboard.png
           if-no-files-found: ignore
-
       - name: Commit daily data
         run: |
           git config user.name "SparkyBot"
@@ -89,3 +77,22 @@ jobs:
           git add data/daily/
           git diff --staged --quiet || git commit -m "📊 Nightly: $(date -u +%Y-%m-%d)"
           git push
+      - name: Write daily scoring to Sheets
+        if: inputs.dry_run != 'true'
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+        run: |
+          # Determine which date file to write
+          if [ -n "${{ inputs.target_date }}" ]; then
+            DATE="${{ inputs.target_date }}"
+          else
+            # The scraper runs after midnight UTC, targeting the previous PST day
+            DATE=$(TZ="America/Los_Angeles" date -d "yesterday" +%Y-%m-%d 2>/dev/null || TZ="America/Los_Angeles" date -v-1d +%Y-%m-%d)
+          fi
+          FILE="data/daily/${DATE}.json"
+          if [ -f "$FILE" ]; then
+            echo "Writing ${FILE} to Sheets..."
+            node src/sheets-writer.js write "$FILE"
+          else
+            echo "No file found for ${DATE}, skipping Sheets write."
+          fi
