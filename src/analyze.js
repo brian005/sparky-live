@@ -181,8 +181,8 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     else break;
   }
   if (podiumStreak >= 3 && winStreak < 2) {
-    // 3-day = 45, 5-day = 65, 7-day = 85
-    const score = Math.min(90, 25 + podiumStreak * 10);
+    // 3-day = 80, 5-day = 85, 7-day = 90
+    const score = Math.min(95, Math.max(80, 70 + podiumStreak * 3));
     candidates.push({ score, text: `📈 ${podiumStreak}-day podium streak` });
   }
 
@@ -193,7 +193,8 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     else break;
   }
   if (bottomStreak >= 5) {
-    const score = Math.min(85, 30 + bottomStreak * 7);
+    // 5-day = 80, 7-day = 86, 10-day = 95
+    const score = Math.min(95, Math.max(80, 70 + bottomStreak * 3));
     candidates.push({ score, text: `⚠️ ${bottomStreak}-day bottom-half streak`, isBad: true });
   }
 
@@ -324,9 +325,9 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     if (midRank && currentRankInPeriod) {
       const jump = midRank - currentRankInPeriod;
       if (jump >= 3) {
-        candidates.push({ score: 55, text: `🔄 Was #${midRank} mid-period, now #${currentRankInPeriod}` });
+        candidates.push({ score: 42, text: `🔄 Was #${midRank} mid-period, now #${currentRankInPeriod}` });
       } else if (jump <= -3) {
-        candidates.push({ score: 50, text: `🔄 Was #${midRank} mid-period, now #${currentRankInPeriod}`, isBad: true });
+        candidates.push({ score: 40, text: `🔄 Was #${midRank} mid-period, now #${currentRankInPeriod}`, isBad: true });
       }
     }
   }
@@ -407,7 +408,7 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       if (dominance.wins >= 3) {
         candidates.push({ score: 55, text: `👑 Has won P${currentPeriod} ${dominance.wins} times — most in league history` });
       } else if (dominance.wins === 0 && dominance.totalOccurrences >= 5) {
-        candidates.push({ score: 50, text: `🏜️ Has never won a P${currentPeriod} (0-for-${dominance.totalOccurrences} all-time)` });
+        candidates.push({ score: 70, text: `🏜️ Has never won a P${currentPeriod} (0-for-${dominance.totalOccurrences} all-time)` });
       } else if (dominance.topWinner && dominance.topWinner !== franchise && dominance.topWinnerWins >= 3) {
         const ownerName = FRANCHISE_TO_OWNER[dominance.topWinner] || dominance.topWinner;
         candidates.push({ score: 40, text: `📊 P${currentPeriod} belongs to ${ownerName} (${dominance.topWinnerWins} wins all-time)` });
