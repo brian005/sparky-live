@@ -435,6 +435,68 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
         }
       }
     }
+
+    // ---- Hottest franchise over rolling window ----
+    // Scans 5/7/10/14-day windows. Only fires if THIS franchise is the hottest
+    // AND the story is interesting (big margin, or surprise contender).
+    const hotWindows = [10, 14, 30, 60];
+    let bestHotInsight = null;
+
+    for (const windowSize of hotWindows) {
+      if (allDays.length < windowSize) continue;
+      const windowDays = allDays.slice(-windowSize);
+
+      // Sum points per franchise in this window
+      const windowTotals = {};
+      for (const day of windowDays) {
+        for (const t of day.teams) {
+          windowTotals[t.franchise] = (windowTotals[t.franchise] || 0) + (t.dayPts || 0);
+        }
+      }
+
+      const windowSorted = Object.entries(windowTotals).sort((a, b) => b[1] - a[1]);
+      if (windowSorted.length < 2) continue;
+
+      const [leader, leaderPts] = windowSorted[0];
+      const [, secondPts] = windowSorted[1];
+
+      // Only care if THIS franchise is the leader
+      if (leader !== franchise) continue;
+
+      const margin = secondPts > 0 ? Math.round(((leaderPts - secondPts) / secondPts) * 100) : 0;
+      if (margin < 10) continue; // Not interesting enough
+
+      // Surprise factor: current period rank (lower rank = bigger surprise)
+      const periodStandings = computePeriodRankAtDay(periodDays, franchise);
+      const isSurprise = periodStandings && periodStandings >= 4;
+
+      // Score: base from margin, bonus for surprise, bonus for longer windows
+      let score = 30 + Math.min(30, margin);
+      if (isSurprise) score += 20;
+      if (windowSize >= 10) score += 10;
+      else if (windowSize >= 7) score += 5;
+
+      // Cap it
+      score = Math.min(85, score);
+
+      // Find the start date for the label
+      const sinceDate = windowDays[0].date;
+      const sinceParts = sinceDate.split("-");
+      const sinceLabel = `${parseInt(sinceParts[1])}/${parseInt(sinceParts[2])}`;
+
+      const text = isSurprise
+        ? `🔥 Hottest franchise since ${sinceLabel} (+${margin}% over the field) despite #${periodStandings} in period`
+        : `🔥 Hottest franchise since ${sinceLabel} (+${margin}% over the field)`;
+
+      if (!bestHotInsight || score > bestHotInsight.score) {
+        bestHotInsight = { score, cat: "hot", text };
+      }
+    }
+
+    if (bestHotInsight) {
+      candidates.push(bestHotInsight);
+    }
+
     // Projection confidence: scales 0.4 (day 2) → 1.0 (day 10+)
     // Early projections are noisy and shouldn't dominate
     const projConfidence = projection
