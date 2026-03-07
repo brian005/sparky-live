@@ -408,7 +408,7 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       if (dominance.wins >= 3) {
         candidates.push({ score: 55, text: `👑 Has won P${currentPeriod} ${dominance.wins} times — most in league history` });
       } else if (dominance.wins === 0 && dominance.totalOccurrences >= 5) {
-        candidates.push({ score: 70, text: `🏜️ Has never won a P${currentPeriod} (0-for-${dominance.totalOccurrences} all-time)` });
+        candidates.push({ score: 70, cat: "cold", text: `🏜️ Has never won a P${currentPeriod} (0-for-${dominance.totalOccurrences} all-time)` });
       } else if (dominance.topWinner && dominance.topWinner !== franchise && dominance.topWinnerWins >= 3) {
         const ownerName = FRANCHISE_TO_OWNER[dominance.topWinner] || dominance.topWinner;
         candidates.push({ score: 40, text: `📊 P${currentPeriod} belongs to ${ownerName} (${dominance.topWinnerWins} wins all-time)` });
@@ -422,9 +422,11 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       if (streak.type === "W" && streak.streak >= 3) {
         const score = Math.min(80, 40 + streak.streak * 10);
         candidates.push({ score, text: `🔥 Won ${streak.streak} straight periods` });
-      } else if (streak.type === "L" && streak.streak >= 9 && streak.lastWin) {
+      } else if (streak.type === "L" && streak.streak >= 9 && streak.lastWin && periodDays.length <= 1) {
         // In a 6-team league, droughts of 5-8 periods are common and uninteresting.
         // Only fire at 9+ to highlight truly notable cold streaks.
+        // Cooldown: only fires on the first 2 nights of a period — drought count doesn't
+        // change mid-period, so repeating it nightly is stale noise.
         const score = Math.min(75, 25 + streak.streak * 7);
         // Current season is determined by the latest period start year (2026 for Oct 2025 - Apr 2026 season)
         const currentSeason = Math.max(...PERIODS.map(p => parseInt(p.start.substring(0, 4))));
