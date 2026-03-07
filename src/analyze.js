@@ -827,9 +827,12 @@ function projectPeriodFinish(allDays, franchise, period, teamGPData) {
 
   // Prefer PPG × remaining GP (accurate projection based on actual schedule)
   const gpData = teamGPData || {};
-  const gpPlayed = gpData.periodGP || periodGPFromDaily;
+  // periodGPFromDaily (sum of gp across daily JSON files) is more reliable than the
+  // scraped periodGP — the period page scrape reads today's GP from player-game-info
+  // <i> tags, which reflect today's slate only, not cumulative period GP.
+  const gpPlayed = periodGPFromDaily || gpData.periodGP || 0;
   const gpRemaining = gpData.periodGPRemaining || 0;
-  const totalGP = gpData.periodTotalGP || (gpPlayed + gpRemaining);
+  const totalGP = gpPlayed + gpRemaining || gpData.periodTotalGP || 0;
 
   let projected;
   let method;
