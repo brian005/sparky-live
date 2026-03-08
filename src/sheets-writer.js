@@ -30,6 +30,46 @@ const FRANCHISE_ORDER = ["JGC", "PWN", "BEW", "MPP", "RMS", "GDD"];
 
 const SEASON = 2026;
 
+// Maps full franchise name fragments → franchise code.
+// Used to resolve team.name from raw scrape output when team.franchise is absent.
+const NAME_TO_FRANCHISE = {
+  "gaucho":    "JGC",
+  "chudpump":  "JGC",
+  "pwn":       "PWN",
+  "cmack":     "PWN",
+  "endless":   "BEW",
+  "winter":    "BEW",
+  "mid tier":  "MPP",
+  "perpetual": "MPP",
+  "meatspinn": "RMS",
+  "richie":    "RMS",
+  "downtown":  "GDD",
+  "demons":    "GDD",
+  "graeme":    "GDD",
+};
+
+function resolveFranchise(team) {
+  if (team.franchise && FRANCHISE_ORDER.includes(team.franchise)) return team.franchise;
+  if (team.name) {
+    const lower = team.name.toLowerCase();
+    for (const [fragment, code] of Object.entries(NAME_TO_FRANCHISE)) {
+      if (lower.includes(fragment)) return code;
+    }
+  }
+  return null;
+}
+
+// Extract a YYYY-MM-DD game date from the JSON.
+// Raw scrape has scrapedAt (UTC ISO string); the game date is PST (UTC-8).
+function resolveDate(dailyData) {
+  if (dailyData.date) return dailyData.date;
+  if (dailyData.scrapedAt) {
+    const d = new Date(new Date(dailyData.scrapedAt).getTime() - 8 * 60 * 60 * 1000);
+    return d.toISOString().split("T")[0];
+  }
+  return null;
+}
+
 const OWNERS = [
   { owner: "Jason",  dsPtsCol: "C", dsGpCol: "E" },
   { owner: "Brian",  dsPtsCol: "I", dsGpCol: "K" },
@@ -70,15 +110,22 @@ function buildHeaderRow() {
 }
 
 function buildRowFromJson(dailyData) {
-  const { date, period, teams } = dailyData;
+  const date   = resolveDate(dailyData);
+  const period = dailyData.period;
+  const teams  = dailyData.teams || [];
+
   const teamByFranchise = {};
   for (const team of teams) {
-    teamByFranchise[team.franchise] = team;
+    const code = resolveFranchise(team);
+    if (code) teamByFranchise[code] = team;
   }
+
   const row = [date, period];
   for (const code of FRANCHISE_ORDER) {
     const t = teamByFranchise[code];
-    row.push(t ? t.dayPts : 0, t ? t.projPts : 0, t ? t.gp : 0);
+    // projPts (processed JSON) or projectedFpg (raw scrape) — use whichever is present
+    const proj = t ? (t.projPts ?? t.projectedFpg ?? 0) : 0;
+    row.push(t ? t.dayPts : 0, proj, t ? t.gp : 0);
   }
   return row;
 }
@@ -101,8 +148,13 @@ async function writeHeader() {
 
 async function writeDailyScoring(dailyData) {
   const sheets = await getSheetsClient();
-  const { date, period, teams } = dailyData;
+  const date   = resolveDate(dailyData);
+  const period = dailyData.period;
+  const teams  = dailyData.teams;
 
+  if (!date) {
+    throw new Error("Cannot determine game date from JSON (no date or scrapedAt field).");
+  }
   if (!teams || teams.length === 0) {
     throw new Error("No team data in daily JSON for " + date);
   }

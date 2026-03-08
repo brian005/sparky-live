@@ -795,12 +795,18 @@ function computeCompletedPeriodTotals(allDays, currentPeriod) {
 }
 
 /**
- * Project period finish based on current PPG × remaining GP.
- * If periodGP data (from period page scrape) is available, uses:
- *   projected = periodPts + (periodPts / periodGP) × gpRemaining
- * Falls back to calendar-day average if GP data unavailable.
+ * Project period finish based on current PPG × estimated remaining GP.
+ *
+ * NOTE: The period page scrape (periodGPRemaining) reflects only tonight's
+ * remaining slate, not the remainder of the full period — so we never use it
+ * for projection. Instead we derive remaining GP from the observed GP rate
+ * within the period against calendar days elapsed.
+ *
+ *   gpRate       = gpPlayed / calDaysElapsed
+ *   gpRemaining  = gpRate × calDaysRemaining
+ *   projected    = periodPts + (periodPts / gpPlayed) × gpRemaining
  */
-function projectPeriodFinish(allDays, franchise, period, teamGPData) {
+function projectPeriodFinish(allDays, franchise, period) {
   const periodDays = allDays.filter(d => d.period === period);
   if (periodDays.length === 0) return null;
 
@@ -808,49 +814,43 @@ function projectPeriodFinish(allDays, franchise, period, teamGPData) {
   if (!periodConfig) return null;
 
   let periodPts = 0;
-  let periodGPFromDaily = 0;
+  let gpPlayed = 0;
   for (const day of periodDays) {
     const team = day.teams.find(t => t.franchise === franchise);
     if (team) {
       periodPts += team.dayPts || 0;
-      periodGPFromDaily += team.gp || 0;
+      gpPlayed  += team.gp    || 0;
     }
   }
 
-  const daysPlayed = periodDays.length;
   const startDate = new Date(periodConfig.start + "T12:00:00Z");
-  const endDate = new Date(periodConfig.end + "T12:00:00Z");
+  const endDate   = new Date(periodConfig.end   + "T12:00:00Z");
   const totalDays = Math.round((endDate - startDate) / 86400000) + 1;
+
+  // Calendar days elapsed = distance from period start to last game-night date
+  const lastGameDate     = new Date(periodDays[periodDays.length - 1].date + "T12:00:00Z");
+  const calDaysElapsed   = Math.max(1, Math.round((lastGameDate - startDate) / 86400000) + 1);
+  const calDaysRemaining = Math.max(0, totalDays - calDaysElapsed);
+
+  // kept for confidence / narrative calcs downstream
+  const daysPlayed    = periodDays.length;
   const daysRemaining = totalDays - daysPlayed;
-
-  if (daysPlayed === 0) return null;
-
-  // Prefer PPG × remaining GP (accurate projection based on actual schedule)
-  const gpData = teamGPData || {};
-  // periodGPFromDaily (sum of gp across daily JSON files) is more reliable than the
-  // scraped periodGP — the period page scrape reads today's GP from player-game-info
-  // <i> tags, which reflect today's slate only, not cumulative period GP.
-  const gpPlayed = periodGPFromDaily || gpData.periodGP || 0;
-  const gpRemaining = gpData.periodGPRemaining || 0;
-  const totalGP = gpPlayed + gpRemaining || gpData.periodTotalGP || 0;
 
   let projected;
   let method;
-  if (gpPlayed > 0 && gpRemaining > 0) {
-    // PPG-based: actual points per game × remaining games
-    const ppg = periodPts / gpPlayed;
+
+  if (gpPlayed > 0) {
+    // Derive remaining GP from observed rate × calendar days left
+    const gpPerDay    = gpPlayed / calDaysElapsed;
+    const gpRemaining = Math.round(gpPerDay * calDaysRemaining);
+    const ppg         = periodPts / gpPlayed;
     projected = Math.round(periodPts + ppg * gpRemaining);
-    method = "ppg";
-  } else if (gpPlayed > 0 && totalGP > gpPlayed) {
-    // Have total GP but not remaining — compute remaining
-    const ppg = periodPts / gpPlayed;
-    projected = Math.round(ppg * totalGP);
-    method = "ppg";
+    method = "ppg-derived";
   } else {
-    // Fallback: calendar-day average (less accurate)
-    const dailyAvg = periodPts / daysPlayed;
-    projected = Math.round(periodPts + dailyAvg * daysRemaining);
-    method = "daily";
+    // No GP data yet — use period calendar progress fraction
+    const progress = calDaysElapsed / totalDays;
+    projected = progress > 0 ? Math.round(periodPts / progress) : 0;
+    method = "progress";
   }
 
   return {
@@ -861,8 +861,8 @@ function projectPeriodFinish(allDays, franchise, period, teamGPData) {
     daysRemaining,
     totalDays,
     gpPlayed,
-    gpRemaining,
-    totalGP,
+    calDaysElapsed,
+    calDaysRemaining,
   };
 }
 
@@ -881,11 +881,7 @@ async function buildNightlyAnalysis(todayScrape) {
     const avg3d = rollingAvgPPG(allDays, franchise, 3);
     const avg7d = rollingAvgPPG(allDays, franchise, 7);
     const ppg = seasonPPG(allDays, franchise);
-    const projection = projectPeriodFinish(allDays, franchise, period, {
-      periodGP: t.periodGP || 0,
-      periodGPRemaining: t.periodGPRemaining || 0,
-      periodTotalGP: t.periodTotalGP || 0,
-    });
+    const projection = projectPeriodFinish(allDays, franchise, period);
     const vsProj = t.projPts ? +((t.dayPts || 0) - t.projPts).toFixed(2) : null;
 
     // Build rich narratives (picks best 1-2 automatically)
