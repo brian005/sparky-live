@@ -1,8 +1,7 @@
 name: Game Night — Nightly Recap
 on:
   schedule:
-    # Run at 6:30 AM UTC (10:30 PM PST) — after last games finish
-    - cron: "30 6 * 10-12,1-4 *"
+  - cron: "30 5 * 10-12,1-4 *"
   workflow_dispatch:
     inputs:
       target_date:
