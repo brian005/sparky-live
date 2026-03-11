@@ -339,6 +339,9 @@ async function getPeriodDominance(periodNumber, franchise) {
 
   const myWins = winCounts[franchise] || 0;
 
+  // Count how many times this franchise actually participated in this period
+  const myOccurrences = periodRecords.filter(r => r.teams[franchise] && r.teams[franchise].fpts > 0).length;
+
   // Find the franchise with the most wins for this period
   let topWinner = null;
   let topWinnerWins = 0;
@@ -351,7 +354,7 @@ async function getPeriodDominance(periodNumber, franchise) {
 
   return {
     wins: myWins,
-    totalOccurrences: periodRecords.length,
+    totalOccurrences: myOccurrences,
     topWinner,
     topWinnerWins,
     winCounts,

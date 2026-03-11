@@ -1,9 +1,10 @@
 // ============================================================
-// SCOREBOARD IMAGE GENERATOR v6 — 4-Column Card Strips
+// SCOREBOARD IMAGE GENERATOR v7 — Compact Card Strips
 // ============================================================
-// 4 stats: DAY, SEASON, PPG, VS PROJ
-// 3D/7D trending info moves to the narrative bar.
-// Bigger fonts, logos, and team names for inline Slack readability.
+// 4 stats: DAY, PERIOD, PPG, VS PROJ
+// Rank badge overlaid on logo to save horizontal space.
+// Narrower cards to fit Slack desktop preview without cropping.
+// Narrative text unchanged at 36px for readability.
 // ============================================================
 
 let createCanvas, loadImage, registerFont;
@@ -73,23 +74,23 @@ const T = {
   narrativeBorder: "#EDF0F3",
 };
 
-// Card strip layout — 2x resolution for crisp text
-const CARD_W = 1280;
+// Card strip layout — narrower for Slack desktop compatibility
+const CARD_W = 1050;
 const CARD_PAD = 24;
 const DATA_ROW_H = 124;
 const NARRATIVE_H = 104;  // room for 2 lines of 36px narrative
 const CARD_RADIUS = 20;
 const LOGO_SIZE = 96;
-const BADGE_SIZE = 64;
-const ELEM_GAP = 20;
+const BADGE_SIZE = 34;     // smaller badge overlaid on logo
+const BADGE_RADIUS = 10;
 const GLOW_PAD = 28;
 
-// 4 columns — more breathing room
+// 4 columns — adjusted for narrower card
 const COLS = {
-  day:    { x: CARD_W - CARD_PAD - 460 },
-  season: { x: CARD_W - CARD_PAD - 328 },
-  ppg:    { x: CARD_W - CARD_PAD - 196 },
-  vsProj: { x: CARD_W - CARD_PAD - 76 },
+  day:    { x: CARD_W - CARD_PAD - 380 },
+  season: { x: CARD_W - CARD_PAD - 268 },
+  ppg:    { x: CARD_W - CARD_PAD - 160 },
+  vsProj: { x: CARD_W - CARD_PAD - 60 },
 };
 
 function vsProjPct(team) {
@@ -121,6 +122,40 @@ async function preloadLogos(franchises) {
   }
 
   return logos;
+}
+
+/**
+ * Draw the rank badge overlaid on the top-left of the logo.
+ */
+function drawBadgeOnLogo(ctx, rank, isPodium, p, logoX, logoY) {
+  // Position badge at top-left of logo, offset slightly inward
+  const badgeX = logoX - 4;
+  const badgeY = logoY - 4;
+
+  // White ring behind badge for contrast against any logo
+  ctx.beginPath();
+  drawRoundedRect(ctx, badgeX - 3, badgeY - 3, BADGE_SIZE + 6, BADGE_SIZE + 6, BADGE_RADIUS + 2, "#FFFFFF");
+  ctx.fill();
+
+  if (isPodium) {
+    const badgeGrad = ctx.createLinearGradient(badgeX, badgeY, badgeX + BADGE_SIZE, badgeY + BADGE_SIZE);
+    badgeGrad.addColorStop(0, p.badgeBg[0]);
+    badgeGrad.addColorStop(1, p.badgeBg[1]);
+    ctx.save();
+    ctx.shadowColor = p.glow;
+    ctx.shadowBlur = 8;
+    drawRoundedRect(ctx, badgeX, badgeY, BADGE_SIZE, BADGE_SIZE, BADGE_RADIUS, null);
+    ctx.fillStyle = badgeGrad;
+    ctx.fill();
+    ctx.restore();
+  } else {
+    drawRoundedRect(ctx, badgeX, badgeY, BADGE_SIZE, BADGE_SIZE, BADGE_RADIUS, T.rankOther);
+  }
+
+  ctx.fillStyle = isPodium ? p.badgeText : "#fff";
+  ctx.font = "bold 20px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(String(rank), badgeX + BADGE_SIZE / 2, badgeY + BADGE_SIZE / 2 + 7);
 }
 
 /**
@@ -202,32 +237,11 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
     ctx.fillText(team.franchise.charAt(0), logoX + LOGO_SIZE / 2, rowCenterY + 12);
   }
 
-  // Rank badge
-  const badgeX = logoX + LOGO_SIZE + ELEM_GAP;
-  const badgeY = rowCenterY - BADGE_SIZE / 2;
+  // Rank badge — overlaid on top-left of logo
+  drawBadgeOnLogo(ctx, rank, isPodium, p, logoX, logoY);
 
-  if (isPodium) {
-    const badgeGrad = ctx.createLinearGradient(badgeX, badgeY, badgeX + BADGE_SIZE, badgeY + BADGE_SIZE);
-    badgeGrad.addColorStop(0, p.badgeBg[0]);
-    badgeGrad.addColorStop(1, p.badgeBg[1]);
-    ctx.save();
-    ctx.shadowColor = p.glow;
-    ctx.shadowBlur = 16;
-    drawRoundedRect(ctx, badgeX, badgeY, BADGE_SIZE, BADGE_SIZE, 14, null);
-    ctx.fillStyle = badgeGrad;
-    ctx.fill();
-    ctx.restore();
-  } else {
-    drawRoundedRect(ctx, badgeX, badgeY, BADGE_SIZE, BADGE_SIZE, 14, T.rankOther);
-  }
-
-  ctx.fillStyle = isPodium ? p.badgeText : "#fff";
-  ctx.font = "bold 34px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText(String(rank), badgeX + BADGE_SIZE / 2, badgeY + BADGE_SIZE / 2 + 12);
-
-  // Team name
-  const nameX = badgeX + BADGE_SIZE + 24;
+  // Team name — starts right after logo (no separate badge column)
+  const nameX = logoX + LOGO_SIZE + 16;
   const nameMaxW = COLS.day.x - nameX - 28;
   ctx.fillStyle = isPodium ? p.nameColor : T.teamName;
   ctx.font = `${isPodium ? "bold" : "600"} 32px 'Helvetica Neue', Helvetica, Arial, sans-serif`;

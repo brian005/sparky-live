@@ -85,8 +85,8 @@ jobs:
           if [ -n "${{ inputs.target_date }}" ]; then
             DATE="${{ inputs.target_date }}"
           else
-            # The scraper runs after midnight UTC, targeting the previous PST day
-            DATE=$(TZ="America/Los_Angeles" date -d "yesterday" +%Y-%m-%d 2>/dev/null || TZ="America/Los_Angeles" date -v-1d +%Y-%m-%d)
+            # Cron fires at 10:30 PM Pacific — same calendar day as the games
+            DATE=$(TZ="America/Los_Angeles" date +%Y-%m-%d)
           fi
           FILE="data/daily/${DATE}.json"
           if [ -f "$FILE" ]; then
