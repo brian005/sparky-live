@@ -75,7 +75,7 @@ const T = {
 };
 
 // Card strip layout — compressed ~15% for Slack desktop fit
-const CARD_W = 890;
+const CARD_W = 878;
 const CARD_PAD = 20;
 const DATA_ROW_H = 110;
 const NARRATIVE_H = 104;  // room for 2 lines of 36px narrative (unchanged)
@@ -83,7 +83,8 @@ const CARD_RADIUS = 20;
 const LOGO_SIZE = 80;
 const BADGE_SIZE = 30;     // smaller badge overlaid on logo
 const BADGE_RADIUS = 8;
-const GLOW_PAD = 28;      // extra breathing room so Slack doesn't clip glow borders
+const GLOW_PAD = 28;      // wider margin so Slack doesn't clip glow borders
+                           // total canvas: 878 + 56 = 934 (same as before)
 
 // 4 columns — tightened for narrower card
 const COLS = {
