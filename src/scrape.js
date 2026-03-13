@@ -224,9 +224,12 @@ async function scrapeLiveScoring({ username, password, period, date, headless = 
     console.log("[scrape] Login successful.");
 
     // Step 2: Navigate to live scoring for the specific date
+    // Use domcontentloaded — Fantrax SPA keeps live-scoring connections open
+    // (websockets, polling) that prevent networkidle2 from resolving on game nights.
+    // The waitForSelector below gates on actual data readiness.
     const liveUrl = buildLiveScoringUrl(date);
     console.log(`[scrape] Navigating to live scoring: ${liveUrl}`);
-    await page.goto(liveUrl, { waitUntil: "networkidle2", timeout: 30000 });
+    await page.goto(liveUrl, { waitUntil: "domcontentloaded", timeout: 60000 });
 
     // Wait for team cards to render (Angular app)
     console.log("[scrape] Waiting for team cards to render...");
@@ -368,9 +371,10 @@ async function scrapeLiveScoring({ username, password, period, date, headless = 
     console.log(`[scrape] Found ${teams.length} teams.`);
 
     // Step 4: Navigate to period page to get period-level GP totals (played + remaining)
+    // Same domcontentloaded strategy — let the selector wait handle Angular rendering.
     const periodUrl = `https://www.fantrax.com/fantasy/league/${LEAGUE_ID}/livescoring;period=${period};viewType=1`;
     console.log(`[scrape] Navigating to period view for GP totals: ${periodUrl}`);
-    await page.goto(periodUrl, { waitUntil: "networkidle2", timeout: 30000 });
+    await page.goto(periodUrl, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForSelector("section.matchup-list", { timeout: 20000 });
     await new Promise(r => setTimeout(r, 5000));
 
@@ -434,7 +438,7 @@ async function scrapeStandings({ username, password, page: existingPage }) {
   const url = buildStandingsUrl();
   const page = existingPage;
 
-  await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
+  await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForSelector("table, .standings-table", { timeout: 15000 });
   await new Promise(r => setTimeout(r, 2000));
 

@@ -1,10 +1,10 @@
 // ============================================================
-// SCOREBOARD IMAGE GENERATOR v7 — Compact Card Strips
+// SCOREBOARD IMAGE GENERATOR v8 — Compact Card Strips
 // ============================================================
 // 4 stats: DAY, PERIOD, PPG, VS PROJ
 // Rank badge overlaid on logo to save horizontal space.
-// Narrower cards to fit Slack desktop preview without cropping.
-// Narrative text unchanged at 36px for readability.
+// v8: ~15% narrower (1050→890) for Slack desktop fit.
+// Stat fonts scaled down; narrative text unchanged at 36px.
 // ============================================================
 
 let createCanvas, loadImage, registerFont;
@@ -74,23 +74,23 @@ const T = {
   narrativeBorder: "#EDF0F3",
 };
 
-// Card strip layout — narrower for Slack desktop compatibility
-const CARD_W = 1050;
-const CARD_PAD = 24;
-const DATA_ROW_H = 124;
-const NARRATIVE_H = 104;  // room for 2 lines of 36px narrative
+// Card strip layout — compressed ~15% for Slack desktop fit
+const CARD_W = 890;
+const CARD_PAD = 20;
+const DATA_ROW_H = 110;
+const NARRATIVE_H = 104;  // room for 2 lines of 36px narrative (unchanged)
 const CARD_RADIUS = 20;
-const LOGO_SIZE = 96;
-const BADGE_SIZE = 34;     // smaller badge overlaid on logo
-const BADGE_RADIUS = 10;
-const GLOW_PAD = 28;
+const LOGO_SIZE = 80;
+const BADGE_SIZE = 30;     // smaller badge overlaid on logo
+const BADGE_RADIUS = 8;
+const GLOW_PAD = 22;
 
-// 4 columns — adjusted for narrower card
+// 4 columns — tightened for narrower card
 const COLS = {
-  day:    { x: CARD_W - CARD_PAD - 380 },
-  season: { x: CARD_W - CARD_PAD - 268 },
-  ppg:    { x: CARD_W - CARD_PAD - 160 },
-  vsProj: { x: CARD_W - CARD_PAD - 60 },
+  day:    { x: CARD_W - CARD_PAD - 328 },
+  season: { x: CARD_W - CARD_PAD - 232 },
+  ppg:    { x: CARD_W - CARD_PAD - 140 },
+  vsProj: { x: CARD_W - CARD_PAD - 50 },
 };
 
 function vsProjPct(team) {
@@ -153,9 +153,9 @@ function drawBadgeOnLogo(ctx, rank, isPodium, p, logoX, logoY) {
   }
 
   ctx.fillStyle = isPodium ? p.badgeText : "#fff";
-  ctx.font = "bold 20px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.font = "bold 18px 'Helvetica Neue', Helvetica, Arial, sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText(String(rank), badgeX + BADGE_SIZE / 2, badgeY + BADGE_SIZE / 2 + 7);
+  ctx.fillText(String(rank), badgeX + BADGE_SIZE / 2, badgeY + BADGE_SIZE / 2 + 6);
 }
 
 /**
@@ -232,63 +232,63 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
     ctx.stroke();
 
     ctx.fillStyle = isPodium ? p.color : T.rankOther;
-    ctx.font = "bold 32px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.font = "bold 28px 'Helvetica Neue', Helvetica, Arial, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(team.franchise.charAt(0), logoX + LOGO_SIZE / 2, rowCenterY + 12);
+    ctx.fillText(team.franchise.charAt(0), logoX + LOGO_SIZE / 2, rowCenterY + 10);
   }
 
   // Rank badge — overlaid on top-left of logo
   drawBadgeOnLogo(ctx, rank, isPodium, p, logoX, logoY);
 
   // Team name — starts right after logo (no separate badge column)
-  const nameX = logoX + LOGO_SIZE + 16;
-  const nameMaxW = COLS.day.x - nameX - 28;
+  const nameX = logoX + LOGO_SIZE + 14;
+  const nameMaxW = COLS.day.x - nameX - 20;
   ctx.fillStyle = isPodium ? p.nameColor : T.teamName;
-  ctx.font = `${isPodium ? "bold" : "600"} 32px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+  ctx.font = `${isPodium ? "bold" : "600"} 28px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
   ctx.textAlign = "left";
   const displayName = FRANCHISE_NAMES[team.franchise] || team.name || team.franchise;
-  truncateText(ctx, displayName, nameX, rowCenterY + 12, nameMaxW);
+  truncateText(ctx, displayName, nameX, rowCenterY + 10, nameMaxW);
 
   // ---- 4 Column Values ----
   ctx.textAlign = "center";
 
   // DAY — hero number
   ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 20px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("DAY", COLS.day.x, rowCenterY - 24);
+  ctx.font = "bold 18px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("DAY", COLS.day.x, rowCenterY - 20);
   ctx.fillStyle = T.dayValue;
-  ctx.font = "bold 48px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText(String(Math.round(team.dayPts || 0)), COLS.day.x, rowCenterY + 28);
+  ctx.font = "bold 42px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText(String(Math.round(team.dayPts || 0)), COLS.day.x, rowCenterY + 24);
 
   // PERIOD
   ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 20px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("PERIOD", COLS.season.x, rowCenterY - 24);
+  ctx.font = "bold 18px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("PERIOD", COLS.season.x, rowCenterY - 20);
   ctx.fillStyle = T.colValue;
-  ctx.font = "600 34px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText(fmtNum(team.periodPts), COLS.season.x, rowCenterY + 28);
+  ctx.font = "600 30px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText(fmtNum(team.periodPts), COLS.season.x, rowCenterY + 24);
 
   // PPG
   ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 20px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("PPG", COLS.ppg.x, rowCenterY - 24);
+  ctx.font = "bold 18px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("PPG", COLS.ppg.x, rowCenterY - 20);
   ctx.fillStyle = T.colValue;
-  ctx.font = "600 34px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText(team.ppg != null ? team.ppg.toFixed(2) : "-", COLS.ppg.x, rowCenterY + 28);
+  ctx.font = "600 30px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText(team.ppg != null ? team.ppg.toFixed(2) : "-", COLS.ppg.x, rowCenterY + 24);
 
   // VS PROJ (percentage)
   ctx.fillStyle = T.colLabel;
-  ctx.font = "bold 20px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-  ctx.fillText("VS PROJ", COLS.vsProj.x, rowCenterY - 24);
+  ctx.font = "bold 18px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  ctx.fillText("VS PROJ", COLS.vsProj.x, rowCenterY - 20);
   const pct = vsProjPct(team);
   if (pct != null) {
     ctx.fillStyle = pct >= 100 ? T.positive : T.negative;
-    ctx.font = "bold 34px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-    ctx.fillText(`${pct}%`, COLS.vsProj.x, rowCenterY + 28);
+    ctx.font = "bold 30px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.fillText(`${pct}%`, COLS.vsProj.x, rowCenterY + 24);
   } else {
     ctx.fillStyle = T.neutral;
-    ctx.font = "600 34px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-    ctx.fillText("-", COLS.vsProj.x, rowCenterY + 28);
+    ctx.font = "600 30px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.fillText("-", COLS.vsProj.x, rowCenterY + 24);
   }
 
   // ---- Narrative Bar (2 lines) ----
@@ -307,7 +307,7 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
 
   ctx.textAlign = "left";
   const streaks = team.streaks || [];
-  const narX = x + 28;
+  const narX = x + 24;
   const LINE_H = 42;
   const firstLineY = narY + 38;
 
@@ -317,14 +317,14 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
       : `Season avg: ${(team.ppg || 0).toFixed(2)} PPG`;
     ctx.fillStyle = T.narrativeText;
     ctx.font = "italic 36px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-    ctx.fillText(projText, narX, firstLineY);
+    truncateText(ctx, projText, narX, firstLineY, w - 48);
   } else {
     for (let i = 0; i < Math.min(streaks.length, 2); i++) {
       const s = streaks[i];
       const isBad = s.includes("⚠️") || s.includes("📉") || s.includes("⬇️") || s.includes("🏜️");
       ctx.fillStyle = isBad ? T.negative : "#2C3E50";
       ctx.font = `${isBad ? "600" : "500"} 36px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
-      ctx.fillText(s, narX, firstLineY + i * LINE_H);
+      truncateText(ctx, s, narX, firstLineY + i * LINE_H, w - 48);
     }
   }
 
