@@ -83,7 +83,7 @@ const CARD_RADIUS = 20;
 const LOGO_SIZE = 80;
 const BADGE_SIZE = 30;     // smaller badge overlaid on logo
 const BADGE_RADIUS = 8;
-const GLOW_PAD = 22;
+const GLOW_PAD = 28;      // extra breathing room so Slack doesn't clip glow borders
 
 // 4 columns — tightened for narrower card
 const COLS = {

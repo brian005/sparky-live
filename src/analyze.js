@@ -281,12 +281,12 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       const score = Math.min(70, 40 + Math.round(Math.abs(pctChange) * 0.5));
       candidates.push({ score, text: `📈 3D avg ${avg3d.toFixed(2)} — surging (+${pctChange}% vs season)` });
     } else if (pctChange >= 8) {
-      candidates.push({ score: 30, text: `📈 3D avg ${avg3d.toFixed(2)} (up from ${ppg.toFixed(2)} season)` });
+      candidates.push({ score: 30, text: `📈 3D avg ${avg3d.toFixed(2)} (up from ${ppg.toFixed(2)})` });
     } else if (pctChange <= -20) {
       const score = Math.min(70, 40 + Math.round(Math.abs(pctChange) * 0.5));
       candidates.push({ score, text: `📉 3D avg ${avg3d.toFixed(2)} — slumping (${pctChange}% vs season)`, isBad: true });
     } else if (pctChange <= -8) {
-      candidates.push({ score: 30, text: `📉 3D avg ${avg3d.toFixed(2)} (down from ${ppg.toFixed(2)} season)`, isBad: true });
+      candidates.push({ score: 30, text: `📉 3D avg ${avg3d.toFixed(2)} (down from ${ppg.toFixed(2)})`, isBad: true });
     }
   }
 
@@ -310,9 +310,9 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       const currentPace = projection.projected;
 
       if (currentPace > bestPeriod * 1.05) {
-        candidates.push({ score: 55, cat: "proj", text: `🚀 On pace for best period this season (projected ${currentPace} vs ${Math.round(bestPeriod)} prev best)` });
+        candidates.push({ score: 55, cat: "proj", text: `🚀 Best period pace this season (proj ${currentPace} vs ${Math.round(bestPeriod)} prev)` });
       } else if (currentPace < worstPeriod * 0.95 && allPeriodProjections.length >= 3) {
-        candidates.push({ score: 50, cat: "proj", text: `⚠️ On pace for worst period this season (projected ${currentPace} vs ${Math.round(worstPeriod)} prev worst)`, isBad: true });
+        candidates.push({ score: 50, cat: "proj", text: `⚠️ Worst period pace this season (proj ${currentPace} vs ${Math.round(worstPeriod)} prev)`, isBad: true });
       }
     }
   }
@@ -350,7 +350,7 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     if (allTimeBest > 0 && projection.periodPts > 0) {
       const remaining = allTimeBest - projection.periodPts;
       if (remaining > 0 && remaining <= projection.daysRemaining * 2) {
-        candidates.push({ score: 50, cat: "proj", text: `🏆 ${Math.round(remaining)} pts from matching personal best period` });
+        candidates.push({ score: 50, cat: "proj", text: `🏆 ${Math.round(remaining)} pts from personal best period` });
       }
     }
   }
@@ -393,11 +393,11 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
         const bestEver = pace.bestPace;
         const worstEver = pace.worstPace;
         if (currentSeasonPts > bestEver.totalThroughPeriod) {
-          candidates.push({ score: 65, text: `📈 Best-ever season pace through P${currentPeriod} (prev: ${bestEver.totalThroughPeriod} in ${bestEver.season})` });
+          candidates.push({ score: 65, text: `📈 Best-ever season pace thru P${currentPeriod} (prev: ${bestEver.totalThroughPeriod} in ${bestEver.season})` });
         } else if (currentSeasonPts >= bestEver.totalThroughPeriod * 0.95) {
-          candidates.push({ score: 50, text: `📈 Tracking near best-ever season pace through P${currentPeriod} (record: ${bestEver.totalThroughPeriod} in ${bestEver.season})` });
+          candidates.push({ score: 50, text: `📈 Tracking near best-ever pace thru P${currentPeriod} (prev: ${bestEver.totalThroughPeriod})` });
         } else if (currentSeasonPts < worstEver.totalThroughPeriod * 1.05 && pace.historicalPaces.length >= 4) {
-          candidates.push({ score: 50, text: `📉 Slowest season pace through P${currentPeriod} since ${worstEver.season}` });
+          candidates.push({ score: 50, text: `📉 Slowest season pace thru P${currentPeriod} since ${worstEver.season}` });
         }
       }
     }
@@ -405,13 +405,17 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
     // Period dominance
     const dominance = await getPeriodDominance(currentPeriod, franchise);
     if (dominance.totalOccurrences >= 3) {
-      if (dominance.wins >= 3) {
-        candidates.push({ score: 55, text: `👑 Has won P${currentPeriod} ${dominance.wins} times — most in league history` });
+      if (dominance.wins >= 3 && dominance.topWinner === franchise) {
+        // This franchise truly has the most wins for this period
+        candidates.push({ score: 55, text: `👑 Won P${currentPeriod} ${dominance.wins}x — most in league` });
+      } else if (dominance.wins >= 2 && dominance.topWinner !== franchise) {
+        // Has multiple wins but someone else has more — still interesting, no superlative
+        candidates.push({ score: 40, text: `👑 Has won P${currentPeriod} ${dominance.wins} times` });
       } else if (dominance.wins === 0 && dominance.totalOccurrences >= 5) {
         candidates.push({ score: 70, cat: "cold", text: `🏜️ Has never won a P${currentPeriod} (0-for-${dominance.totalOccurrences} all-time)` });
       } else if (dominance.topWinner && dominance.topWinner !== franchise && dominance.topWinnerWins >= 3) {
         const ownerName = FRANCHISE_TO_OWNER[dominance.topWinner] || dominance.topWinner;
-        candidates.push({ score: 40, text: `📊 P${currentPeriod} belongs to ${ownerName} (${dominance.topWinnerWins} wins all-time)` });
+        candidates.push({ score: 40, text: `📊 P${currentPeriod} belongs to ${ownerName} (${dominance.topWinnerWins} wins)` });
       }
     }
 
@@ -431,9 +435,9 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
         // Current season is determined by the latest period start year (2026 for Oct 2025 - Apr 2026 season)
         const currentSeason = Math.max(...PERIODS.map(p => parseInt(p.start.substring(0, 4))));
         if (streak.lastWin.season >= currentSeason) {
-          candidates.push({ score, cat: "cold", text: `❄️ Hasn't won a period since P${streak.lastWin.period} this season (${streak.streak} periods ago)` });
+          candidates.push({ score, cat: "cold", text: `❄️ ${streak.streak}-period win drought (last: P${streak.lastWin.period} this season)` });
         } else {
-          candidates.push({ score, cat: "cold", text: `❄️ Hasn't won a period since P${streak.lastWin.period} ${streak.lastWin.season} (${streak.streak} periods ago)` });
+          candidates.push({ score, cat: "cold", text: `❄️ ${streak.streak}-period win drought (last: P${streak.lastWin.period} in ${streak.lastWin.season})` });
         }
       }
     }
@@ -487,8 +491,8 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       const sinceLabel = `${parseInt(sinceParts[1])}/${parseInt(sinceParts[2])}`;
 
       const text = isSurprise
-        ? `🔥 Hottest franchise since ${sinceLabel} (+${margin}% over the field) despite #${periodStandings} in period`
-        : `🔥 Hottest franchise since ${sinceLabel} (+${margin}% over the field)`;
+        ? `🔥 Hottest since ${sinceLabel} (+${margin}% over field) despite #${periodStandings}`
+        : `🔥 Hottest franchise since ${sinceLabel} (+${margin}% over field)`;
 
       if (!bestHotInsight || score > bestHotInsight.score) {
         bestHotInsight = { score, cat: "hot", text };
@@ -511,9 +515,9 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       if (leagueRecord && leagueRecord.fpts > 0) {
         const recordHolder = FRANCHISE_NAMES[leagueRecord.franchise] || leagueRecord.franchise;
         if (projection.projected > leagueRecord.fpts) {
-          candidates.push({ score: Math.round(80 * projConfidence), cat: "proj", text: `🏆 Projected ${projection.projected} — would beat all-time P${currentPeriod} record (${Math.round(leagueRecord.fpts)} by ${recordHolder}, ${leagueRecord.season})` });
+          candidates.push({ score: Math.round(80 * projConfidence), cat: "proj", text: `🏆 Proj ${projection.projected} — would beat P${currentPeriod} record (${Math.round(leagueRecord.fpts)}, ${recordHolder})` });
         } else if (projection.projected >= leagueRecord.fpts * 0.9) {
-          candidates.push({ score: Math.round(60 * projConfidence), cat: "proj", text: `🏆 Projected ${projection.projected} — closing on P${currentPeriod} record (${Math.round(leagueRecord.fpts)} by ${recordHolder}, ${leagueRecord.season})` });
+          candidates.push({ score: Math.round(60 * projConfidence), cat: "proj", text: `🏆 Proj ${projection.projected} — closing on P${currentPeriod} record (${Math.round(leagueRecord.fpts)})` });
         }
       }
 
@@ -524,8 +528,7 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
           entry.fpts < worst.fpts ? entry : worst
         );
         if (leagueWorst && projection.projected < leagueWorst.fpts) {
-          const worstHolder = FRANCHISE_NAMES[leagueWorst.franchise] || leagueWorst.franchise;
-          candidates.push({ score: Math.round(65 * projConfidence), cat: "proj", text: `📉 Projected ${projection.projected} — tracking worst P${currentPeriod} in league history (${Math.round(leagueWorst.fpts)} by ${worstHolder}, ${leagueWorst.season})` });
+          candidates.push({ score: Math.round(65 * projConfidence), cat: "proj", text: `📉 Proj ${projection.projected} — tracking worst-ever P${currentPeriod} (${Math.round(leagueWorst.fpts)})` });
         }
       }
     }
@@ -535,9 +538,9 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       const myBest = await getFranchisePeriodBest(currentPeriod, franchise);
       if (myBest && myBest.fpts > 0) {
         if (projection.projected > myBest.fpts) {
-          candidates.push({ score: Math.round(70 * projConfidence), cat: "proj", text: `📈 Projected ${projection.projected} — would be personal best P${currentPeriod} (prev: ${Math.round(myBest.fpts)} in ${myBest.season})` });
+          candidates.push({ score: Math.round(70 * projConfidence), cat: "proj", text: `📈 Proj ${projection.projected} — personal best P${currentPeriod} (prev: ${Math.round(myBest.fpts)} in ${myBest.season})` });
         } else if (projection.projected >= myBest.fpts * 0.9) {
-          candidates.push({ score: Math.round(45 * projConfidence), cat: "proj", text: `📈 Projected ${projection.projected} — nearing personal best P${currentPeriod} (${Math.round(myBest.fpts)} in ${myBest.season})` });
+          candidates.push({ score: Math.round(45 * projConfidence), cat: "proj", text: `📈 Proj ${projection.projected} — nearing best P${currentPeriod} (${Math.round(myBest.fpts)})` });
         }
       }
 
@@ -549,7 +552,7 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
           entry.fpts < worst.fpts ? entry : worst
         );
         if (myWorst && projection.projected < myWorst.fpts) {
-          candidates.push({ score: Math.round(55 * projConfidence), cat: "proj", text: `📉 Projected ${projection.projected} — tracking personal worst P${currentPeriod} (prev: ${Math.round(myWorst.fpts)} in ${myWorst.season})` });
+          candidates.push({ score: Math.round(55 * projConfidence), cat: "proj", text: `📉 Proj ${projection.projected} — tracking worst P${currentPeriod} (prev: ${Math.round(myWorst.fpts)})` });
         }
       }
     }
@@ -676,6 +679,22 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       } else if (ppg) {
         picked.push(`Season avg: ${ppg.toFixed(2)} PPG`);
       }
+    }
+  }
+
+  // ---- Length safety net: flag and shorten any narrative > 45 chars ----
+  const MAX_NAR_LEN = 45;
+  for (let i = 0; i < picked.length; i++) {
+    // Strip emoji prefix for character counting (emojis render ~2 chars wide on canvas)
+    const textOnly = picked[i].replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\uFE0F\s]+/u, '');
+    if (textOnly.length > MAX_NAR_LEN) {
+      console.log(`  ⚠️ Narrative too long (${textOnly.length} chars): "${picked[i]}"`);
+      // Truncate at last space before limit to avoid mid-word cuts
+      const trimTarget = picked[i].length - (textOnly.length - MAX_NAR_LEN);
+      let cut = picked[i].substring(0, trimTarget);
+      const lastSpace = cut.lastIndexOf(' ');
+      if (lastSpace > cut.length - 10) cut = cut.substring(0, lastSpace);
+      picked[i] = cut + '…';
     }
   }
 
