@@ -503,6 +503,65 @@ async function buildNarratives(allDays, franchise, period, todayDayPts, todayGP,
       candidates.push(bestHotInsight);
     }
 
+    // ---- Coldest franchise over rolling window ----
+    // Mirror of hottest: scans same windows, fires if THIS franchise is the coldest
+    // AND the deficit is meaningful.
+    let bestColdInsight = null;
+
+    for (const windowSize of hotWindows) {
+      if (allDays.length < windowSize) continue;
+      const windowDays = allDays.slice(-windowSize);
+
+      const windowTotals = {};
+      for (const day of windowDays) {
+        for (const t of day.teams) {
+          windowTotals[t.franchise] = (windowTotals[t.franchise] || 0) + (t.dayPts || 0);
+        }
+      }
+
+      const windowSorted = Object.entries(windowTotals).sort((a, b) => b[1] - a[1]);
+      if (windowSorted.length < 2) continue;
+
+      const [, topPts] = windowSorted[0];
+      const [trailer, trailerPts] = windowSorted[windowSorted.length - 1];
+      const secondLast = windowSorted[windowSorted.length - 2];
+      const [, secondLastPts] = secondLast || [null, 0];
+
+      // Only care if THIS franchise is the trailer
+      if (trailer !== franchise) continue;
+
+      // Margin behind the field (vs second-last, not the leader — shows how isolated they are)
+      const deficit = secondLastPts > 0 ? Math.round(((secondLastPts - trailerPts) / secondLastPts) * 100) : 0;
+      if (deficit < 10) continue; // Not interesting enough
+
+      // Surprise factor: currently high in period standings despite being coldest
+      const periodStandings = computePeriodRankAtDay(periodDays, franchise);
+      const isSurprise = periodStandings && periodStandings <= 2;
+
+      let score = 30 + Math.min(30, deficit);
+      if (isSurprise) score += 15;
+      if (windowSize >= 10) score += 10;
+      else if (windowSize >= 7) score += 5;
+
+      score = Math.min(80, score);
+
+      const sinceDate = windowDays[0].date;
+      const sinceParts = sinceDate.split("-");
+      const sinceLabel = `${parseInt(sinceParts[1])}/${parseInt(sinceParts[2])}`;
+
+      const text = isSurprise
+        ? `🧊 Coldest since ${sinceLabel} (-${deficit}% vs field) despite #${periodStandings}`
+        : `🧊 Coldest franchise since ${sinceLabel} (-${deficit}% vs field)`;
+
+      if (!bestColdInsight || score > bestColdInsight.score) {
+        bestColdInsight = { score, cat: "cold_window", text, isBad: true };
+      }
+    }
+
+    if (bestColdInsight) {
+      candidates.push(bestColdInsight);
+    }
+
     // Projection confidence: scales 0.4 (day 2) → 1.0 (day 10+)
     // Early projections are noisy and shouldn't dominate
     const projConfidence = projection
