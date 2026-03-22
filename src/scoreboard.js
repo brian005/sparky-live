@@ -322,10 +322,12 @@ function renderCardStrip(ctx, team, logos, x, y, w) {
   } else {
     for (let i = 0; i < Math.min(streaks.length, 2); i++) {
       const s = streaks[i];
-      const isBad = s.includes("⚠️") || s.includes("📉") || s.includes("⬇️") || s.includes("🏜️");
+      // streaks are { text, isBad } objects from assignNarratives
+      const text = typeof s === "string" ? s : s.text;
+      const isBad = typeof s === "string" ? false : !!s.isBad;
       ctx.fillStyle = isBad ? T.negative : "#2C3E50";
       ctx.font = `${isBad ? "600" : "500"} 36px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
-      truncateText(ctx, s, narX, firstLineY + i * LINE_H, w - 48);
+      truncateText(ctx, text, narX, firstLineY + i * LINE_H, w - 48);
     }
   }
 
