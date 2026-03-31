@@ -1,0 +1,49 @@
+{
+  "date": "2022-01-11",
+  "season": "2021-22",
+  "period": null,
+  "teams": [
+    {
+      "franchise": "Cmack's PWN",
+      "name": "Cmack's PWN",
+      "dayPts": 10,
+      "projPts": 10,
+      "gp": 5
+    },
+    {
+      "franchise": "Jason's Gaucho Nation",
+      "name": "Jason's Gaucho Nation",
+      "dayPts": 3,
+      "projPts": 3,
+      "gp": 4
+    },
+    {
+      "franchise": "Richie's Meatspinners",
+      "name": "Richie's Meatspinners",
+      "dayPts": 9,
+      "projPts": 9,
+      "gp": 3
+    },
+    {
+      "franchise": "Brian's Human Garbage",
+      "name": "Brian's Human Garbage",
+      "dayPts": 9,
+      "projPts": 9,
+      "gp": 2
+    },
+    {
+      "franchise": "Graeme's Downtown Demons",
+      "name": "Graeme's Downtown Demons",
+      "dayPts": 1,
+      "projPts": 1,
+      "gp": 0
+    },
+    {
+      "franchise": "Matt's TBA",
+      "name": "Matt's TBA",
+      "dayPts": 6,
+      "projPts": 6,
+      "gp": 4
+    }
+  ]
+}

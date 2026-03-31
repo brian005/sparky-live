@@ -1,0 +1,49 @@
+{
+  "date": "2020-01-19",
+  "season": "2019-20",
+  "period": null,
+  "teams": [
+    {
+      "franchise": "Cmack's PWN",
+      "name": "Cmack's PWN",
+      "dayPts": 6,
+      "projPts": 6,
+      "gp": 3
+    },
+    {
+      "franchise": "Brian's Yummy Babies",
+      "name": "Brian's Yummy Babies",
+      "dayPts": 4,
+      "projPts": 4,
+      "gp": 0
+    },
+    {
+      "franchise": "Jason's Gaucho Nation",
+      "name": "Jason's Gaucho Nation",
+      "dayPts": 1,
+      "projPts": 1,
+      "gp": 0
+    },
+    {
+      "franchise": "Matt's Ice Bandits",
+      "name": "Matt's Ice Bandits",
+      "dayPts": 1,
+      "projPts": 1,
+      "gp": 3
+    },
+    {
+      "franchise": "Graeme's Downtown Demons",
+      "name": "Graeme's Downtown Demons",
+      "dayPts": 2,
+      "projPts": 2,
+      "gp": 0
+    },
+    {
+      "franchise": "Richie's Meatspinners",
+      "name": "Richie's Meatspinners",
+      "dayPts": 0,
+      "projPts": 0,
+      "gp": 2
+    }
+  ]
+}

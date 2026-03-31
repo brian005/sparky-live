@@ -1,0 +1,49 @@
+{
+  "date": "2023-03-11",
+  "season": "2022-23",
+  "period": null,
+  "teams": [
+    {
+      "franchise": "Cmack's PWN",
+      "name": "Cmack's PWN",
+      "dayPts": 14,
+      "projPts": 14,
+      "gp": 11
+    },
+    {
+      "franchise": "Richie's Meatspinners",
+      "name": "Richie's Meatspinners",
+      "dayPts": 15,
+      "projPts": 15,
+      "gp": 9
+    },
+    {
+      "franchise": "Graeme's Downtown Demons",
+      "name": "Graeme's Downtown Demons",
+      "dayPts": 19,
+      "projPts": 19,
+      "gp": 9
+    },
+    {
+      "franchise": "Jason's Gaucho Nation",
+      "name": "Jason's Gaucho Nation",
+      "dayPts": 9,
+      "projPts": 9,
+      "gp": 9
+    },
+    {
+      "franchise": "Brian's BAD HOKEY",
+      "name": "Brian's BAD HOKEY",
+      "dayPts": 6,
+      "projPts": 6,
+      "gp": 9
+    },
+    {
+      "franchise": "Matt's Friendos",
+      "name": "Matt's Friendos",
+      "dayPts": 14,
+      "projPts": 14,
+      "gp": 8
+    }
+  ]
+}

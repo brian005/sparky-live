@@ -1,0 +1,49 @@
+{
+  "date": "2018-01-30",
+  "season": "2017-18",
+  "period": null,
+  "teams": [
+    {
+      "franchise": "Cmack's PWN",
+      "name": "Cmack's PWN",
+      "dayPts": 9,
+      "projPts": 9,
+      "gp": 6
+    },
+    {
+      "franchise": "Graeme's Downtown Demons",
+      "name": "Graeme's Downtown Demons",
+      "dayPts": 11,
+      "projPts": 11,
+      "gp": 2
+    },
+    {
+      "franchise": "Jason's Gaucho Nation",
+      "name": "Jason's Gaucho Nation",
+      "dayPts": 6,
+      "projPts": 6,
+      "gp": 3
+    },
+    {
+      "franchise": "Matt's Ice Bandits",
+      "name": "Matt's Ice Bandits",
+      "dayPts": 9,
+      "projPts": 9,
+      "gp": 3
+    },
+    {
+      "franchise": "Brian's Glue Factory",
+      "name": "Brian's Glue Factory",
+      "dayPts": 7,
+      "projPts": 7,
+      "gp": 4
+    },
+    {
+      "franchise": "Richie's Meatspinners",
+      "name": "Richie's Meatspinners",
+      "dayPts": 5,
+      "projPts": 5,
+      "gp": 4
+    }
+  ]
+}

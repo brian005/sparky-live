@@ -467,4 +467,232 @@ async function scrapeStandings({ username, password, page: existingPage }) {
   return standings;
 }
 
-module.exports = { scrapeLiveScoring, scrapeStandings, buildLiveScoringUrl };
+module.exports = { scrapeLiveScoring, scrapeStandings, buildLiveScoringUrl, launchAndLogin, scrapeDateFromPage };
+
+/**
+ * Launch browser and login to Fantrax. Returns { browser, page }.
+ * Caller is responsible for closing the browser when done.
+ * Uses the exact same login flow as scrapeLiveScoring.
+ */
+async function launchAndLogin({ username, password, headless = true }) {
+  console.log(`[scrape] Launching browser (headless: ${headless})...`);
+
+  const browser = await puppeteer.launch({
+    headless: headless ? "new" : false,
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu"
+    ]
+  });
+
+  const page = await browser.newPage();
+  await page.setViewport({ width: 1400, height: 900 });
+  await page.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+  );
+
+  console.log("[scrape] Navigating to login page...");
+  await page.goto(FANTRAX_LOGIN_URL, { waitUntil: "networkidle2", timeout: 30000 });
+  await new Promise(r => setTimeout(r, 3000));
+
+  let dialogOpen = await page.$("mat-dialog-container, .mat-mdc-dialog-container");
+  if (!dialogOpen) {
+    console.log("[scrape] Login dialog not open, looking for Login button...");
+    const loginTrigger = await page.evaluate(() => {
+      const buttons = Array.from(document.querySelectorAll("button, a"));
+      const loginBtn = buttons.find(b => b.textContent.trim().toLowerCase() === "login");
+      if (loginBtn) { loginBtn.click(); return true; }
+      return false;
+    });
+    if (loginTrigger) {
+      console.log("[scrape] Clicked Login button, waiting for dialog...");
+      await new Promise(r => setTimeout(r, 2000));
+    }
+  }
+
+  try {
+    await page.waitForSelector("mat-dialog-container input, .mat-mdc-dialog-container input, .mat-mdc-form-field input, input[matinput], input.mat-mdc-input-element", { timeout: 15000 });
+  } catch (e) {
+    await page.screenshot({ path: "debug-login-page.png", fullPage: true });
+    const pageInfo = await page.evaluate(() => ({
+      url: window.location.href,
+      title: document.title,
+      hasDialog: !!document.querySelector("mat-dialog-container"),
+      inputCount: document.querySelectorAll("input").length,
+      bodyText: document.body.innerText.substring(0, 500)
+    }));
+    throw new Error("Login dialog inputs not found. Page info: " + JSON.stringify(pageInfo));
+  }
+
+  console.log("[scrape] Login dialog found, filling credentials...");
+
+  const allInputs = await page.$$("mat-dialog-container input, .mat-mdc-dialog-container input");
+  let emailInput, passwordInput;
+  if (allInputs.length >= 2) {
+    emailInput = allInputs[0];
+    passwordInput = allInputs[1];
+  } else {
+    const textInputs = await page.$$('input[type="text"], input[type="email"], input:not([type="password"]):not([type="hidden"])');
+    passwordInput = await page.$('input[type="password"]');
+    emailInput = textInputs.length > 0 ? textInputs[0] : null;
+  }
+
+  if (!emailInput || !passwordInput) {
+    await page.screenshot({ path: "debug-login-form.png", fullPage: true });
+    throw new Error("Could not find login inputs.");
+  }
+
+  await emailInput.click({ clickCount: 3 });
+  await emailInput.type(username, { delay: 30 });
+  await new Promise(r => setTimeout(r, 500));
+
+  await passwordInput.click({ clickCount: 3 });
+  await passwordInput.type(password, { delay: 30 });
+  await new Promise(r => setTimeout(r, 500));
+
+  const loginClicked = await page.evaluate(() => {
+    const dialogActions = document.querySelector("mat-dialog-actions, mat-mdc-dialog-actions, .mat-mdc-dialog-actions, .mat-dialog-actions");
+    if (dialogActions) {
+      const buttons = dialogActions.querySelectorAll("button");
+      for (const btn of buttons) {
+        if (btn.textContent.trim().toLowerCase().includes("login")) { btn.click(); return "found in dialog-actions"; }
+      }
+    }
+    const allButtons = document.querySelectorAll("button");
+    for (const btn of allButtons) {
+      if (btn.textContent.trim().toLowerCase() === "login" && btn.offsetParent !== null) { btn.click(); return "found by text match"; }
+    }
+    const dialog = document.querySelector("mat-dialog-container, .mat-mdc-dialog-container, .cdk-overlay-pane");
+    if (dialog) {
+      const buttons = dialog.querySelectorAll("button");
+      for (const btn of buttons) {
+        if (btn.textContent.trim().toLowerCase().includes("login") || btn.classList.contains("mat-primary")) { btn.click(); return "found in dialog container"; }
+      }
+      if (buttons.length > 0) { buttons[buttons.length - 1].click(); return "clicked last dialog button"; }
+    }
+    return null;
+  });
+
+  if (loginClicked) {
+    console.log(`[scrape] Clicked Login button (${loginClicked}).`);
+  } else {
+    console.log("[scrape] No Login button found, pressing Enter...");
+    await passwordInput.press("Enter");
+  }
+
+  console.log("[scrape] Logging in...");
+  await page.waitForNavigation({ waitUntil: "networkidle2", timeout: 30000 }).catch(() => {
+    console.log("[scrape] Navigation timeout after login — continuing anyway...");
+  });
+  await new Promise(r => setTimeout(r, 5000));
+
+  const currentUrl = page.url();
+  console.log("[scrape] Current URL after login: " + currentUrl);
+
+  if (currentUrl.includes("/login")) {
+    await page.screenshot({ path: "debug-login-failed.png", fullPage: true });
+    throw new Error("Login failed — still on login page.");
+  }
+
+  console.log("[scrape] Login successful.");
+  return { browser, page };
+}
+
+/**
+ * Scrape a single date from a given league using an already-logged-in page.
+ * Returns { teams: [...] } or null if no data for that date.
+ */
+async function scrapeDateFromPage(page, leagueId, date) {
+  const url = `https://www.fantrax.com/fantasy/league/${leagueId}/livescoring;viewType=1;date=${date}`;
+
+  try {
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
+  } catch (e) {
+    return null;
+  }
+
+  try {
+    await page.waitForSelector("section.matchup-list", { timeout: 10000 });
+  } catch (e) {
+    return null;
+  }
+
+  // DOM stability detection — wait until the page content stops changing.
+  // Older leagues can be slow to populate scores via Angular data binding.
+  let lastFingerprint = "";
+  let stableCount = 0;
+  for (let attempt = 0; attempt < 10; attempt++) {
+    await new Promise(r => setTimeout(r, 1500));
+    const fingerprint = await page.evaluate(() => {
+      const sections = document.querySelectorAll("section.matchup-list");
+      return Array.from(sections).map(s => s.textContent.trim()).join("|");
+    });
+    if (fingerprint === lastFingerprint) {
+      stableCount++;
+      if (stableCount >= 2) break;  // Same content 2 checks in a row = stable
+    } else {
+      stableCount = 0;
+    }
+    lastFingerprint = fingerprint;
+  }
+
+  const teams = await page.evaluate(() => {
+    const sections = document.querySelectorAll("section.matchup-list");
+    const results = [];
+
+    sections.forEach((section, index) => {
+      const nameEl = section.querySelector("h4.matchup-list__name");
+      const name = nameEl ? nameEl.textContent.trim() : `Unknown Team ${index + 1}`;
+
+      const seasonEl = section.querySelector("h2.matchup-list__score-primary--title") ||
+                       section.querySelector("h2:not([class*='alt'])");
+      let seasonPts = 0;
+      if (seasonEl) {
+        const nums = seasonEl.textContent.match(/[\d.]+/g);
+        if (nums && nums.length > 0) seasonPts = parseFloat(nums[nums.length - 1]) || 0;
+      }
+
+      const dayEl = section.querySelector("h2.matchup-list__score-primary--alt") ||
+                    section.querySelector("[class*='score-primary--alt']");
+      let dayPts = 0;
+      if (dayEl) {
+        const nums = dayEl.textContent.match(/[\d.]+/g);
+        if (nums && nums.length > 0) dayPts = parseFloat(nums[nums.length - 1]) || 0;
+      }
+
+      const projEl = section.querySelector("h3.matchup-list__score-secondary");
+      let projectedFpg = 0;
+      if (projEl) {
+        const nums = projEl.textContent.match(/[\d.]+/g);
+        if (nums && nums.length > 0) projectedFpg = parseFloat(nums[nums.length - 1]) || 0;
+      }
+
+      let gp = 0;
+      const gameInfoEl = section.querySelector("player-game-info, .player-game-info, .matchup-list__game-info");
+      if (gameInfoEl) {
+        const iTags = gameInfoEl.querySelectorAll("i");
+        if (iTags.length >= 1) gp = parseInt(iTags[0].textContent.trim()) || 0;
+      }
+      if (gp === 0) {
+        const rosterInfoEl = section.querySelector(".matchup-list__roster-info, .roster-info");
+        if (rosterInfoEl) {
+          const nums = rosterInfoEl.textContent.match(/\d+/g);
+          if (nums && nums.length >= 1) gp = parseInt(nums[0], 10) || 0;
+        }
+      }
+
+      results.push({ rank: index + 1, name, seasonPts, dayPts, projectedFpg, gp });
+    });
+
+    return results;
+  });
+
+  if (teams.length === 0) return null;
+
+  const totalPts = teams.reduce((sum, t) => sum + (t.dayPts || 0), 0);
+  if (totalPts === 0) return null;
+
+  return { teams };
+}

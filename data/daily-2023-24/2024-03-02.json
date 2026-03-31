@@ -1,0 +1,49 @@
+{
+  "date": "2024-03-02",
+  "season": "2023-24",
+  "period": null,
+  "teams": [
+    {
+      "franchise": "Cmack's PWN",
+      "name": "Cmack's PWN",
+      "dayPts": 11,
+      "projPts": 11,
+      "gp": 11
+    },
+    {
+      "franchise": "Richie's Meatspinners",
+      "name": "Richie's Meatspinners",
+      "dayPts": 11,
+      "projPts": 11,
+      "gp": 11
+    },
+    {
+      "franchise": "Jason's Gaucho Nation",
+      "name": "Jason's Gaucho Nation",
+      "dayPts": 5,
+      "projPts": 5,
+      "gp": 7
+    },
+    {
+      "franchise": "Graeme's Downtown Demons",
+      "name": "Graeme's Downtown Demons",
+      "dayPts": 9,
+      "projPts": 9,
+      "gp": 10
+    },
+    {
+      "franchise": "Brian's Future Conshiterations",
+      "name": "Brian's Future Conshiterations",
+      "dayPts": 5,
+      "projPts": 5,
+      "gp": 8
+    },
+    {
+      "franchise": "Matt's mid tier perpetual projects",
+      "name": "Matt's mid tier perpetual projects",
+      "dayPts": 7,
+      "projPts": 7,
+      "gp": 6
+    }
+  ]
+}

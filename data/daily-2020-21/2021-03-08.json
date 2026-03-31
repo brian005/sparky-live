@@ -1,0 +1,49 @@
+{
+  "date": "2021-03-08",
+  "season": "2020-21",
+  "period": null,
+  "teams": [
+    {
+      "franchise": "Cmack's PWN",
+      "name": "Cmack's PWN",
+      "dayPts": 4,
+      "projPts": 4,
+      "gp": 2
+    },
+    {
+      "franchise": "Jason's Gaucho Nation",
+      "name": "Jason's Gaucho Nation",
+      "dayPts": 3,
+      "projPts": 3,
+      "gp": 2
+    },
+    {
+      "franchise": "Richie's Meatspinners",
+      "name": "Richie's Meatspinners",
+      "dayPts": 5,
+      "projPts": 5,
+      "gp": 4
+    },
+    {
+      "franchise": "Matt's Ice Bandits",
+      "name": "Matt's Ice Bandits",
+      "dayPts": 1,
+      "projPts": 1,
+      "gp": 0
+    },
+    {
+      "franchise": "Brian's Human Garbage",
+      "name": "Brian's Human Garbage",
+      "dayPts": 1,
+      "projPts": 1,
+      "gp": 2
+    },
+    {
+      "franchise": "Graeme's Downtown Demons",
+      "name": "Graeme's Downtown Demons",
+      "dayPts": 1,
+      "projPts": 1,
+      "gp": 3
+    }
+  ]
+}

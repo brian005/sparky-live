@@ -1,0 +1,42 @@
+{
+  "date": "2016-11-23",
+  "season": "2016-17",
+  "period": null,
+  "teams": [
+    {
+      "franchise": "Cmack's PWN",
+      "name": "Cmack's PWN",
+      "dayPts": 11,
+      "projPts": 11,
+      "gp": 7
+    },
+    {
+      "franchise": "Graeme's Downtown Demons",
+      "name": "Graeme's Downtown Demons",
+      "dayPts": 7,
+      "projPts": 7,
+      "gp": 1
+    },
+    {
+      "franchise": "Jason's Gaucho Nation",
+      "name": "Jason's Gaucho Nation",
+      "dayPts": 15,
+      "projPts": 15,
+      "gp": 3
+    },
+    {
+      "franchise": "Matt's Meat & Potatoes",
+      "name": "Matt's Meat & Potatoes",
+      "dayPts": 6,
+      "projPts": 6,
+      "gp": 5
+    },
+    {
+      "franchise": "Brian's Glue Factory",
+      "name": "Brian's Glue Factory",
+      "dayPts": 5,
+      "projPts": 5,
+      "gp": 1
+    }
+  ]
+}

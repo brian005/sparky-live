@@ -49,9 +49,25 @@ async function main() {
   }
 
   // Auto-detect date and period.
-  // Use Pacific time — the cron targets ~10:30 PM PST, which is still the same
-  // calendar day as the games. Eastern time would roll to the next day.
-  const today = config.targetDate || new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  // The cron targets ~10:30 PM PT but GitHub Actions can delay 30+ min,
+  // sometimes pushing past midnight. If running between midnight and 6 AM PT,
+  // the games we want belong to yesterday — roll the date back.
+  let today;
+  if (config.targetDate) {
+    today = config.targetDate;
+  } else {
+    const nowPT = new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" });
+    const ptDate = new Date(nowPT);
+    const ptHour = ptDate.getHours();
+
+    if (ptHour < 6) {
+      // Past midnight — roll back to yesterday (the actual game night)
+      ptDate.setDate(ptDate.getDate() - 1);
+      console.log(`⏰ Late cron detected (${ptHour}:xx AM PT) — using yesterday's date.`);
+    }
+
+    today = ptDate.toLocaleDateString("en-CA");
+  }
   const period = getPeriodForDate(today);
 
   if (!period) {

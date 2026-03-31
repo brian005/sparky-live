@@ -1,0 +1,39 @@
+# .github/workflows/scorigami.yml
+# Morning scorigami check — posts to #chat if any new (pts, GP) combos occurred last night
+name: Scorigami Check
+
+on:
+  schedule:
+    # 8:00 AM PT = 15:00 UTC (or 16:00 UTC during DST)
+    - cron: '0 15 * * *'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Date to check (YYYY-MM-DD), defaults to yesterday'
+        required: false
+
+jobs:
+  scorigami:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run scorigami check
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          DATE_ARG="${{ github.event.inputs.date }}"
+          if [ -n "$DATE_ARG" ]; then
+            node src/scorigami.js "$DATE_ARG"
+          else
+            node src/scorigami.js
+          fi

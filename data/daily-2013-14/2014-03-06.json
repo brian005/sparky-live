@@ -1,0 +1,35 @@
+{
+  "date": "2014-03-06",
+  "season": "2013-14",
+  "period": null,
+  "teams": [
+    {
+      "franchise": "Jason's Bang Gang",
+      "name": "Jason's Bang Gang",
+      "dayPts": 7,
+      "projPts": 7,
+      "gp": 2
+    },
+    {
+      "franchise": "Chris' Crew",
+      "name": "Chris' Crew",
+      "dayPts": 13,
+      "projPts": 13,
+      "gp": 4
+    },
+    {
+      "franchise": "Brian's Boyz",
+      "name": "Brian's Boyz",
+      "dayPts": 4,
+      "projPts": 4,
+      "gp": 1
+    },
+    {
+      "franchise": "Matty's Little Heroes",
+      "name": "Matty's Little Heroes",
+      "dayPts": 9,
+      "projPts": 9,
+      "gp": 2
+    }
+  ]
+}

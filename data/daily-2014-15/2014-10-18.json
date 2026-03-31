@@ -1,0 +1,42 @@
+{
+  "date": "2014-10-18",
+  "season": "2014-15",
+  "period": null,
+  "teams": [
+    {
+      "franchise": "Jason's Gaucho Nation",
+      "name": "Jason's Gaucho Nation",
+      "dayPts": 18,
+      "projPts": 18,
+      "gp": 2
+    },
+    {
+      "franchise": "Graeme's Downtown Demons",
+      "name": "Graeme's Downtown Demons",
+      "dayPts": 9,
+      "projPts": 9,
+      "gp": 4
+    },
+    {
+      "franchise": "CMack's PWN",
+      "name": "CMack's PWN",
+      "dayPts": 14,
+      "projPts": 14,
+      "gp": 2
+    },
+    {
+      "franchise": "Brian's Boitanos",
+      "name": "Brian's Boitanos",
+      "dayPts": 9,
+      "projPts": 9,
+      "gp": 1
+    },
+    {
+      "franchise": "Matt's Cascadia Crew",
+      "name": "Matt's Cascadia Crew",
+      "dayPts": 3,
+      "projPts": 3,
+      "gp": 2
+    }
+  ]
+}
