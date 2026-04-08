@@ -1,0 +1,66 @@
+{
+  "date": "2026-04-07",
+  "period": 13,
+  "teams": [
+    {
+      "franchise": "JGC",
+      "name": "Jason's Gaucho Chudpumpers",
+      "dayPts": 7,
+      "projPts": 9.8,
+      "gp": 9,
+      "periodGP": 1,
+      "periodGPRemaining": 0,
+      "periodTotalGP": 1
+    },
+    {
+      "franchise": "MPP",
+      "name": "Matt's mid tier perpetual projects",
+      "dayPts": 9,
+      "projPts": 9.76,
+      "gp": 9,
+      "periodGP": 1,
+      "periodGPRemaining": 0,
+      "periodTotalGP": 1
+    },
+    {
+      "franchise": "GDD",
+      "name": "Graeme's Downtown Demons",
+      "dayPts": 14,
+      "projPts": 8.51,
+      "gp": 9,
+      "periodGP": 2,
+      "periodGPRemaining": 0,
+      "periodTotalGP": 2
+    },
+    {
+      "franchise": "PWN",
+      "name": "Cmack's PWN",
+      "dayPts": 7,
+      "projPts": 7.26,
+      "gp": 10,
+      "periodGP": 3,
+      "periodGPRemaining": 0,
+      "periodTotalGP": 3
+    },
+    {
+      "franchise": "RMS",
+      "name": "Richie's Meatspinners",
+      "dayPts": 7,
+      "projPts": 7.63,
+      "gp": 10,
+      "periodGP": 1,
+      "periodGPRemaining": 0,
+      "periodTotalGP": 1
+    },
+    {
+      "franchise": "BEW",
+      "name": "Brian's Endless Winter",
+      "dayPts": 9,
+      "projPts": 9.6,
+      "gp": 12,
+      "periodGP": 0,
+      "periodGPRemaining": 0,
+      "periodTotalGP": 0
+    }
+  ]
+}
