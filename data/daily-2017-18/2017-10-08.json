@@ -22,28 +22,28 @@
       "name": "Jason's Gaucho Nation",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "Matt's Ice Bandits",
       "name": "Matt's Ice Bandits",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "Brian's Glue Factory",
       "name": "Brian's Glue Factory",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 0
+      "gp": 2
     },
     {
       "franchise": "Richie's Meatspinners",
       "name": "Richie's Meatspinners",
       "dayPts": 2,
       "projPts": 2,
-      "gp": 1
+      "gp": 2
     }
   ]
 }

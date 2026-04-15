@@ -15,21 +15,21 @@
       "name": "Chris' Crew",
       "dayPts": 1,
       "projPts": 1,
-      "gp": 1
+      "gp": 2
     },
     {
       "franchise": "Brian's Boyz",
       "name": "Brian's Boyz",
       "dayPts": 3,
       "projPts": 3,
-      "gp": 0
+      "gp": 4
     },
     {
       "franchise": "Matty's Little Heroes",
       "name": "Matty's Little Heroes",
       "dayPts": 3,
       "projPts": 3,
-      "gp": 2
+      "gp": 3
     }
   ]
 }

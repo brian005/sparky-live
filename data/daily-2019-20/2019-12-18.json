@@ -15,21 +15,21 @@
       "name": "Brian's Yummy Babies",
       "dayPts": 4,
       "projPts": 4,
-      "gp": 1
+      "gp": 5
     },
     {
       "franchise": "Jason's Gaucho Nation",
       "name": "Jason's Gaucho Nation",
       "dayPts": 4,
       "projPts": 4,
-      "gp": 1
+      "gp": 3
     },
     {
       "franchise": "Matt's Ice Bandits",
       "name": "Matt's Ice Bandits",
       "dayPts": 1,
       "projPts": 1,
-      "gp": 1
+      "gp": 2
     },
     {
       "franchise": "Graeme's Downtown Demons",
@@ -43,7 +43,7 @@
       "name": "Richie's Meatspinners",
       "dayPts": 4,
       "projPts": 4,
-      "gp": 1
+      "gp": 5
     }
   ]
 }

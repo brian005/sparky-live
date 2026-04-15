@@ -29,21 +29,21 @@
       "name": "Brian's Human Garbage",
       "dayPts": 1,
       "projPts": 1,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "Graeme's Downtown Demons",
       "name": "Graeme's Downtown Demons",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "Matt's TBA",
       "name": "Matt's TBA",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 0
+      "gp": 1
     }
   ]
 }

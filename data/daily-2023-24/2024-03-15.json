@@ -29,21 +29,21 @@
       "name": "Graeme's Downtown Demons",
       "dayPts": 1,
       "projPts": 1,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "Brian's Future Conshiterations",
       "name": "Brian's Future Conshiterations",
       "dayPts": 2,
       "projPts": 2,
-      "gp": 2
+      "gp": 3
     },
     {
       "franchise": "Matt's mid tier perpetual projects",
       "name": "Matt's mid tier perpetual projects",
       "dayPts": 7,
       "projPts": 7,
-      "gp": 4
+      "gp": 5
     }
   ]
 }

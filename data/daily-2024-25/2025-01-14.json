@@ -1,0 +1,49 @@
+{
+  "date": "2025-01-14",
+  "season": "2024-25",
+  "period": null,
+  "teams": [
+    {
+      "franchise": "Matt's mid tier perpetual projects",
+      "name": "Matt's mid tier perpetual projects",
+      "dayPts": 14,
+      "projPts": 14,
+      "gp": 11
+    },
+    {
+      "franchise": "Jason's Gaucho Chudpumpers",
+      "name": "Jason's Gaucho Chudpumpers",
+      "dayPts": 3,
+      "projPts": 3,
+      "gp": 15
+    },
+    {
+      "franchise": "Richie's Meatspinners",
+      "name": "Richie's Meatspinners",
+      "dayPts": 16,
+      "projPts": 16,
+      "gp": 12
+    },
+    {
+      "franchise": "Brian's.Endless.Win ter.S12E01.720p.mp4",
+      "name": "Brian's.Endless.Win ter.S12E01.720p.mp4",
+      "dayPts": 0,
+      "projPts": 0,
+      "gp": 10
+    },
+    {
+      "franchise": "Graeme's Downtown Demons",
+      "name": "Graeme's Downtown Demons",
+      "dayPts": 9,
+      "projPts": 9,
+      "gp": 10
+    },
+    {
+      "franchise": "Cmack's PWN",
+      "name": "Cmack's PWN",
+      "dayPts": 9,
+      "projPts": 9,
+      "gp": 9
+    }
+  ]
+}

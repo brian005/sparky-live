@@ -29,21 +29,21 @@
       "name": "Matt's Ice Bandits",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "Brian's Glue Factory",
       "name": "Brian's Glue Factory",
       "dayPts": 1,
       "projPts": 1,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "Richie's Meatspinners",
       "name": "Richie's Meatspinners",
       "dayPts": 2,
       "projPts": 2,
-      "gp": 1
+      "gp": 3
     }
   ]
 }

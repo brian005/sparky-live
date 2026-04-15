@@ -8,21 +8,21 @@
       "name": "Cmack's PWN",
       "dayPts": 4,
       "projPts": 4,
-      "gp": 6
+      "gp": 10
     },
     {
       "franchise": "Richie's Meatspinners",
       "name": "Richie's Meatspinners",
       "dayPts": 3,
       "projPts": 3,
-      "gp": 6
+      "gp": 8
     },
     {
       "franchise": "Jason's Gaucho Nation",
       "name": "Jason's Gaucho Nation",
       "dayPts": 10,
       "projPts": 10,
-      "gp": 4
+      "gp": 9
     },
     {
       "franchise": "Graeme's Downtown Demons",
@@ -36,14 +36,14 @@
       "name": "Brian's Future Conshiterations",
       "dayPts": 7,
       "projPts": 7,
-      "gp": 2
+      "gp": 4
     },
     {
       "franchise": "Matt's mid tier perpetual projects",
       "name": "Matt's mid tier perpetual projects",
       "dayPts": 5,
       "projPts": 5,
-      "gp": 8
+      "gp": 10
     }
   ]
 }

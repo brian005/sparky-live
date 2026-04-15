@@ -8,35 +8,35 @@
       "name": "Cmack's PWN",
       "dayPts": 1,
       "projPts": 1,
-      "gp": 3
+      "gp": 5
     },
     {
       "franchise": "Graeme's Downtown Demons",
       "name": "Graeme's Downtown Demons",
       "dayPts": 8,
       "projPts": 8,
-      "gp": 1
+      "gp": 8
     },
     {
       "franchise": "Jason's Gaucho Nation",
       "name": "Jason's Gaucho Nation",
       "dayPts": 9,
       "projPts": 9,
-      "gp": 2
+      "gp": 12
     },
     {
       "franchise": "Matt's Meat & Potatoes",
       "name": "Matt's Meat & Potatoes",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 1
+      "gp": 8
     },
     {
       "franchise": "Brian's Glue Factory",
       "name": "Brian's Glue Factory",
       "dayPts": 8,
       "projPts": 8,
-      "gp": 1
+      "gp": 11
     }
   ]
 }

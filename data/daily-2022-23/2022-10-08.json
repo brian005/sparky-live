@@ -15,7 +15,7 @@
       "name": "Richie's Meatspinners",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "Graeme's Downtown Demons",
@@ -29,7 +29,7 @@
       "name": "Jason's Gaucho Nation",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "Brian's BAD HOKEY",
@@ -43,7 +43,7 @@
       "name": "Matt's Friendos",
       "dayPts": 2,
       "projPts": 2,
-      "gp": 1
+      "gp": 2
     }
   ]
 }

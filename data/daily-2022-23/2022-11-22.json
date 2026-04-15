@@ -22,14 +22,14 @@
       "name": "Graeme's Downtown Demons",
       "dayPts": 2,
       "projPts": 2,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "Jason's Gaucho Nation",
       "name": "Jason's Gaucho Nation",
       "dayPts": 8,
       "projPts": 8,
-      "gp": 4
+      "gp": 5
     },
     {
       "franchise": "Brian's BAD HOKEY",
@@ -43,7 +43,7 @@
       "name": "Matt's Friendos",
       "dayPts": 3,
       "projPts": 3,
-      "gp": 1
+      "gp": 2
     }
   ]
 }

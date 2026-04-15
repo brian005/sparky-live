@@ -8,14 +8,14 @@
       "name": "Cmack's PWN",
       "dayPts": 3,
       "projPts": 3,
-      "gp": 0
+      "gp": 4
     },
     {
       "franchise": "Jason's Gaucho Nation",
       "name": "Jason's Gaucho Nation",
       "dayPts": 3,
       "projPts": 3,
-      "gp": 2
+      "gp": 6
     },
     {
       "franchise": "Richie's Meatspinners",
@@ -29,21 +29,21 @@
       "name": "Matt's Ice Bandits",
       "dayPts": 1,
       "projPts": 1,
-      "gp": 2
+      "gp": 3
     },
     {
       "franchise": "Brian's Human Garbage",
       "name": "Brian's Human Garbage",
       "dayPts": 2,
       "projPts": 2,
-      "gp": 1
+      "gp": 4
     },
     {
       "franchise": "Graeme's Downtown Demons",
       "name": "Graeme's Downtown Demons",
       "dayPts": 2,
       "projPts": 2,
-      "gp": 0
+      "gp": 3
     }
   ]
 }

@@ -15,7 +15,7 @@
       "name": "Jason's Gaucho Nation",
       "dayPts": 3,
       "projPts": 3,
-      "gp": 1
+      "gp": 3
     },
     {
       "franchise": "Richie's Meatspinners",
@@ -29,21 +29,21 @@
       "name": "Brian's Human Garbage",
       "dayPts": 6,
       "projPts": 6,
-      "gp": 2
+      "gp": 5
     },
     {
       "franchise": "Graeme's Downtown Demons",
       "name": "Graeme's Downtown Demons",
       "dayPts": 2,
       "projPts": 2,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "Matt's TBA",
       "name": "Matt's TBA",
       "dayPts": 1,
       "projPts": 1,
-      "gp": 0
+      "gp": 1
     }
   ]
 }

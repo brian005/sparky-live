@@ -15,14 +15,14 @@
       "name": "Jason's Gaucho Nation",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 0
+      "gp": 1
     },
     {
       "franchise": "Richie's Meatspinners",
       "name": "Richie's Meatspinners",
       "dayPts": 1,
       "projPts": 1,
-      "gp": 1
+      "gp": 2
     },
     {
       "franchise": "Brian's Human Garbage",
@@ -43,7 +43,7 @@
       "name": "Matt's TBA",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 0
+      "gp": 1
     }
   ]
 }

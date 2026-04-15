@@ -8,28 +8,28 @@
       "name": "Jason's Bang Gang",
       "dayPts": 3,
       "projPts": 3,
-      "gp": 2
+      "gp": 4
     },
     {
       "franchise": "Chris' Crew",
       "name": "Chris' Crew",
       "dayPts": 3,
       "projPts": 3,
-      "gp": 1
+      "gp": 3
     },
     {
       "franchise": "Brian's Boyz",
       "name": "Brian's Boyz",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 0
+      "gp": 2
     },
     {
       "franchise": "Matty's Little Heroes",
       "name": "Matty's Little Heroes",
       "dayPts": 2,
       "projPts": 2,
-      "gp": 0
+      "gp": 4
     }
   ]
 }

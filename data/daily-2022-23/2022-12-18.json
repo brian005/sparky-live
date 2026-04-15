@@ -8,14 +8,14 @@
       "name": "Cmack's PWN",
       "dayPts": 4,
       "projPts": 4,
-      "gp": 3
+      "gp": 4
     },
     {
       "franchise": "Richie's Meatspinners",
       "name": "Richie's Meatspinners",
       "dayPts": 11,
       "projPts": 11,
-      "gp": 4
+      "gp": 7
     },
     {
       "franchise": "Graeme's Downtown Demons",
@@ -36,14 +36,14 @@
       "name": "Brian's BAD HOKEY",
       "dayPts": 11,
       "projPts": 11,
-      "gp": 4
+      "gp": 8
     },
     {
       "franchise": "Matt's Friendos",
       "name": "Matt's Friendos",
       "dayPts": 1,
       "projPts": 1,
-      "gp": 1
+      "gp": 2
     }
   ]
 }

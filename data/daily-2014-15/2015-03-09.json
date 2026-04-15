@@ -8,35 +8,35 @@
       "name": "Jason's Gaucho Nation",
       "dayPts": 2,
       "projPts": 2,
-      "gp": 1
+      "gp": 6
     },
     {
       "franchise": "Graeme's Downtown Demons",
       "name": "Graeme's Downtown Demons",
       "dayPts": 3,
       "projPts": 3,
-      "gp": 0
+      "gp": 4
     },
     {
       "franchise": "CMack's PWN",
       "name": "CMack's PWN",
       "dayPts": 5,
       "projPts": 5,
-      "gp": 3
+      "gp": 8
     },
     {
       "franchise": "Brian's Boitanos",
       "name": "Brian's Boitanos",
       "dayPts": 0,
       "projPts": 0,
-      "gp": 0
+      "gp": 3
     },
     {
       "franchise": "Matt's Cascadia Crew",
       "name": "Matt's Cascadia Crew",
       "dayPts": 1,
       "projPts": 1,
-      "gp": 2
+      "gp": 4
     }
   ]
 }
