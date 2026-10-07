@@ -31,7 +31,8 @@
 //   F2_BASE                           e.g. https://sparkypool.ca (required)
 //   F2_USER, F2_PASSWORD              the sparkypool.ca sign-in (Name / Password on its front page)
 //   F2_TOKEN                          optional X-Token header instead of the sign-in
-//   SLACK_BOT_TOKEN, SLACK_CHANNEL    optional; posts the report on --apply / --verify-only
+//   SLACK_BOT_TOKEN, SLACK_CHANNEL    optional; posts the report
+//   SLACK_USERNAME, SLACK_ICON        optional; post under another name/avatar (e.g. "Janitor", ":broom:")
 //   MAX_MEMBERSHIP_CHANGES            guard, default 12 (trades+claims+drops per run)
 //   F1_REPORT_DIR                     default data/f1-replicate
 //   HEADLESS                          "false" to watch the browser locally
@@ -63,6 +64,10 @@ const F2_USER = process.env.F2_USER || "";
 const F2_PASSWORD = process.env.F2_PASSWORD || process.env.F2_PIN || "";
 const SLACK_TOKEN = process.env.SLACK_BOT_TOKEN || "";
 const SLACK_CHANNEL = process.env.SLACK_CHANNEL || "";
+// The janitor's own face in Slack: display name and avatar override on each post (needs the bot's
+// chat:write.customize scope), or give it a whole separate Slack app via its own SLACK_BOT_TOKEN.
+const SLACK_USERNAME = process.env.SLACK_USERNAME || "";
+const SLACK_ICON = process.env.SLACK_ICON || "";        // ":broom:" style emoji, or an https:// image URL
 const MAX_CHANGES = parseInt(process.env.MAX_MEMBERSHIP_CHANGES || "12", 10);
 const REPORT_DIR = process.env.F1_REPORT_DIR || path.join(__dirname, "..", "data", "f1-replicate");
 const HEADLESS = process.env.HEADLESS !== "false";
@@ -589,7 +594,11 @@ async function slack(text) {
   const r = await fetch("https://slack.com/api/chat.postMessage", {
     method: "POST",
     headers: { "Content-Type": "application/json; charset=utf-8", Authorization: `Bearer ${SLACK_TOKEN}` },
-    body: JSON.stringify({ channel: SLACK_CHANNEL, text, unfurl_links: false }),
+    body: JSON.stringify({
+      channel: SLACK_CHANNEL, text, unfurl_links: false,
+      ...(SLACK_USERNAME ? { username: SLACK_USERNAME } : {}),
+      ...(SLACK_ICON ? (SLACK_ICON.startsWith("http") ? { icon_url: SLACK_ICON } : { icon_emoji: SLACK_ICON }) : {}),
+    }),
   });
   const o = await r.json();
   if (!o.ok) log("Slack error:", o.error);

@@ -75,7 +75,11 @@ jobs:
           F2_BASE: ${{ vars.F2_BASE }}
           F2_USER: ${{ secrets.F2_USER }}
           F2_PASSWORD: ${{ secrets.F2_PASSWORD }}
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          # the janitor's own face in Slack: its own app's token if set (JANITOR_SLACK_BOT_TOKEN), else SparkyBot's,
+          # plus an optional name/avatar override on each post (needs chat:write.customize on whichever app posts)
+          SLACK_BOT_TOKEN: ${{ secrets.JANITOR_SLACK_BOT_TOKEN || secrets.SLACK_BOT_TOKEN }}
+          SLACK_USERNAME: ${{ vars.JANITOR_SLACK_NAME }}
+          SLACK_ICON: ${{ vars.JANITOR_SLACK_ICON }}
           SLACK_CHANNEL: ${{ vars.F1_MIRROR_SLACK_CHANNEL || secrets.SLACK_CHANNEL_ID }}
           MAX_MEMBERSHIP_CHANGES: ${{ vars.MAX_MEMBERSHIP_CHANGES || '12' }}
           QUIET: ${{ github.event_name == 'schedule' && '1' || '0' }}
