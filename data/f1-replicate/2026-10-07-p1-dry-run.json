@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-07T00:26:34.597Z",
+  "at": "2026-10-07T18:01:47.004Z",
   "mode": "dry-run",
   "periods": [
     {
@@ -8,14 +8,14 @@
       "aliases": [
         {
           "team": "h13alq00mo319aqw",
-          "f2": "dr2026-43",
+          "f2": "n8486099",
           "fantrax": "071wp",
           "name": "Egor Shilov",
           "fxName": "Yegor Shilov"
         },
         {
           "team": "h13alq00mo319aqw",
-          "f2": "dr2026-23",
+          "f2": "n8486049",
           "fantrax": "06rmq",
           "name": "JP Hurlbert",
           "fxName": "J.P. Hurlbert"
@@ -34,35 +34,8 @@
     {
       "id": "5c6dwdhkmo319aqw",
       "team": "Brian's Endless Winter",
-      "f2": 37,
-      "fantrax": 40,
-      "fantraxPrevNight": null,
-      "compared": false,
-      "same": true
-    },
-    {
-      "id": "djdo03kcmo319aqw",
-      "team": "Cmack's PWN",
-      "f2": 33,
-      "fantrax": 36,
-      "fantraxPrevNight": null,
-      "compared": false,
-      "same": true
-    },
-    {
-      "id": "smc5vz9tmo319aqw",
-      "team": "Jason's Gaucho Chudpumpers",
-      "f2": 33,
-      "fantrax": 36,
-      "fantraxPrevNight": null,
-      "compared": false,
-      "same": true
-    },
-    {
-      "id": "h13alq00mo319aqw",
-      "team": "Richie's Meatspinners",
-      "f2": 31,
-      "fantrax": 38,
+      "f2": 49,
+      "fantrax": 49,
       "fantraxPrevNight": null,
       "compared": false,
       "same": true
@@ -70,8 +43,35 @@
     {
       "id": "mo75fhhjmo319aqw",
       "team": "Graeme's Downtown Demons",
-      "f2": 31,
-      "fantrax": 37,
+      "f2": 44,
+      "fantrax": 44,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "h13alq00mo319aqw",
+      "team": "Richie's Meatspinners",
+      "f2": 41,
+      "fantrax": 41,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "smc5vz9tmo319aqw",
+      "team": "Jason's Gaucho Chudpumpers",
+      "f2": 41,
+      "fantrax": 41,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "djdo03kcmo319aqw",
+      "team": "Cmack's PWN",
+      "f2": 39,
+      "fantrax": 39,
       "fantraxPrevNight": null,
       "compared": false,
       "same": true
@@ -79,8 +79,8 @@
     {
       "id": "lo1c2zefmo319aqw",
       "team": "Matt's mid tier perpetual projects",
-      "f2": 28,
-      "fantrax": 31,
+      "f2": 35,
+      "fantrax": 35,
       "fantraxPrevNight": null,
       "compared": false,
       "same": true
