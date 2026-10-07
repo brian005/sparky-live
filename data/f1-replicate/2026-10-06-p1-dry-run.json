@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-06T23:57:57.201Z",
+  "mode": "dry-run",
+  "f2Period": 1,
+  "fxPeriod": 1,
+  "aliases": [
+    {
+      "team": "h13alq00mo319aqw",
+      "f2": "dr2026-43",
+      "fantrax": "071wp",
+      "name": "Egor Shilov",
+      "fxName": "Yegor Shilov"
+    },
+    {
+      "team": "h13alq00mo319aqw",
+      "f2": "dr2026-23",
+      "fantrax": "06rmq",
+      "name": "JP Hurlbert",
+      "fxName": "J.P. Hurlbert"
+    }
+  ],
+  "unresolved": [],
+  "plan": [
+    "CLAIM  Brad Marchand to Graeme's Downtown Demons"
+  ]
+}

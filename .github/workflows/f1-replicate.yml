@@ -1,0 +1,101 @@
+name: Fantrax janitor (F2 rosters -> Fantrax)
+
+# One run a night, 23:00 Pacific (22:00 in PST: cron is UTC and doesn't follow DST; either way it's after
+# every lock). It sweeps EVERY locked period, oldest to newest, fixes whatever on Fantrax doesn't match F2,
+# re-reads to prove it, then compares season points. Idempotent: nothing differs, nothing is written.
+# Timing isn't critical: Fantrax rescores a period whenever its roster changes.
+# Points: F2 adds a day's games to its totals after midnight, so at 23:00 it holds games through yesterday.
+# The run compares that with Fantrax's totals as recorded by last night's run (also through yesterday,
+# read from the committed reports), so both sides cover the same, final games.
+# Scheduled runs are QUIET: Slack only on the first run after a lock (the receipt), anything fixed or
+# failed, an unplaced player, or points that disagree. Manual runs always post.
+#
+# Each run commits its JSON report to data/f1-replicate/. That's the audit trail, and it's also repo
+# activity, which keeps GitHub from disabling this schedule after 60 quiet days (what happened to
+# Game Night and Scorigami).
+
+on:
+  schedule:
+    - cron: "0 6 * * *"      # 23:00 PDT / 22:00 PST
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run (plan only), apply, or verify-only"
+        required: true
+        default: dry-run
+        type: choice
+        options: [dry-run, apply, verify-only]
+      period:
+        description: "Only this F2 period (blank = sweep every locked period)"
+        required: false
+        default: ""
+      force:
+        description: "Skip the too-many-changes guard"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: f1-replicate
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build args
+        id: args
+        shell: bash
+        run: |
+          MODE="${{ github.event.inputs.mode || 'apply' }}"
+          A=""
+          [ "$MODE" = "apply" ] && A="--apply"
+          [ "$MODE" = "verify-only" ] && A="--verify-only"
+          [ -n "${{ github.event.inputs.period }}" ] && A="$A --period ${{ github.event.inputs.period }}"
+          [ "${{ github.event.inputs.force }}" = "true" ] && A="$A --force"
+          echo "args=$A" >> "$GITHUB_OUTPUT"
+
+      - name: Mirror
+        env:
+          FANTRAX_USERNAME: ${{ secrets.FANTRAX_USERNAME }}
+          FANTRAX_PASSWORD: ${{ secrets.FANTRAX_PASSWORD }}
+          FANTRAX_LEAGUE_ID: ${{ vars.FANTRAX_LEAGUE_ID }}
+          F2_BASE: ${{ vars.F2_BASE }}
+          F2_USER: ${{ secrets.F2_USER }}
+          F2_PASSWORD: ${{ secrets.F2_PASSWORD }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ vars.F1_MIRROR_SLACK_CHANNEL || secrets.SLACK_CHANNEL_ID }}
+          MAX_MEMBERSHIP_CHANGES: ${{ vars.MAX_MEMBERSHIP_CHANGES || '12' }}
+          QUIET: ${{ github.event_name == 'schedule' && '1' || '0' }}
+        run: node src/f1-replicate.js ${{ steps.args.outputs.args }}
+
+      - name: Commit the report
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "sparkybot"
+          git config user.email "sparkybot@users.noreply.github.com"
+          git add data/f1-replicate/ || true
+          if git diff --cached --quiet; then echo "no report to commit"; exit 0; fi
+          git commit -m "Fantrax janitor report $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do git pull --rebase --quiet && git push --quiet && break; sleep 5; done
+
+      - name: Keep the debug screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f1-replicate-debug-${{ github.run_id }}
+          path: debug-f1-*.png
+          retention-days: 14

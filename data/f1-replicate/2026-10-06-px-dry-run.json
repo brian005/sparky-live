@@ -1,0 +1,5 @@
+{
+  "at": "2026-10-06T23:50:20.883Z",
+  "mode": "dry-run",
+  "error": "F2 sign-in at /door failed (HTTP 401): no cookie set. Check F2_USER / F2_PASSWORD"
+}

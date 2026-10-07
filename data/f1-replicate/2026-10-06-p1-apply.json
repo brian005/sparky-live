@@ -1,0 +1,75 @@
+{
+  "at": "2026-10-06T23:59:52.276Z",
+  "mode": "apply",
+  "f2Period": 1,
+  "fxPeriod": 1,
+  "aliases": [
+    {
+      "team": "h13alq00mo319aqw",
+      "f2": "dr2026-43",
+      "fantrax": "071wp",
+      "name": "Egor Shilov",
+      "fxName": "Yegor Shilov"
+    },
+    {
+      "team": "h13alq00mo319aqw",
+      "f2": "dr2026-23",
+      "fantrax": "06rmq",
+      "name": "JP Hurlbert",
+      "fxName": "J.P. Hurlbert"
+    }
+  ],
+  "unresolved": [],
+  "plan": [
+    "CLAIM  Brad Marchand to Graeme's Downtown Demons"
+  ],
+  "results": [
+    {
+      "step": "claimdrop",
+      "tid": "mo75fhhjmo319aqw",
+      "claim": "004jl",
+      "ok": true,
+      "msg": "<b>Brad Marchand</b> now appears on Graeme's Downtown Demons effective <b>Period 1</b>. (Sep 29/26 - Oct 11/26)",
+      "claimPeriod": 1
+    }
+  ],
+  "remaining": [],
+  "standings": [
+    {
+      "team": "Brian's Endless Winter",
+      "f2": 37,
+      "fantrax": 40,
+      "same": false
+    },
+    {
+      "team": "Cmack's PWN",
+      "f2": 33,
+      "fantrax": 34,
+      "same": false
+    },
+    {
+      "team": "Jason's Gaucho Chudpumpers",
+      "f2": 33,
+      "fantrax": 35,
+      "same": false
+    },
+    {
+      "team": "Richie's Meatspinners",
+      "f2": 31,
+      "fantrax": 36,
+      "same": false
+    },
+    {
+      "team": "Graeme's Downtown Demons",
+      "f2": 31,
+      "fantrax": 33,
+      "same": false
+    },
+    {
+      "team": "Matt's mid tier perpetual projects",
+      "f2": 28,
+      "fantrax": 29,
+      "same": false
+    }
+  ]
+}
