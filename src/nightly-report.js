@@ -2,11 +2,11 @@
 // NIGHTLY REPORT: who scored, who left points on the bench
 // ============================================================
 // For one night's NHL games (default: yesterday, Pacific), per franchise:
-//   Eligible   points by EVERY rostered player (Active + Reserve + Minors; prospects sit in Minors)
+//   Poss       points by EVERY rostered player (Active + Reserve + Minors; prospects sit in Minors)
 //   Scored     points by Active players (what actually counts)
-//   Recovery   Scored / Eligible
+//   Rec        Scored / Poss
 // and, of the Scored points:
-//   G, A, A1 (primary), A2 (secondary), Prim (G + A1), PP% (power-play share), EN% (empty-net share)
+//   G, A, 1stA (primary), 2ndA (secondary), Prim (G + 1stA), PP% (power-play share), EN% (empty-net share)
 // plus the same table season-to-date, summed from the nightly files this job keeps.
 //
 // Data:
@@ -203,7 +203,7 @@ function seasonToDate(league, uptoYmd) {
 const pct = (n, d) => (d ? `${Math.round((100 * n) / d)}%` : "-");
 
 function table(teams, rows) {
-  const head = ["Team", "Elig", "Scored", "Rec", "G", "A", "A1", "A2", "Prim", "PP%", "EN%"];
+  const head = ["", "Poss", "Scored", "Rec", "G", "A", "1stA", "2ndA", "Prim", "PP%", "EN%"];
   const lines = rows.map(([tid, t]) => [
     (teams.find((x) => x.id === tid) || {}).short || tid, t.eligible, t.scored, pct(t.scored, t.eligible),
     t.g, t.a, t.a1, t.a2, t.g + t.a1, pct(t.pp, t.scored), pct(t.en, t.scored),
@@ -229,7 +229,7 @@ function compose(league, rec, std) {
     out.push(`*Season to date* (${std.nights} game nights)`);
     out.push("```" + table(teams, sortRows(std.totals)) + "```");
   }
-  out.push("_Elig = points by everyone rostered (Active, Reserve, Minors). Scored = Active only. Rec = Scored / Elig. Breakdown is of Scored: A1/A2 primary/secondary assists, Prim = G + A1._");
+  out.push("_Poss = points by everyone rostered (Active, Reserve, Minors). Scored = Active only. Rec = Scored / Poss. Breakdown is of Scored: 1stA/2ndA = primary/secondary assists, Prim = G + 1stA._");
   return out.join("\n");
 }
 
