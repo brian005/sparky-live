@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-05",
+  "period": 1,
+  "games": 4,
+  "goals": 20,
+  "notFinal": [],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 1,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 2,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 5,
+      "scored": 3,
+      "g": 2,
+      "a": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 3,
+      "scored": 3,
+      "g": 1,
+      "a": 2,
+      "a1": 1,
+      "a2": 1,
+      "pp": 0,
+      "en": 1
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 1,
+      "scored": 1,
+      "g": 1,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 1
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 7,
+      "scored": 4,
+      "g": 3,
+      "a": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0
+    }
+  }
+}
