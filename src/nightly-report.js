@@ -2,12 +2,12 @@
 // NIGHTLY REPORT: who scored, who left points on the bench
 // ============================================================
 // For one night's NHL games (default: yesterday, Pacific), per franchise:
-//   Poss       points by EVERY rostered player (Active + Reserve + Minors; prospects sit in Minors)
-//   Scored     points by Active players (what actually counts)
-//   Rec        Scored / Poss
+//   TR         points by EVERY rostered player (Active + Reserve + Minors; prospects sit in Minors)
+//   AR         points by Active players (what actually counts)
+//   Rec        AR / TR
 // and, of the Scored points:
-//   G, A, 1stA (primary), 2ndA (secondary), Prim (G + 1stA), PP% (power-play share), EN% (empty-net share)
-// plus the same table season-to-date, summed from the nightly files this job keeps.
+//   G, A1 (primary assists), A2 (secondary assists), PP% (power-play share), EN% (empty-net share)
+// plus the same table for the scoring period to date, summed from the nightly files this job keeps.
 //
 // Data:
 //   NHL   api-web.nhle.com/v1/score/{date}: every goal with its scorer, assists IN ORDER (first =
@@ -184,17 +184,18 @@ async function runNight(league, ymd, ids) {
   return rec;
 }
 
-function seasonToDate(league, uptoYmd) {
-  const first = (league.rcps || []).filter((r) => r.number >= 1).sort((a, b) => a.number - b.number)[0];
+// Totals for the scoring period the night belongs to, from its first night up to this one, summed from
+// the nightly files this job keeps (a period's nights all carry its number).
+function periodToDate(league, rec) {
   const totals = Object.fromEntries(league.teams.map((t) => [t.id, blank()]));
   let nights = 0;
   for (const f of fs.existsSync(REPORT_DIR) ? fs.readdirSync(REPORT_DIR) : []) {
     const ymd = f.replace(/\.json$/, "");
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(ymd) || (first && ymd < first.start_date) || ymd > uptoYmd) continue;
-    const rec = JSON.parse(fs.readFileSync(path.join(REPORT_DIR, f), "utf8"));
-    if (!rec.teams || !rec.games) continue;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(ymd) || ymd > rec.date) continue;
+    const r = JSON.parse(fs.readFileSync(path.join(REPORT_DIR, f), "utf8"));
+    if (!r.teams || !r.games || r.period !== rec.period) continue;
     nights += 1;
-    for (const [tid, t] of Object.entries(rec.teams)) if (totals[tid]) add(totals[tid], t);
+    for (const [tid, t] of Object.entries(r.teams)) if (totals[tid]) add(totals[tid], t);
   }
   return { nights, totals };
 }
@@ -202,34 +203,45 @@ function seasonToDate(league, uptoYmd) {
 // ---- Slack ----------------------------------------------------------------------------------------
 const pct = (n, d) => (d ? `${Math.round((100 * n) / d)}%` : "-");
 
-function table(teams, rows) {
-  const head = ["", "Poss", "Scored", "Rec", "G", "A", "1stA", "2ndA", "Prim", "PP%", "EN%"];
-  const lines = rows.map(([tid, t]) => [
-    (teams.find((x) => x.id === tid) || {}).short || tid, t.eligible, t.scored, pct(t.scored, t.eligible),
-    t.g, t.a, t.a1, t.a2, t.g + t.a1, pct(t.pp, t.scored), pct(t.en, t.scored),
-  ].map(String));
+// Phones: Slack code blocks wrap instead of scrolling, and a phone fits ~30 monospace characters.
+// One table, so A (= A1 + A2) and Prim (= G + A1) are left out: both are sums of columns shown.
+// Fits a phone: ~29 characters wide, ~30 if a two-week period pushes TR into 3 digits.
+const COLS = [
+  ["TR", (t) => t.eligible],
+  ["AR", (t) => t.scored],
+  ["Rec", (t) => pct(t.scored, t.eligible)],
+  ["G", (t) => t.g],
+  ["A1", (t) => t.a1],
+  ["A2", (t) => t.a2],
+  ["PP%", (t) => pct(t.pp, t.scored)],
+  ["EN%", (t) => pct(t.en, t.scored)],
+];
+
+function table(teams, rows, cols) {
+  const head = ["", ...cols.map(([h]) => h)];
+  const lines = rows.map(([tid, t]) => [(teams.find((x) => x.id === tid) || {}).short || tid, ...cols.map(([, f]) => f(t))].map(String));
   const all = [head, ...lines];
   const w = head.map((_, i) => Math.max(...all.map((r) => r[i].length)));
-  return all.map((r) => r.map((c, i) => (i === 0 ? c.padEnd(w[i]) : c.padStart(w[i]))).join("  ")).join("\n");
+  return all.map((r) => r.map((c, i) => (i === 0 ? c.padEnd(w[i]) : c.padStart(w[i]))).join(" ")).join("\n");
 }
 
+// the line break after the opening fence keeps Slack from trimming the header row's leading spaces
+const block = (teams, rows, cols) => "```\n" + table(teams, rows, cols) + "\n```";
 const sortRows = (obj) => Object.entries(obj).sort((a, b) => b[1].scored - a[1].scored || b[1].eligible - a[1].eligible);
 
 function compose(league, rec, std) {
   const teams = league.teams.map((t) => ({ id: t.id, short: initialism(t) }));
   const out = [];
   if (!rec.games) return `*Nightly report: ${pretty(rec.date)}*\nNo NHL games.`;
-  out.push(`*Nightly report: ${pretty(rec.date)}* · ${rec.games} game${rec.games === 1 ? "" : "s"}, ${rec.goals} goals · Period ${rec.period}`);
+  out.push(`*Nightly report: ${pretty(rec.date)}*\n${rec.games} game${rec.games === 1 ? "" : "s"} · ${rec.goals} goals · Period ${rec.period}`);
   if ((rec.notFinal || []).length) out.push(`:warning: not final yet: ${rec.notFinal.join(", ")}`);
-  out.push("```" + table(teams, sortRows(rec.teams)) + "```");
-  // the night's story in one line: most points left on the bench
-  const bench = sortRows(rec.teams).map(([tid, t]) => [tid, t.eligible - t.scored]).sort((a, b) => b[1] - a[1])[0];
-  if (bench && bench[1] > 0) out.push(`Most left on the bench: *${(teams.find((x) => x.id === bench[0]) || {}).short}*, ${bench[1]} point${bench[1] === 1 ? "" : "s"} from Reserve and Minors.`);
+  const night = sortRows(rec.teams);
+  out.push(block(teams, night, COLS));
   if (std.nights > 1) {
-    out.push(`*Season to date* (${std.nights} game nights)`);
-    out.push("```" + table(teams, sortRows(std.totals)) + "```");
+    out.push(`\n*Period ${rec.period} to date*`);
+    out.push(block(teams, sortRows(std.totals), COLS));
   }
-  out.push("_Poss = points by everyone rostered (Active, Reserve, Minors). Scored = Active only. Rec = Scored / Poss. Breakdown is of Scored: 1stA/2ndA = primary/secondary assists, Prim = G + 1stA._");
+  out.push("_TR: points by everyone rostered (incl. Minors). AR: Active only. Rec: AR / TR. A1 / A2: primary / secondary assists. PP% / EN%: share of AR points._");
   return out.join("\n");
 }
 
@@ -277,7 +289,7 @@ async function slack(text) {
   if (unmapped.length) log(`Players with no NHL id (not counted): ${unmapped.join(", ")}`);
 
   if (rec.skipped) { log(`Nothing to post: ${rec.skipped}`); return; }
-  const text = compose(league, rec, seasonToDate(league, last));
+  const text = compose(league, rec, periodToDate(league, rec));
   log("\n" + text);
   await slack(text);
 })().catch((e) => { console.error("FAILED:", e.message); process.exitCode = 1; });
