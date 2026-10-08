@@ -1,0 +1,73 @@
+name: Nightly report (eligible vs scored, A1/A2, PP/EN)
+
+# Every morning, 09:00 Pacific (08:00 in PST; cron is UTC and doesn't follow DST): last night's NHL games,
+# tallied per franchise against the F2 roster for that night's scoring period, posted by SparkyBot.
+# Each night's numbers are committed to data/nightly-report/ (that's where season-to-date comes from),
+# and data/nhl-ids.json caches each player's NHL id so only new players are looked up.
+
+on:
+  schedule:
+    - cron: "0 16 * * *"     # 09:00 PDT / 08:00 PST
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Night to report, YYYY-MM-DD (blank = yesterday)"
+        required: false
+        default: ""
+      backfill:
+        description: "Rebuild every night from the season's first period up to that date"
+        type: boolean
+        default: false
+      slack:
+        description: "Post to Slack"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nightly-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build args
+        id: args
+        shell: bash
+        run: |
+          A=""
+          [ -n "${{ github.event.inputs.date }}" ] && A="$A --date ${{ github.event.inputs.date }}"
+          [ "${{ github.event.inputs.backfill }}" = "true" ] && A="$A --backfill"
+          [ "${{ github.event.inputs.slack }}" = "false" ] && A="$A --no-slack"
+          echo "args=$A" >> "$GITHUB_OUTPUT"
+
+      # no npm install needed: the script uses only Node built-ins
+      - name: Report
+        env:
+          F2_BASE: ${{ vars.F2_BASE }}
+          F2_USER: ${{ secrets.F2_USER }}
+          F2_PASSWORD: ${{ secrets.F2_PASSWORD }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ vars.NIGHTLY_REPORT_SLACK_CHANNEL || vars.F1_MIRROR_SLACK_CHANNEL }}
+        run: node src/nightly-report.js ${{ steps.args.outputs.args }}
+
+      - name: Commit the night
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "sparkybot"
+          git config user.email "sparkybot@users.noreply.github.com"
+          git add data/nightly-report/ data/nhl-ids.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "Nightly report $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do git pull --rebase --quiet && git push --quiet && break; sleep 5; done
