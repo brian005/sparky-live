@@ -8,6 +8,7 @@ name: Bench streaks (Zack Morris, night before lock)
 # it's 18:00-21:59 Pacific, and data/bench-streaks/p{N}.json doesn't exist yet. Every other fire exits
 # in a few seconds. GitHub often starts scheduled runs late; the 4-hour window absorbs that.
 #
+# Manual runs (force or period) never write the marker, so a test post can't block the real one.
 # The marker file gets committed, which also counts as repo activity (keeps GitHub from disabling the
 # schedule after 60 quiet days).
 
@@ -29,6 +30,10 @@ on:
         description: "Post to Slack"
         type: boolean
         default: true
+      channel:
+        description: "Slack channel ID to post to instead (blank = #sparky). For test posts."
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -65,7 +70,7 @@ jobs:
           F2_USER: ${{ secrets.F2_USER }}
           F2_PASSWORD: ${{ secrets.F2_PASSWORD }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL: ${{ vars.BENCH_STREAK_SLACK_CHANNEL || vars.F1_MIRROR_SLACK_CHANNEL }}
+          SLACK_CHANNEL: ${{ github.event.inputs.channel || vars.BENCH_STREAK_SLACK_CHANNEL || vars.F1_MIRROR_SLACK_CHANNEL }}
           SLACK_USERNAME: ${{ vars.BENCH_STREAK_SLACK_USERNAME || 'Zack Morris' }}
           SLACK_ICON: ${{ vars.BENCH_STREAK_SLACK_ICON || ':telephone_receiver:' }}
           MIN_STREAK: ${{ vars.BENCH_STREAK_MIN || '2' }}
