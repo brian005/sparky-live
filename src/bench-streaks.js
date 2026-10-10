@@ -28,7 +28,7 @@
 //
 // Usage:
 //   node src/bench-streaks.js                 # scheduled behaviour (gated)
-//   node src/bench-streaks.js --force         # skip the timing gate and the already-posted check
+//   node src/bench-streaks.js --force         # skip the timing gate and the already-posted check; writes no marker
 //   node src/bench-streaks.js --period 2      # treat period 2 as the "next" period (implies --force)
 //   node src/bench-streaks.js --no-slack      # print only, write no marker
 //
@@ -266,7 +266,8 @@ async function slack(text) {
   log("\n" + text);
   const posted = await slack(text);
 
-  if (posted) {
+  // only a scheduled post marks the period done; a forced or --period test post never blocks the real one
+  if (posted && !FORCE) {
     fs.mkdirSync(OUT_DIR, { recursive: true });
     fs.writeFileSync(marker, JSON.stringify({
       postedAt: now.iso, period: next.number, lock: lockOf(next), minStreak: MIN_STREAK,
