@@ -1,0 +1,89 @@
+{
+  "at": "2026-10-10T06:30:38.857Z",
+  "mode": "apply",
+  "periods": [
+    {
+      "f2Period": 1,
+      "fxPeriod": 1,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    }
+  ],
+  "swept": [
+    1
+  ],
+  "lockTs": "2026-09-29T14:00:00",
+  "standings": [
+    {
+      "id": "5c6dwdhkmo319aqw",
+      "team": "Brian's Endless Winter",
+      "f2": 64,
+      "fantrax": 65,
+      "fantraxPrevNight": 64,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "smc5vz9tmo319aqw",
+      "team": "Jason's Gaucho Chudpumpers",
+      "f2": 61,
+      "fantrax": 62,
+      "fantraxPrevNight": 61,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "mo75fhhjmo319aqw",
+      "team": "Graeme's Downtown Demons",
+      "f2": 49,
+      "fantrax": 50,
+      "fantraxPrevNight": 49,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "djdo03kcmo319aqw",
+      "team": "Cmack's PWN",
+      "f2": 46,
+      "fantrax": 48,
+      "fantraxPrevNight": 46,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "lo1c2zefmo319aqw",
+      "team": "Matt's mid tier perpetual projects",
+      "f2": 45,
+      "fantrax": 48,
+      "fantraxPrevNight": 45,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "h13alq00mo319aqw",
+      "team": "Richie's Meatspinners",
+      "f2": 44,
+      "fantrax": 44,
+      "fantraxPrevNight": 44,
+      "compared": true,
+      "same": true
+    }
+  ]
+}
