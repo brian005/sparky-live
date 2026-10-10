@@ -195,25 +195,28 @@ function playerTag(p) {
   return `${p.name} (${ppg == null ? "0 GP" : `${ppg.toFixed(2)} ppg`} @ ${money(p.salary)})`;
 }
 
-// One line per franchise: *PWN*: Shane Wright (0.60 ppg @ $0.9M), Dmitri Voronkov (0.33 ppg @ $4.2M)
-// Players in descending ppg; franchises with the most benched first.
-function compose(league, nextRcp, rows, skippedInjured) {
+// The post, paragraphs separated by a blank line:
+//   Pssst... these players have been benched for two periods or more, pass it on.
+//
+//   *PWN*: Shane Wright (0.60 ppg @ $0.9M), Dmitri Voronkov (0.33 ppg @ $4.2M)
+//
+//   *BEW*: ...
+// Players in descending ppg; franchises with the most benched first. Injured players are left out silently.
+const WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+const spell = (n) => WORDS[n] || String(n);
+
+function compose(league, nextRcp, rows) {
   const teams = Object.fromEntries(league.teams.map((t) => [t.id, initialism(t)]));
-  const out = [];
-  out.push(`*Time out.* Period ${nextRcp.number} locks ${prettyLock(lockOf(nextRcp))}. Healthy players benched ${MIN_STREAK}+ periods straight, counting Period ${nextRcp.number}'s lineup as it's set right now:`);
-  if (!rows.length) {
-    out.push("Nobody. Everyone's playing their guys.");
-  } else {
-    const byTeam = {};
-    for (const r of rows) (byTeam[r.teamId] = byTeam[r.teamId] || []).push(r);
-    const order = Object.keys(byTeam).sort((a, b) => byTeam[b].length - byTeam[a].length || teams[a].localeCompare(teams[b]));
-    for (const tid of order) {
-      const list = byTeam[tid].sort((a, b) => (ppgOf(b.p) ?? -1) - (ppgOf(a.p) ?? -1) || a.p.name.localeCompare(b.p.name));
-      out.push(`*${teams[tid]}*: ${list.map((r) => playerTag(r.p)).join(", ")}`);
-    }
+  if (!rows.length) return `Pssst... nobody's been benched for ${spell(MIN_STREAK)} periods or more. Nothing to pass on.`;
+  const out = [`Pssst... these players have been benched for ${spell(MIN_STREAK)} periods or more, pass it on.`];
+  const byTeam = {};
+  for (const r of rows) (byTeam[r.teamId] = byTeam[r.teamId] || []).push(r);
+  const order = Object.keys(byTeam).sort((a, b) => byTeam[b].length - byTeam[a].length || teams[a].localeCompare(teams[b]));
+  for (const tid of order) {
+    const list = byTeam[tid].sort((a, b) => (ppgOf(b.p) ?? -1) - (ppgOf(a.p) ?? -1) || a.p.name.localeCompare(b.p.name));
+    out.push(`*${teams[tid]}*: ${list.map((r) => playerTag(r.p)).join(", ")}`);
   }
-  if (skippedInjured) out.push(`_Left out: ${skippedInjured} benched player${skippedInjured === 1 ? "" : "s"} on the injury list._`);
-  return out.join("\n");
+  return out.join("\n\n");
 }
 
 async function slack(text) {
@@ -257,10 +260,9 @@ async function slack(text) {
   try { inj = injuredIds(await injuryList(), rostered); }
   catch (e) { log(`Injury list unavailable (${e.message}); posting without the injury filter.`); }
   const healthy = rows.filter((r) => !inj[r.id]);
-  const skipped = rows.length - healthy.length;
   for (const r of rows.filter((x) => inj[x.id])) log(`  left out (injured: ${inj[r.id]}): ${r.p.name}`);
 
-  const text = compose(league, next, healthy, skipped);
+  const text = compose(league, next, healthy);
   log("\n" + text);
   const posted = await slack(text);
 
