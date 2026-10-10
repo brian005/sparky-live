@@ -117,7 +117,7 @@ async function f2(p) {
 
 // ---- injuries (ESPN's list, matched like F2's injuries.py) --------------------------------------
 const ESPN_ABBR = { NJ: "NJD", TB: "TBL", LA: "LAK", SJ: "SJS", UTAH: "UTA", VGS: "VGK" };
-const fold = (s) => (s || "").normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\./g, "").replace(/-/g, " ").trim();
+const fold = (s) => (s || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\./g, "").replace(/-/g, " ").trim();
 
 async function injuryList() {
   const r = await fetch(ESPN_INJURIES, { headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", Accept: "application/json" } });
@@ -185,28 +185,34 @@ const CODES = Object.assign({ brian: "BEW", chris: "PWN", graeme: "GDD", jason: 
   JSON.parse(process.env.FRANCHISE_CODES || "{}"));
 const initialism = (t) => CODES[t.franchise] || (t.name || t.id).slice(0, 3).toUpperCase();
 
+// ppg from this season's NHL points / games played; null when he hasn't played (sorts last)
+const ppgOf = (p) => (p.season_gp ? (p.season_points || 0) / p.season_gp : null);
+// F2 salaries are exact cap-hit dollars: 925000 -> "$0.9M"
+const money = (s) => (s ? `$${(s / 1e6).toFixed(1)}M` : "$?");
+
+function playerTag(p) {
+  const ppg = ppgOf(p);
+  return `${p.name} (${ppg == null ? "0 GP" : `${ppg.toFixed(2)} ppg`} @ ${money(p.salary)})`;
+}
+
+// One line per franchise: *PWN*: Shane Wright (0.60 ppg @ $0.9M), Dmitri Voronkov (0.33 ppg @ $4.2M)
+// Players in descending ppg; franchises with the most benched first.
 function compose(league, nextRcp, rows, skippedInjured) {
   const teams = Object.fromEntries(league.teams.map((t) => [t.id, initialism(t)]));
   const out = [];
-  out.push(`*Time out.* Period ${nextRcp.number} locks ${prettyLock(lockOf(nextRcp))}.`);
-  out.push(`Healthy players benched ${MIN_STREAK}+ periods straight, counting Period ${nextRcp.number}'s lineup as it's set right now:`);
+  out.push(`*Time out.* Period ${nextRcp.number} locks ${prettyLock(lockOf(nextRcp))}. Healthy players benched ${MIN_STREAK}+ periods straight, counting Period ${nextRcp.number}'s lineup as it's set right now:`);
   if (!rows.length) {
-    out.push("\nNobody. Everyone's playing their guys.");
+    out.push("Nobody. Everyone's playing their guys.");
   } else {
     const byTeam = {};
     for (const r of rows) (byTeam[r.teamId] = byTeam[r.teamId] || []).push(r);
     const order = Object.keys(byTeam).sort((a, b) => byTeam[b].length - byTeam[a].length || teams[a].localeCompare(teams[b]));
     for (const tid of order) {
-      const list = byTeam[tid].sort((a, b) => b.streak - a.streak || (b.p.season_points || 0) - (a.p.season_points || 0) || a.p.name.localeCompare(b.p.name));
-      out.push(`\n*${teams[tid]}*`);
-      for (const r of list) {
-        const pts = r.p.season_points != null ? `, ${r.p.season_points} pts` : "";
-        out.push(`• ${r.p.name} (${r.p.pos}, ${r.p.nhl_team || "FA"}): ${r.streak} periods${pts}`);
-      }
+      const list = byTeam[tid].sort((a, b) => (ppgOf(b.p) ?? -1) - (ppgOf(a.p) ?? -1) || a.p.name.localeCompare(b.p.name));
+      out.push(`*${teams[tid]}*: ${list.map((r) => playerTag(r.p)).join(", ")}`);
     }
   }
-  if (skippedInjured) out.push(`\n_Left out: ${skippedInjured} benched player${skippedInjured === 1 ? "" : "s"} on the injury list. Points are this season's NHL points._`);
-  else out.push("\n_Points are this season's NHL points._");
+  if (skippedInjured) out.push(`_Left out: ${skippedInjured} benched player${skippedInjured === 1 ? "" : "s"} on the injury list._`);
   return out.join("\n");
 }
 
