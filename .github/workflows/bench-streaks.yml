@@ -1,0 +1,83 @@
+name: Bench streaks (Zack Morris, night before lock)
+
+# Healthy players benched 2+ periods straight, posted to #sparky by "Zack Morris" at ~6 PM Pacific the
+# evening before the next period locks. Counts the next period's lineup as currently preset.
+#
+# Fires every day at 01:05 and 02:05 UTC = 6 PM Pacific in PDT and PST respectively (cron is UTC and
+# doesn't follow DST). The script itself decides: it posts only when the next period locks TOMORROW,
+# it's 18:00-21:59 Pacific, and data/bench-streaks/p{N}.json doesn't exist yet. Every other fire exits
+# in a few seconds. GitHub often starts scheduled runs late; the 4-hour window absorbs that.
+#
+# The marker file gets committed, which also counts as repo activity (keeps GitHub from disabling the
+# schedule after 60 quiet days).
+
+on:
+  schedule:
+    - cron: "5 1 * * *"      # 18:05 PDT
+    - cron: "5 2 * * *"      # 18:05 PST (19:05 PDT: skipped once the 01:05 run has posted)
+  workflow_dispatch:
+    inputs:
+      period:
+        description: "Treat this period as the next lock (blank = the real next lock, gated by time)"
+        required: false
+        default: ""
+      force:
+        description: "Post now, skipping the time gate and the already-posted check"
+        type: boolean
+        default: false
+      slack:
+        description: "Post to Slack"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bench-streaks
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build args
+        id: args
+        shell: bash
+        run: |
+          A=""
+          [ -n "${{ github.event.inputs.period }}" ] && A="$A --period ${{ github.event.inputs.period }}"
+          [ "${{ github.event.inputs.force }}" = "true" ] && A="$A --force"
+          [ "${{ github.event.inputs.slack }}" = "false" ] && A="$A --no-slack"
+          echo "args=$A" >> "$GITHUB_OUTPUT"
+
+      # no npm install needed: the script uses only Node built-ins
+      - name: Bench streaks
+        env:
+          F2_BASE: ${{ vars.F2_BASE }}
+          F2_USER: ${{ secrets.F2_USER }}
+          F2_PASSWORD: ${{ secrets.F2_PASSWORD }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ vars.BENCH_STREAK_SLACK_CHANNEL || vars.F1_MIRROR_SLACK_CHANNEL }}
+          SLACK_USERNAME: ${{ vars.BENCH_STREAK_SLACK_USERNAME || 'Zack Morris' }}
+          SLACK_ICON: ${{ vars.BENCH_STREAK_SLACK_ICON || ':telephone_receiver:' }}
+          MIN_STREAK: ${{ vars.BENCH_STREAK_MIN || '2' }}
+        run: node src/bench-streaks.js ${{ steps.args.outputs.args }}
+
+      - name: Commit the marker
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "sparkybot"
+          git config user.email "sparkybot@users.noreply.github.com"
+          git add data/bench-streaks/ 2>/dev/null || true
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "Bench streaks $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do git pull --rebase --quiet && git push --quiet && break; sleep 5; done
