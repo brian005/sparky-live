@@ -65,5 +65,42 @@
       "pp": 0,
       "en": 0
     }
+  },
+  "players": {
+    "02b70": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Nikita Kucherov",
+      "pts": 2
+    },
+    "042yb": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Brandon Hagel",
+      "pts": 1
+    },
+    "051z0": {
+      "team": "h13alq00mo319aqw",
+      "name": "Tim Stützle",
+      "pts": 3
+    },
+    "04f2d": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Drake Batherson",
+      "pts": 1
+    },
+    "04uql": {
+      "team": "h13alq00mo319aqw",
+      "name": "Cole Perfetti",
+      "pts": 1
+    },
+    "04dwj": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Jason Robertson",
+      "pts": 2
+    },
+    "03mn9": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Mikko Rantanen",
+      "pts": 1
+    }
   }
 }

@@ -65,5 +65,42 @@
       "pp": 0,
       "en": 0
     }
+  },
+  "players": {
+    "04ymt": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Lucas Raymond",
+      "pts": 1
+    },
+    "03v70": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Alex DeBrincat",
+      "pts": 1
+    },
+    "04zo0": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Pavel Dorofeyev",
+      "pts": 1
+    },
+    "03as9": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Dylan Strome",
+      "pts": 1
+    },
+    "0045k": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Evgeni Malkin",
+      "pts": 1
+    },
+    "06hcw": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Beckett Sennecke",
+      "pts": 2
+    },
+    "02azb": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Mark Scheifele",
+      "pts": 1
+    }
   }
 }

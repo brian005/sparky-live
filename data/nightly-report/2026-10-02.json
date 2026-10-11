@@ -65,5 +65,77 @@
       "pp": 1,
       "en": 0
     }
+  },
+  "players": {
+    "051tx": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Aliaksei Protas",
+      "pts": 1
+    },
+    "03as9": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Dylan Strome",
+      "pts": 2
+    },
+    "03rmx": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Sebastian Aho",
+      "pts": 1
+    },
+    "048vf": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Andrei Svechnikov",
+      "pts": 1
+    },
+    "05tv0": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Jackson Blake",
+      "pts": 1
+    },
+    "04a9v": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Morgan Geekie",
+      "pts": 1
+    },
+    "03w5m": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Gabriel Vilardi",
+      "pts": 1
+    },
+    "04uql": {
+      "team": "h13alq00mo319aqw",
+      "name": "Cole Perfetti",
+      "pts": 1
+    },
+    "03d12": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "David Pastrnak",
+      "pts": 2
+    },
+    "04zj5": {
+      "team": "h13alq00mo319aqw",
+      "name": "JJ Peterka",
+      "pts": 1
+    },
+    "05ymj": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Jimmy Snuggerud",
+      "pts": 2
+    },
+    "06hcw": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Beckett Sennecke",
+      "pts": 1
+    },
+    "03924": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Jack Eichel",
+      "pts": 2
+    },
+    "03jvu": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Mitch Marner",
+      "pts": 1
+    }
   }
 }

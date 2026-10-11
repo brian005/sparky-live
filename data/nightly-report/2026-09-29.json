@@ -65,5 +65,67 @@
       "pp": 0,
       "en": 0
     }
+  },
+  "players": {
+    "02yjj": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "William Nylander",
+      "pts": 2
+    },
+    "04qy5": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Kirill Marchenko",
+      "pts": 1
+    },
+    "01c12": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "John Tavares",
+      "pts": 1
+    },
+    "05yn2": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Fraser Minten",
+      "pts": 2
+    },
+    "04zj5": {
+      "team": "h13alq00mo319aqw",
+      "name": "JJ Peterka",
+      "pts": 1
+    },
+    "04lc0": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Evan Bouchard",
+      "pts": 5
+    },
+    "04o0g": {
+      "team": "h13alq00mo319aqw",
+      "name": "Marco Rossi",
+      "pts": 1
+    },
+    "02un4": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Connor McDavid",
+      "pts": 2
+    },
+    "048x9": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Elias Pettersson",
+      "pts": 1
+    },
+    "02yjl": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Leon Draisaitl",
+      "pts": 1
+    },
+    "03924": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Jack Eichel",
+      "pts": 3
+    },
+    "01zvf": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Mark Stone",
+      "pts": 1
+    }
   }
 }

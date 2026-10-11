@@ -65,5 +65,42 @@
       "pp": 0,
       "en": 0
     }
+  },
+  "players": {
+    "03as9": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Dylan Strome",
+      "pts": 1
+    },
+    "04uql": {
+      "team": "h13alq00mo319aqw",
+      "name": "Cole Perfetti",
+      "pts": 1
+    },
+    "02azb": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Mark Scheifele",
+      "pts": 2
+    },
+    "06hcw": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Beckett Sennecke",
+      "pts": 2
+    },
+    "04lc0": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Evan Bouchard",
+      "pts": 3
+    },
+    "02yjl": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Leon Draisaitl",
+      "pts": 4
+    },
+    "02un4": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Connor McDavid",
+      "pts": 3
+    }
   }
 }

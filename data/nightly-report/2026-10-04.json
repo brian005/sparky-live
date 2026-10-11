@@ -65,5 +65,67 @@
       "pp": 4,
       "en": 0
     }
+  },
+  "players": {
+    "04uql": {
+      "team": "h13alq00mo319aqw",
+      "name": "Cole Perfetti",
+      "pts": 3
+    },
+    "03w5m": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Gabriel Vilardi",
+      "pts": 1
+    },
+    "03v70": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Alex DeBrincat",
+      "pts": 1
+    },
+    "02unz": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Nick Schmaltz",
+      "pts": 1
+    },
+    "03mn8": {
+      "team": "h13alq00mo319aqw",
+      "name": "Clayton Keller",
+      "pts": 1
+    },
+    "06hcw": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Beckett Sennecke",
+      "pts": 1
+    },
+    "05r1i": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Matty Beniers",
+      "pts": 1
+    },
+    "04ezy": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Morgan Frost",
+      "pts": 1
+    },
+    "048x9": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Elias Pettersson",
+      "pts": 1
+    },
+    "03jvu": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Mitch Marner",
+      "pts": 1
+    },
+    "01zvf": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Mark Stone",
+      "pts": 1
+    },
+    "03924": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Jack Eichel",
+      "pts": 1
+    }
   }
 }

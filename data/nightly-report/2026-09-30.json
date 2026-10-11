@@ -65,5 +65,32 @@
       "pp": 1,
       "en": 0
     }
+  },
+  "players": {
+    "00454": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Sidney Crosby",
+      "pts": 1
+    },
+    "0045k": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Evgeni Malkin",
+      "pts": 1
+    },
+    "051xf": {
+      "team": "h13alq00mo319aqw",
+      "name": "Egor Chinakhov",
+      "pts": 1
+    },
+    "02f9l": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Nathan MacKinnon",
+      "pts": 2
+    },
+    "049k7": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Martin Necas",
+      "pts": 1
+    }
   }
 }

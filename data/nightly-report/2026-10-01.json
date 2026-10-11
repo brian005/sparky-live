@@ -65,5 +65,142 @@
       "pp": 3,
       "en": 0
     }
+  },
+  "players": {
+    "038vb": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Travis Konecny",
+      "pts": 1
+    },
+    "05gdo": {
+      "team": "h13alq00mo319aqw",
+      "name": "Luke Evangelista",
+      "pts": 1
+    },
+    "04bdb": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Jack Hughes",
+      "pts": 1
+    },
+    "042ye": {
+      "team": "h13alq00mo319aqw",
+      "name": "Jesper Bratt",
+      "pts": 1
+    },
+    "04zo0": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Pavel Dorofeyev",
+      "pts": 2
+    },
+    "02b70": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Nikita Kucherov",
+      "pts": 1
+    },
+    "05rjh": {
+      "team": "h13alq00mo319aqw",
+      "name": "Noah Ostlund",
+      "pts": 2
+    },
+    "05tur": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Matthew Knies",
+      "pts": 3
+    },
+    "05g42": {
+      "team": "h13alq00mo319aqw",
+      "name": "Jack Quinn",
+      "pts": 1
+    },
+    "05ylt": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Zach Benson",
+      "pts": 1
+    },
+    "066q4": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Konsta Helenius",
+      "pts": 1
+    },
+    "03rh3": {
+      "team": "h13alq00mo319aqw",
+      "name": "Kirill Kaprizov",
+      "pts": 1
+    },
+    "04lbz": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Quinn Hughes",
+      "pts": 1
+    },
+    "05r1i": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Matty Beniers",
+      "pts": 2
+    },
+    "04o0h": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Dylan Guenther",
+      "pts": 2
+    },
+    "05ui2": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Logan Cooley",
+      "pts": 1
+    },
+    "03mn8": {
+      "team": "h13alq00mo319aqw",
+      "name": "Clayton Keller",
+      "pts": 2
+    },
+    "02unz": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Nick Schmaltz",
+      "pts": 1
+    },
+    "02un4": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Connor McDavid",
+      "pts": 5
+    },
+    "04lc0": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Evan Bouchard",
+      "pts": 3
+    },
+    "02yjl": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Leon Draisaitl",
+      "pts": 3
+    },
+    "05rfa": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Isaac Howard",
+      "pts": 1
+    },
+    "048x9": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Elias Pettersson",
+      "pts": 3
+    },
+    "04o0g": {
+      "team": "h13alq00mo319aqw",
+      "name": "Marco Rossi",
+      "pts": 3
+    },
+    "03wor": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Mason Marchment",
+      "pts": 1
+    },
+    "0644b": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Will Smith",
+      "pts": 3
+    },
+    "05w9c": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Macklin Celebrini",
+      "pts": 3
+    }
   }
 }
