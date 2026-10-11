@@ -9,9 +9,11 @@ name: Records (Screech, set or tied)
 # 06:30 UTC: 10:30 / 11:30 PM in PDT, 9:30 / 10:30 PM in PST. The early one usually finds a late game
 # still going and waits; the later one gets it. Running twice is harmless.
 #
+# A period's records post the same night its last games finish, from the nightly reports' points and
+# games played (checked against F2's period totals, which may still be a night behind).
+#
 # Mornings, right after the Nightly report: catches up anything the night run couldn't finish (a game
-# that went long), and checks periods. A period's last night only reaches F2's totals after midnight,
-# so period records post the morning after a period ends.
+# that went long, or a night that didn't line up with F2 yet).
 #
 # data/records/state.json remembers what's been checked, so nothing is announced twice.
 

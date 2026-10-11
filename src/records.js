@@ -45,9 +45,9 @@
 //   GET /api/standings          per team: by_rcp [{rcp, points, games}]   -> period totals
 //   data/nightly-report/*.json  per team per night: scored (= F2 fantasy points; same numbers)
 //
-// A period counts as final the morning after its end_date, once F2's points for it match the sum of
-// the nightly reports (F2 adds a night's games after midnight). If they don't match yet, it waits for
-// the next run; after 2 days it goes with F2's numbers and logs the mismatch.
+// A period counts as final the night its last games finish (the 10:30 PM run), from the nightly reports'
+// points and GP, checked against F2's period totals (see currentPeriods). If a night looks missing it waits;
+// after 2 days it goes with F2's numbers and logs the mismatch.
 //
 // State: data/records/state.json remembers what's been checked, so nothing is announced twice.
 // A missing state file means a fresh start: everything final this season gets checked in one post.
@@ -509,26 +509,38 @@ function currentNights(season, teamCode, today) {
     if (!(r.period >= 1) || !r.games || (r.notFinal || []).length) continue;
     for (const [tid, t] of Object.entries(r.teams || {})) {
       const code = teamCode[tid];
-      if (code) out.push({ season, date: r.date, period: r.period, code, pts: t.scored || 0, gp: null });
+      if (code) out.push({ season, date: r.date, period: r.period, code, pts: t.scored || 0, gp: t.gp != null ? t.gp : null });
     }
   }
   return out;
 }
 
-// periods that are final: ended before today, and F2's points agree with the nightly reports
+// periods that are final. A period is final once its last night is: tonight at 10:30 PM if every game of
+// its last night is over (that night's nightly file exists with nothing unfinished), otherwise any time after.
+// Points and GP come from the nightly reports (the same numbers F2 scores), checked against F2's period
+// totals: F2 may not have counted tonight yet, so it must match either every night or every night but
+// tonight. If it matches neither, a night is missing or off: wait (up to 2 days, then go with F2's numbers).
+// Once F2 has the whole period, its GP is used (it's the official count).
 function currentPeriods(league, standings, nights, season, teamCode, today) {
   const out = [];
   const waiting = [];
-  for (const rcp of (league.rcps || []).filter((r) => r.number >= 1 && r.end_date < today).sort((a, b) => a.number - b.number)) {
+  const lastNightDone = (rcp) => rcp.end_date < today || nights.some((n) => n.date === rcp.end_date && n.date === today);
+  for (const rcp of (league.rcps || []).filter((r) => r.number >= 1 && r.end_date <= today).sort((a, b) => a.number - b.number)) {
+    if (!lastNightDone(rcp)) continue;
     const rows = [];
-    let mismatch = [];
+    const mismatch = [];
     for (const team of standings) {
       const code = teamCode[team.id];
-      const b = (team.by_rcp || []).find((x) => x.rcp === rcp.number);
-      if (!code || !b) continue;
-      const nightly = nights.filter((n) => n.code === code && n.period === rcp.number).reduce((s, n) => s + n.pts, 0);
-      if (nightly !== b.points) mismatch.push(`${code} F2 ${b.points} vs nightly ${nightly}`);
-      rows.push({ season, period: rcp.number, code, pts: b.points, gp: b.games || 0 });
+      if (!code) continue;
+      const b = (team.by_rcp || []).find((x) => x.rcp === rcp.number) || { points: 0, games: 0 };
+      const mine = nights.filter((n) => n.code === code && n.period === rcp.number);
+      const pts = mine.reduce((s, n) => s + n.pts, 0);
+      const ptsButTonight = mine.filter((n) => n.date !== today).reduce((s, n) => s + n.pts, 0);
+      const gpKnown = mine.length > 0 && mine.every((n) => n.gp != null);
+      const gp = gpKnown ? mine.reduce((s, n) => s + n.gp, 0) : null;
+      if (b.points === pts && b.games) rows.push({ season, period: rcp.number, code, pts, gp: b.games });   // F2 has it all
+      else if (b.points === ptsButTonight && gp != null) rows.push({ season, period: rcp.number, code, pts, gp });   // F2 is a night behind
+      else { mismatch.push(`${code} F2 ${b.points} vs nightly ${pts}${gpKnown ? "" : " (no nightly GP)"}`); rows.push({ season, period: rcp.number, code, pts: b.points, gp: b.games || 0 }); }
     }
     if (!rows.length) continue;
     const overdue = addDays(rcp.end_date, 1 + MISMATCH_GRACE_DAYS) <= today;

@@ -143,11 +143,28 @@ async function nightGoals(ymd) {
       });
     }
   }
-  return { games: games.length, notFinal: notFinal.map((g) => `${g.awayTeam.abbrev}@${g.homeTeam.abbrev} (${g.gameState})`), goals };
+  return { games: games.length, ids: games.filter((g) => ["OFF", "FINAL"].includes(g.gameState)).map((g) => g.id), notFinal: notFinal.map((g) => `${g.awayTeam.abbrev}@${g.homeTeam.abbrev} (${g.gameState})`), goals };
+}
+
+// skaters who played tonight (every finished game's box score): Set of NHL player ids. The league has no
+// goalie slots, so goalies are left out. This is the GP that F2 counts for a period (one per game played).
+async function nightSkaters(ids) {
+  const played = new Set();
+  for (const id of ids) {
+    const r = await fetch(`${NHL}/gamecenter/${id}/boxscore`);
+    if (!r.ok) throw new Error(`NHL boxscore ${id}: HTTP ${r.status}`);
+    const b = (await r.json()).playerByGameStats || {};
+    for (const side of [b.awayTeam || {}, b.homeTeam || {}]) {
+      for (const p of [...(side.forwards || []), ...(side.defense || [])]) played.add(p.playerId);
+    }
+    await sleep(100);
+  }
+  return played;
 }
 
 // ---- tally ------------------------------------------------------------------------------------
-const blank = () => ({ eligible: 0, scored: 0, g: 0, a: 0, a1: 0, a2: 0, pp: 0, en: 0 });
+// gp: games played by Active skaters (the GP in F2's standings)
+const blank = () => ({ eligible: 0, scored: 0, g: 0, a: 0, a1: 0, a2: 0, pp: 0, en: 0, gp: 0 });
 
 // players: { fantraxId: { team, name, pts } } for every Active player who scored tonight (used by records.js
 // for franchise scoring leaders and drafted-player milestones)
@@ -186,6 +203,10 @@ async function runNight(league, ymd, ids) {
   const own = await ownership(league, period, ids);
   const players = {};
   const teams = tally(night.goals, own, league.teams, players);
+  for (const nhlId of await nightSkaters(night.ids)) {
+    const o = own[nhlId];
+    if (o && o.status === "ACTIVE" && teams[o.team]) teams[o.team].gp += 1;
+  }
   const rec = { date: ymd, period: period.number, games: night.games, goals: night.goals.length, notFinal: night.notFinal, teams, players };
   fs.mkdirSync(REPORT_DIR, { recursive: true });
   fs.writeFileSync(path.join(REPORT_DIR, `${ymd}.json`), JSON.stringify(rec, null, 2));
