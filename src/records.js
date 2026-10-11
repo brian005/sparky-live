@@ -92,6 +92,10 @@ const log = (...a) => console.log(...a);
 const CODES = Object.assign({ brian: "BEW", chris: "PWN", graeme: "GDD", jason: "JGC", matt: "MPP", richie: "RMS" },
   JSON.parse(process.env.FRANCHISE_CODES || "{}"));
 const KNOWN = new Set(Object.values(CODES));
+// announcements use each franchise's full current name from F2 ("Brian's Endless Winter"), filled in at startup;
+// FRANCHISE_NAMES (JSON, code -> name) overrides. Falls back to the initialism.
+const FULL = JSON.parse(process.env.FRANCHISE_NAMES || "{}");
+const fname = (c) => FULL[c] || c;
 // historical team names start with the owner: "Cmack's PWN", "Matty's Little Heroes", "Chris' Crew"
 function codeFromName(name) {
   const n = String(name || "").trim();
@@ -264,7 +268,7 @@ function playerChecks(ph, pnights, doneSet, codesNow) {
         if (before[k] < prevPts && pts[k] >= pts[prevPool]) {
           const [code] = k.split("|"), [pc] = prevPool.split("|");
           const verb = pts[k] > pts[prevPool] ? "passed" : "tied";
-          lines.push(`*${nm(k)}* ${verb} ${nm(prevPool)} (${pc}, ${fmtN(pts[prevPool])}) for the most points by one player for a single franchise in Sparky history: ${fmtN(pts[k])} for ${code}.`);
+          lines.push(`*${nm(k)}* ${verb} ${nm(prevPool)} (${fname(pc)}, ${fmtN(pts[prevPool])}) for the most points by one player for a single franchise in Sparky history: ${fmtN(pts[k])} for ${fname(code)}.`);
           poolLine.add(k);
         }
       }
@@ -280,7 +284,7 @@ function playerChecks(ph, pnights, doneSet, codesNow) {
         if (k === prev || !k.startsWith(code + "|") || poolLine.has(k)) continue;
         if (before[k] < prevPts && pts[k] >= pts[prev]) {
           const verb = pts[k] > pts[prev] ? "passed" : "tied";
-          lines.push(`*${nm(k)}* ${verb} ${nm(prev)} for the most points by one player for ${code}: ${fmtN(pts[k])}.`);
+          lines.push(`*${nm(k)}* ${verb} ${nm(prev)} for the most points by one player for ${fname(code)}: ${fmtN(pts[k])}.`);
         }
       }
     }
@@ -293,7 +297,7 @@ function playerChecks(ph, pnights, doneSet, codesNow) {
         if (!how) continue;
         for (const m of MARKS) {
           if (before[k] < m && pts[k] >= m) {
-            lines.push(`*${nm(k)}* hit ${fmtN(m)} points for ${code} on ${prettyDate(night.date)}. ${code} drafted him in the ${how}.`);
+            lines.push(`*${nm(k)}* hit ${fmtN(m)} points for ${fname(code)} on ${prettyDate(night.date)}. ${fname(code)} drafted him in the ${how}.`);
           }
         }
       }
@@ -416,7 +420,7 @@ function statValue(stat, e) {
 }
 function oldPeriodRef(stat, o, levelId) {
   const v = stat.key.startsWith("ppg") ? `${fmtPpg(ppg(o))}` : `${o.pts}`;
-  const who = levelId.startsWith("pool") ? `${o.code}, ` : "";
+  const who = levelId.startsWith("pool") ? `${fname(o.code)}, ` : "";
   const when = levelId.endsWith("-n") ? o.season : `Period ${o.period} ${o.season}`;
   return `${v}, ${who}${when}`;
 }
@@ -432,24 +436,25 @@ function periodLine(e, stat, hit) {
   const old = hit.tie
     ? ` Shared with ${hit.ties.map((t) => oldPeriodRef(stat, t, hit.level.id)).join("; ")}.`
     : ` Old mark: ${oldPeriodRef(stat, hit.old, hit.level.id)}.`;
-  return `*${e.code}* ${verb} ${what}: ${statValue(stat, e)}.${old}`;
+  return `*${fname(e.code)}* ${verb} ${what}: ${statValue(stat, e)}.${old}`;
 }
 
 const ORDINAL = ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth"];
 function milestoneLine(code, mark, date, already, sameNight) {
   const n = already.length;
   const nth = ORDINAL[n] || `No. ${n + 1}`;
-  const list = n <= 1 ? already.join("") : `${already.slice(0, -1).join(", ")} and ${already[n - 1]}`;
+  const names = already.map(fname);
+  const list = n <= 1 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names[n - 1]}`;
   const after = n ? `, after ${list}` : "";
-  const tied = sameNight.length ? ` ${sameNight.join(" and ")} got there the same night.` : "";
-  return `*${code}* passed ${mark.toLocaleString("en-US")} all-time points on ${prettyDate(date)}. ${nth} franchise to get there${after}.${tied}`;
+  const tied = sameNight.length ? ` ${sameNight.map(fname).join(" and ")} got there the same night.` : "";
+  return `*${fname(code)}* passed ${mark.toLocaleString("en-US")} all-time points on ${prettyDate(date)}. ${nth} franchise to get there${after}.${tied}`;
 }
 
 function nightLine(e, stat, hit) {
   const what = hit.level.id === "pool-any" ? "the pool record for most points in a night" : "their own record for most points in a night";
-  const ref = (o) => `${o.pts}, ${hit.level.id === "pool-any" ? `${o.code}, ` : ""}${prettyDate(o.date)}`;
+  const ref = (o) => `${o.pts}, ${hit.level.id === "pool-any" ? `${fname(o.code)}, ` : ""}${prettyDate(o.date)}`;
   const old = hit.tie ? ` Shared with ${hit.ties.map(ref).join("; ")}.` : ` Old mark: ${ref(hit.old)}.`;
-  return `*${e.code}* ${hit.tie ? "tied" : "set"} ${what}: ${e.pts} points on ${prettyDate(e.date)}.${old}`;
+  return `*${fname(e.code)}* ${hit.tie ? "tied" : "set"} ${what}: ${e.pts} points on ${prettyDate(e.date)}.${old}`;
 }
 
 // ---- record book (for --book) ------------------------------------------------------------------------
@@ -496,6 +501,7 @@ async function slack(text) {
   if (!firstRcp) { log("F2 has no scoring periods."); return; }
   const season = seasonOf(firstRcp.start_date);
   const teamCode = Object.fromEntries((league.teams || []).map((t) => [t.id, CODES[t.franchise] || codeFromName(t.name)]));
+  for (const t of league.teams || []) { const c = teamCode[t.id]; if (c && t.name && !process.env.FRANCHISE_NAMES) FULL[c] = String(t.name).trim(); }
 
   // never let an old copy of this season in the history files double up with F2's
   const histPeriods = hist.periods.filter((p) => p.season !== season);
