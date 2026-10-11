@@ -12,6 +12,13 @@
 //   NIGHTS (every night, once every game is final): most points in a night, pool-wide and per franchise.
 //   MILESTONES (every night): a franchise passing a round 1,000 all-time points (every season since
 //     2013-14 plus this one so far).
+//   PLAYERS (every night), counting only a player's Active points while on that franchise:
+//     a new leader for "most points by one player for <franchise>" (passed or tied),
+//     a new leader for "most points by one player for a single franchise in Sparky history",
+//     drafted players reaching 100 / 250 / 500 / 750 / 1,000 points for the franchise that drafted them
+//     (prospect drafts and the 2013-14 / 2014-15 drafts; waiver pickups and trades never count).
+//     History through 2025-26 is data/player-history.json (exported once from F2's player_period_pts);
+//     this season comes from the players list in each nightly report file.
 //     No night lows: zero-point nights happen all the time.
 //
 // One line per franchise per stat, the strongest level only: a pool record isn't also announced as a
@@ -50,6 +57,7 @@
 //   SLACK_USERNAME                    default "Screech"
 //   SLACK_ICON                        emoji or image URL; default ":trophy:"
 //   RECORDS_DIR                       default data/records
+//   PLAYER_MILESTONES                 default "100,250,500,750,1000"
 //   FRANCHISE_CODES                   optional JSON override of franchise -> initialism
 // ============================================================
 
@@ -183,6 +191,116 @@ function seasonTotals(hist, nights, p2526) {
   }
   for (const p of Object.values(p2526)) add(p.season, p.code, p.pts);
   return out;
+}
+
+// ---- players ----------------------------------------------------------------------------------------
+function loadPlayerHistory() {
+  const f = path.join(DATA, "player-history.json");
+  if (!fs.existsSync(f)) return null;
+  return JSON.parse(fs.readFileSync(f, "utf8"));
+}
+
+// this season's nights that carry a players list: [{ date, rows: [{ code, pid, name, pts }] }]
+function currentPlayerNights(season, teamCode, today) {
+  const dir = path.join(DATA, "nightly-report");
+  const out = [];
+  if (!fs.existsSync(dir)) return out;
+  for (const f of fs.readdirSync(dir).filter((x) => /^\d{4}-\d{2}-\d{2}\.json$/.test(x)).sort()) {
+    const r = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
+    if (!r.date || r.date > today || seasonOf(r.date) !== season) continue;
+    if (!(r.period >= 1) || !r.games || (r.notFinal || []).length || !r.players) continue;
+    const rows = [];
+    for (const [pid, p] of Object.entries(r.players)) {
+      const code = teamCode[p.team];
+      if (code && p.pts) rows.push({ code, pid, name: p.name, pts: p.pts });
+    }
+    out.push({ date: r.date, rows });
+  }
+  return out;
+}
+
+const fmtN = (n) => Number(n).toLocaleString("en-US");
+
+// leader of a set of keys by points (ties: whoever's ahead in the order given, i.e. the incumbent)
+function leaderOf(keys, pts, incumbent) {
+  let best = incumbent && keys.includes(incumbent) ? incumbent : null;
+  for (const k of keys) if (!best || (pts[k] || 0) > (pts[best] || 0)) best = k;
+  return best;
+}
+
+function playerChecks(ph, pnights, doneSet, codesNow) {
+  const MARKS = String(process.env.PLAYER_MILESTONES || "100,250,500,750,1000").split(",").map(Number).filter(Boolean).sort((a, b) => a - b);
+  const pts = {};                                         // "CODE|pid" -> points for that franchise
+  const names = { ...(ph.players || {}) };
+  for (const [code, byPid] of Object.entries(ph.points || {})) for (const [pid, v] of Object.entries(byPid)) pts[`${code}|${pid}`] = v;
+  const drafted = ph.drafted || {};
+  const keysOf = (code) => Object.keys(pts).filter((k) => k.startsWith(code + "|"));
+  const nm = (k) => names[k.split("|")[1]] || k.split("|")[1];
+
+  const lines = [];
+  const newDates = [];
+  let poolLeader = leaderOf(Object.keys(pts), pts);
+  const frLeader = Object.fromEntries(codesNow.map((c) => [c, leaderOf(keysOf(c), pts)]));
+
+  for (const night of pnights) {
+    const isNew = !doneSet.has(night.date);
+    const before = {};
+    for (const r of night.rows) {
+      const k = `${r.code}|${r.pid}`;
+      before[k] = pts[k] || 0;
+      pts[k] = before[k] + r.pts;
+      if (r.name) names[r.pid] = r.name;
+    }
+    const touched = [...new Set(night.rows.map((r) => r.code))];
+
+    // pool: most points by one player for a single franchise
+    const prevPool = poolLeader;
+    poolLeader = leaderOf(Object.keys(pts), pts, prevPool);
+    const poolLine = new Set();
+    if (isNew && prevPool) {
+      for (const k of Object.keys(before)) {
+        if (k === prevPool) continue;
+        const prevPts = before[prevPool] != null ? before[prevPool] : pts[prevPool];
+        if (before[k] < prevPts && pts[k] >= pts[prevPool]) {
+          const [code] = k.split("|"), [pc] = prevPool.split("|");
+          const verb = pts[k] > pts[prevPool] ? "passed" : "tied";
+          lines.push(`*${nm(k)}* ${verb} ${nm(prevPool)} (${pc}, ${fmtN(pts[prevPool])}) for the most points by one player for a single franchise in Sparky history: ${fmtN(pts[k])} for ${code}.`);
+          poolLine.add(k);
+        }
+      }
+    }
+
+    // each franchise's own leader
+    for (const code of touched) {
+      const prev = frLeader[code];
+      frLeader[code] = leaderOf(keysOf(code), pts, prev);
+      if (!isNew || !prev) continue;
+      const prevPts = before[prev] != null ? before[prev] : pts[prev];
+      for (const k of Object.keys(before)) {
+        if (k === prev || !k.startsWith(code + "|") || poolLine.has(k)) continue;
+        if (before[k] < prevPts && pts[k] >= pts[prev]) {
+          const verb = pts[k] > pts[prev] ? "passed" : "tied";
+          lines.push(`*${nm(k)}* ${verb} ${nm(prev)} for the most points by one player for ${code}: ${fmtN(pts[k])}.`);
+        }
+      }
+    }
+
+    // drafted players' milestones, for the franchise that drafted them
+    if (isNew) {
+      for (const k of Object.keys(before)) {
+        const [code, pid] = k.split("|");
+        const how = (drafted[code] || {})[pid];
+        if (!how) continue;
+        for (const m of MARKS) {
+          if (before[k] < m && pts[k] >= m) {
+            lines.push(`*${nm(k)}* hit ${fmtN(m)} points for ${code} on ${prettyDate(night.date)}. ${code} drafted him in the ${how}.`);
+          }
+        }
+      }
+      newDates.push(night.date);
+    }
+  }
+  return { lines, newDates };
 }
 
 // ---- F2 -------------------------------------------------------------------------------------------
@@ -398,7 +516,7 @@ async function slack(text) {
     return;
   }
 
-  const state = fs.existsSync(STATE_FILE) ? JSON.parse(fs.readFileSync(STATE_FILE, "utf8")) : { periods: [], nights: [] };
+  const state = fs.existsSync(STATE_FILE) ? JSON.parse(fs.readFileSync(STATE_FILE, "utf8")) : { periods: [], nights: [], playerNights: [] };
   const donePeriods = new Set(state.periods || []);
   const doneNights = new Set(state.nights || []);
   const pKey = (p) => `${p.season}|P${p.period}`;
@@ -460,14 +578,26 @@ async function slack(text) {
     }
   }
 
+  // players: franchise scoring leaders, the pool's single-franchise leader, drafted-player milestones
+  const ph = loadPlayerHistory();
+  const donePlayerNights = new Set(state.playerNights || []);
+  let playerOut = { lines: [], newDates: [] };
+  if (ph) {
+    const pnights = currentPlayerNights(season, teamCode, today);
+    playerOut = playerChecks(ph, pnights, donePlayerNights, [...new Set(Object.values(teamCode).filter(Boolean))]);
+    for (const d of playerOut.newDates) donePlayerNights.add(d);
+  } else log("No data/player-history.json: player checks skipped.");
+
   const paras = [];
   for (const [n, ls] of Object.entries(lines.periods)) if (ls.length) paras.push(`*Period ${n} is final.*`, ...ls);
   for (const [d, ls] of Object.entries(lines.nights)) paras.push(...ls);
   for (const d of Object.keys(milestones).sort()) paras.push(...milestones[d]);
+  paras.push(...playerOut.lines);
 
-  const nothingNew = !newPeriodNums.length && !newDates.length;
+  const nothingNew = !newPeriodNums.length && !newDates.length && !playerOut.newDates.length;
   if (nothingNew) { log("Nothing newly final."); return; }
   log(`Checked: ${newPeriodNums.map((n) => `Period ${n}`).concat(newDates).join(", ")}`);
+  if (playerOut.newDates.length) log(`Player checks: ${playerOut.newDates.join(", ")}`);
 
   let posted = false;
   if (paras.length) {
@@ -480,7 +610,7 @@ async function slack(text) {
   const save = SEED || (!NO_SLACK && !TEST && (posted || !paras.length));
   if (save) {
     fs.mkdirSync(OUT_DIR, { recursive: true });
-    fs.writeFileSync(STATE_FILE, JSON.stringify({ updatedAt: new Date().toISOString(), periods: [...donePeriods].sort(), nights: [...doneNights].sort() }, null, 1));
+    fs.writeFileSync(STATE_FILE, JSON.stringify({ updatedAt: new Date().toISOString(), periods: [...donePeriods].sort(), nights: [...doneNights].sort(), playerNights: [...donePlayerNights].sort() }, null, 1));
     log(`State saved (${path.relative(ROOT, STATE_FILE)}).`);
   }
 })().catch((e) => { console.error("FAILED:", e.message); process.exitCode = 1; });

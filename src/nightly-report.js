@@ -2,6 +2,9 @@
 // NIGHTLY REPORT: who scored, who left points on the bench
 // ============================================================
 // For one night's NHL games (default: yesterday, Pacific), per franchise:
+// Each night's file also lists every Active player who scored (players: { fantraxId: { team, name, pts } }),
+// which records.js uses for player records and milestones.
+//
 //   TR         points by EVERY rostered player (Active + Reserve + Minors; prospects sit in Minors)
 //   AR         points by Active players (what actually counts)
 //   Rec        AR / TR
@@ -146,7 +149,9 @@ async function nightGoals(ymd) {
 // ---- tally ------------------------------------------------------------------------------------
 const blank = () => ({ eligible: 0, scored: 0, g: 0, a: 0, a1: 0, a2: 0, pp: 0, en: 0 });
 
-function tally(goals, own, teams) {
+// players: { fantraxId: { team, name, pts } } for every Active player who scored tonight (used by records.js
+// for franchise scoring leaders and drafted-player milestones)
+function tally(goals, own, teams, players = {}) {
   const out = Object.fromEntries(teams.map((t) => [t.id, blank()]));
   const credit = (nhlId, kind, goal) => {
     const o = own[nhlId];
@@ -155,6 +160,8 @@ function tally(goals, own, teams) {
     t.eligible += 1;
     if (o.status !== "ACTIVE") return;
     t.scored += 1;
+    const pl = (players[o.fantraxId] = players[o.fantraxId] || { team: o.team, name: o.name, pts: 0 });
+    pl.pts += 1;
     if (kind === "G") t.g += 1;
     else { t.a += 1; if (kind === "A1") t.a1 += 1; else t.a2 += 1; }
     if (goal.pp) t.pp += 1;
@@ -177,8 +184,9 @@ async function runNight(league, ymd, ids) {
   const night = await nightGoals(ymd);
   if (!night.games) return { date: ymd, period: period.number, games: 0, teams: {} };
   const own = await ownership(league, period, ids);
-  const teams = tally(night.goals, own, league.teams);
-  const rec = { date: ymd, period: period.number, games: night.games, goals: night.goals.length, notFinal: night.notFinal, teams };
+  const players = {};
+  const teams = tally(night.goals, own, league.teams, players);
+  const rec = { date: ymd, period: period.number, games: night.games, goals: night.goals.length, notFinal: night.notFinal, teams, players };
   fs.mkdirSync(REPORT_DIR, { recursive: true });
   fs.writeFileSync(path.join(REPORT_DIR, `${ymd}.json`), JSON.stringify(rec, null, 2));
   return rec;
