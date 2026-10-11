@@ -47,7 +47,7 @@ concurrency:
 jobs:
   records:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -82,6 +82,12 @@ jobs:
         shell: bash
         run: node src/nightly-report.js --date "$(TZ=America/Vancouver date +%F)" --no-slack
 
+      # one time: night-by-night prospect history from NHL game logs (a few minutes; skipped once the file exists)
+      - name: Prospect nights backfill
+        if: hashFiles('data/prospect-nights.json') == ''
+        continue-on-error: true
+        run: node src/prospect-nights-backfill.js
+
       # no npm install needed: the script uses only Node built-ins
       - name: Records
         env:
@@ -100,7 +106,7 @@ jobs:
         run: |
           git config user.name "sparkybot"
           git config user.email "sparkybot@users.noreply.github.com"
-          git add data/records/ data/nightly-report/ data/nhl-ids.json 2>/dev/null || true
+          git add data/records/ data/nightly-report/ data/nhl-ids.json data/prospect-nights.json 2>/dev/null || true
           if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
           git commit -m "Records $(date -u +%Y-%m-%d)"
           for i in 1 2 3; do git pull --rebase --quiet && git push --quiet && break; sleep 5; done
