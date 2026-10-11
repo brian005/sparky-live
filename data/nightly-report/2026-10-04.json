@@ -13,7 +13,8 @@
       "a1": 1,
       "a2": 2,
       "pp": 3,
-      "en": 0
+      "en": 0,
+      "gp": 4
     },
     "djdo03kcmo319aqw": {
       "eligible": 5,
@@ -23,7 +24,8 @@
       "a1": 1,
       "a2": 1,
       "pp": 1,
-      "en": 0
+      "en": 0,
+      "gp": 4
     },
     "mo75fhhjmo319aqw": {
       "eligible": 4,
@@ -33,7 +35,8 @@
       "a1": 1,
       "a2": 0,
       "pp": 1,
-      "en": 0
+      "en": 0,
+      "gp": 3
     },
     "smc5vz9tmo319aqw": {
       "eligible": 4,
@@ -43,7 +46,8 @@
       "a1": 0,
       "a2": 0,
       "pp": 0,
-      "en": 0
+      "en": 0,
+      "gp": 0
     },
     "lo1c2zefmo319aqw": {
       "eligible": 11,
@@ -53,7 +57,8 @@
       "a1": 1,
       "a2": 0,
       "pp": 2,
-      "en": 0
+      "en": 0,
+      "gp": 5
     },
     "h13alq00mo319aqw": {
       "eligible": 5,
@@ -63,7 +68,8 @@
       "a1": 1,
       "a2": 2,
       "pp": 4,
-      "en": 0
+      "en": 0,
+      "gp": 3
     }
   },
   "players": {
