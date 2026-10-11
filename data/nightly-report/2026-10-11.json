@@ -1,0 +1,80 @@
+{
+  "date": "2026-10-11",
+  "period": 1,
+  "games": 3,
+  "goals": 6,
+  "notFinal": [
+    "SEA@WSH (LIVE)",
+    "VAN@NYR (LIVE)",
+    "CAR@PHI (PRE)"
+  ],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 1,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 3,
+      "scored": 1,
+      "g": 0,
+      "a": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 1,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 2,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0
+    }
+  },
+  "players": {
+    "051tx": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Aliaksei Protas",
+      "pts": 1
+    }
+  }
+}
