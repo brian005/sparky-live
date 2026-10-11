@@ -10,6 +10,8 @@
 //     most points / fewest points / best ppg / worst ppg   in ANY period
 //     most points / fewest points / best ppg / worst ppg   in PERIOD N (e.g. best Period 1 ever)
 //   NIGHTS (every night, once every game is final): most points in a night, pool-wide and per franchise.
+//   MILESTONES (every night): a franchise passing a round 1,000 all-time points (every season since
+//     2013-14 plus this one so far).
 //     No night lows: zero-point nights happen all the time.
 //
 // One line per franchise per stat, the strongest level only: a pool record isn't also announced as a
@@ -151,7 +153,36 @@ function loadHistory() {
     }
   }
   for (const p of Object.values(p2526)) if (p.gp) periods.push(p);
-  return { periods, nights };
+  return { periods, nights, seasonTotals: seasonTotals(hist, nights, p2526) };
+}
+
+// All-time points per season per franchise, for milestones: the period totals, except where a season's
+// period history is missing a franchise for a period (2014-15's last period has no PWN or MPP), then that
+// franchise's season comes from the nightly files instead. 2025-26 comes from its nightly files.
+function seasonTotals(hist, nights, p2526) {
+  const out = {};                                         // season -> code -> points
+  const add = (season, code, pts) => { out[season] = out[season] || {}; out[season][code] = (out[season][code] || 0) + pts; };
+  const fromNights = {};
+  for (const n of nights) { fromNights[n.season] = fromNights[n.season] || {}; fromNights[n.season][n.code] = (fromNights[n.season][n.code] || 0) + n.pts; }
+
+  const bySeason = {};
+  for (const r of hist) {
+    const end = Number(r.season);
+    const season = `${end - 1}-${String(end).slice(2)}`;
+    if (season === "2025-26") continue;
+    (bySeason[season] = bySeason[season] || []).push(r);
+  }
+  for (const [season, rows] of Object.entries(bySeason)) {
+    const codes = new Set();
+    for (const r of rows) for (const owner of Object.keys(r.teams || {})) { const c = codeFromName(owner); if (c) codes.add(c); }
+    for (const code of codes) {
+      const gap = rows.some((r) => !Object.keys(r.teams || {}).some((o) => codeFromName(o) === code));
+      if (gap && fromNights[season] && fromNights[season][code] != null) { add(season, code, fromNights[season][code]); continue; }
+      for (const r of rows) for (const [owner, v] of Object.entries(r.teams || {})) if (codeFromName(owner) === code) add(season, code, v.FPts || 0);
+    }
+  }
+  for (const p of Object.values(p2526)) add(p.season, p.code, p.pts);
+  return out;
 }
 
 // ---- F2 -------------------------------------------------------------------------------------------
@@ -286,6 +317,16 @@ function periodLine(e, stat, hit) {
   return `*${e.code}* ${verb} ${what}: ${statValue(stat, e)}.${old}`;
 }
 
+const ORDINAL = ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth"];
+function milestoneLine(code, mark, date, already, sameNight) {
+  const n = already.length;
+  const nth = ORDINAL[n] || `No. ${n + 1}`;
+  const list = n <= 1 ? already.join("") : `${already.slice(0, -1).join(", ")} and ${already[n - 1]}`;
+  const after = n ? `, after ${list}` : "";
+  const tied = sameNight.length ? ` ${sameNight.join(" and ")} got there the same night.` : "";
+  return `*${code}* passed ${mark.toLocaleString("en-US")} all-time points on ${prettyDate(date)}. ${nth} franchise to get there${after}.${tied}`;
+}
+
 function nightLine(e, stat, hit) {
   const what = hit.level.id === "pool-any" ? "the pool record for most points in a night" : "their own record for most points in a night";
   const ref = (o) => `${o.pts}, ${hit.level.id === "pool-any" ? `${o.code}, ` : ""}${prettyDate(o.date)}`;
@@ -347,7 +388,15 @@ async function slack(text) {
   const { periods, waiting } = currentPeriods(league, standings, nights, season, teamCode, today);
   for (const w of waiting) log(`Not final yet, will retry: ${w}`);
 
-  if (BOOK) { printBook([...histPeriods, ...periods], [...histNights, ...nights]); return; }
+  if (BOOK) {
+    printBook([...histPeriods, ...periods], [...histNights, ...nights]);
+    const all = {};
+    for (const [s, byCode] of Object.entries(hist.seasonTotals)) if (s !== season) for (const [c, v] of Object.entries(byCode)) all[c] = (all[c] || 0) + v;
+    for (const n of nights) all[n.code] = (all[n.code] || 0) + n.pts;
+    log("ALL-TIME POINTS");
+    for (const [c, v] of Object.entries(all).sort((a, b) => b[1] - a[1])) log(`  ${c} ${v.toLocaleString("en-US")}`);
+    return;
+  }
 
   const state = fs.existsSync(STATE_FILE) ? JSON.parse(fs.readFileSync(STATE_FILE, "utf8")) : { periods: [], nights: [] };
   const donePeriods = new Set(state.periods || []);
@@ -385,9 +434,36 @@ async function slack(text) {
     doneNights.add(d);
   }
 
+  // milestones: all-time totals walked night by night through this season; announce new nights that
+  // carry a franchise past a round 1,000
+  const MILESTONE = 1000;
+  const running = {};
+  for (const [s, byCode] of Object.entries(hist.seasonTotals)) {
+    if (s === season) continue;
+    for (const [c, v] of Object.entries(byCode)) running[c] = (running[c] || 0) + v;
+  }
+  const milestones = {};
+  const newDateSet = new Set(newDates);
+  for (const d of [...new Set(nights.map((x) => x.date))].sort()) {
+    const batch = nights.filter((x) => x.date === d);
+    const before = { ...running };
+    for (const e of batch) running[e.code] = (running[e.code] || 0) + e.pts;
+    if (!newDateSet.has(d)) continue;
+    for (const e of batch) {
+      const from = Math.floor((before[e.code] || 0) / MILESTONE), to = Math.floor(running[e.code] / MILESTONE);
+      for (let m = from + 1; m <= to; m++) {
+        const mark = m * MILESTONE;
+        const already = Object.keys(running).filter((c) => c !== e.code && (before[c] || 0) >= mark).sort((x, y) => running[y] - running[x]);
+        const sameNight = batch.filter((x) => x.code !== e.code && (before[x.code] || 0) < mark && running[x.code] >= mark).map((x) => x.code);
+        (milestones[d] = milestones[d] || []).push(milestoneLine(e.code, mark, d, already, sameNight));
+      }
+    }
+  }
+
   const paras = [];
   for (const [n, ls] of Object.entries(lines.periods)) if (ls.length) paras.push(`*Period ${n} is final.*`, ...ls);
   for (const [d, ls] of Object.entries(lines.nights)) paras.push(...ls);
+  for (const d of Object.keys(milestones).sort()) paras.push(...milestones[d]);
 
   const nothingNew = !newPeriodNums.length && !newDates.length;
   if (nothingNew) { log("Nothing newly final."); return; }
