@@ -1,0 +1,86 @@
+name: Records (Screech, set or tied)
+
+# Checks whatever just became final (last night, and any period that just ended) against every season
+# since 2013-14, and posts to #sparky when a franchise sets or ties a record, pool-wide or its own.
+# Quiet when nothing's set.
+#
+# Runs right after the Nightly report finishes (that's where last night's points come from), with a
+# midday fallback in case the nightly report didn't trigger it. Both are idempotent:
+# data/records/state.json remembers what's been checked, so nothing is announced twice.
+
+on:
+  workflow_run:
+    workflows: ["Nightly report (eligible vs scored, A1/A2, PP/EN)"]
+    types: [completed]
+  schedule:
+    - cron: "0 19 * * *"     # 12:00 PDT / 11:00 PST fallback
+  workflow_dispatch:
+    inputs:
+      slack:
+        description: "Post to Slack (off = print only, state untouched)"
+        type: boolean
+        default: true
+      channel:
+        description: "Slack channel ID to post to instead (blank = #sparky). Test posts never save state."
+        required: false
+        default: ""
+      book:
+        description: "Just print the record book in the log"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: records
+  cancel-in-progress: false
+
+jobs:
+  records:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      # the nightly report commits last night's file just before this runs: make sure we have it
+      - name: Latest data
+        shell: bash
+        run: git pull --quiet origin "${{ github.event.repository.default_branch }}" || true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build args
+        id: args
+        shell: bash
+        run: |
+          A=""
+          [ "${{ github.event.inputs.slack }}" = "false" ] && A="$A --no-slack"
+          [ "${{ github.event.inputs.book }}" = "true" ] && A="$A --book"
+          [ -n "${{ github.event.inputs.channel }}" ] && A="$A --test"
+          echo "args=$A" >> "$GITHUB_OUTPUT"
+
+      # no npm install needed: the script uses only Node built-ins
+      - name: Records
+        env:
+          F2_BASE: ${{ vars.F2_BASE }}
+          F2_USER: ${{ secrets.F2_USER }}
+          F2_PASSWORD: ${{ secrets.F2_PASSWORD }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ github.event.inputs.channel || vars.RECORDS_SLACK_CHANNEL || vars.F1_MIRROR_SLACK_CHANNEL }}
+          SLACK_USERNAME: ${{ vars.RECORDS_SLACK_USERNAME || 'Screech' }}
+          SLACK_ICON: ${{ vars.RECORDS_SLACK_ICON || ':trophy:' }}
+        run: node src/records.js ${{ steps.args.outputs.args }}
+
+      - name: Commit state
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "sparkybot"
+          git config user.email "sparkybot@users.noreply.github.com"
+          git add data/records/ 2>/dev/null || true
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "Records $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do git pull --rebase --quiet && git push --quiet && break; sleep 5; done
