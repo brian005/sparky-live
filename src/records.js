@@ -1,14 +1,15 @@
 // ============================================================
 // RECORDS: announce franchise and pool records as they're set
 // ============================================================
-// Every morning (after the nightly report), checks anything that just became final against 13+ seasons
-// of Sparky history and posts to #sparky when a record is set or tied. Quiet when nothing is.
+// Every night at 10:30 PM Pacific (right after tonight's games are tallied), checks anything that just
+// became final against 13+ seasons of Sparky history and posts to #sparky when a record is set or tied.
+// Quiet when nothing is. A morning run after the nightly report catches up whatever the night run missed.
 //
 // What's checked:
 //   PERIODS (when a period is final), each pool-wide AND per franchise:
 //     most points / fewest points / best ppg / worst ppg   in ANY period
 //     most points / fewest points / best ppg / worst ppg   in PERIOD N (e.g. best Period 1 ever)
-//   NIGHTS (every morning): most points in a night, pool-wide and per franchise.
+//   NIGHTS (every night, once every game is final): most points in a night, pool-wide and per franchise.
 //     No night lows: zero-point nights happen all the time.
 //
 // One line per franchise per stat, the strongest level only: a pool record isn't also announced as a
@@ -184,7 +185,7 @@ function currentNights(season, teamCode, today) {
   if (!fs.existsSync(dir)) return out;
   for (const f of fs.readdirSync(dir).filter((x) => /^\d{4}-\d{2}-\d{2}\.json$/.test(x)).sort()) {
     const r = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
-    if (!r.date || r.date >= today || seasonOf(r.date) !== season) continue;
+    if (!r.date || r.date > today || seasonOf(r.date) !== season) continue;     // tonight counts once every game is final
     if (!(r.period >= 1) || !r.games || (r.notFinal || []).length) continue;
     for (const [tid, t] of Object.entries(r.teams || {})) {
       const code = teamCode[tid];

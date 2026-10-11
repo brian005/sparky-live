@@ -4,8 +4,15 @@ name: Records (Screech, set or tied)
 # since 2013-14, and posts to #sparky when a franchise sets or ties a record, pool-wide or its own.
 # Quiet when nothing's set.
 #
-# Runs right after the Nightly report finishes (that's where last night's points come from), with a
-# midday fallback in case the nightly report didn't trigger it. Both are idempotent:
+# 10:30 PM Pacific: tallies TONIGHT's games (nightly-report.js --date today, no Slack post) and checks
+# them, but only once every game is final. Cron is UTC and doesn't follow DST, so it fires at 05:30 and
+# 06:30 UTC: 10:30 / 11:30 PM in PDT, 9:30 / 10:30 PM in PST. The early one usually finds a late game
+# still going and waits; the later one gets it. Running twice is harmless.
+#
+# Mornings, right after the Nightly report: catches up anything the night run couldn't finish (a game
+# that went long), and checks periods. A period's last night only reaches F2's totals after midnight,
+# so period records post the morning after a period ends.
+#
 # data/records/state.json remembers what's been checked, so nothing is announced twice.
 
 on:
@@ -13,7 +20,8 @@ on:
     workflows: ["Nightly report (eligible vs scored, A1/A2, PP/EN)"]
     types: [completed]
   schedule:
-    - cron: "0 19 * * *"     # 12:00 PDT / 11:00 PST fallback
+    - cron: "30 5 * * *"     # 22:30 PDT / 21:30 PST
+    - cron: "30 6 * * *"     # 23:30 PDT / 22:30 PST
   workflow_dispatch:
     inputs:
       slack:
@@ -62,6 +70,18 @@ jobs:
           [ -n "${{ github.event.inputs.channel }}" ] && A="$A --test"
           echo "args=$A" >> "$GITHUB_OUTPUT"
 
+      # tonight's games, tallied the same way the morning nightly report does (it overwrites this file
+      # tomorrow morning with the same numbers). Not needed on the morning run: that's what just ran.
+      - name: Tonight's games
+        if: github.event_name != 'workflow_run'
+        continue-on-error: true        # if this fails, still check whatever's already final
+        env:
+          F2_BASE: ${{ vars.F2_BASE }}
+          F2_USER: ${{ secrets.F2_USER }}
+          F2_PASSWORD: ${{ secrets.F2_PASSWORD }}
+        shell: bash
+        run: node src/nightly-report.js --date "$(TZ=America/Vancouver date +%F)" --no-slack
+
       # no npm install needed: the script uses only Node built-ins
       - name: Records
         env:
@@ -80,7 +100,7 @@ jobs:
         run: |
           git config user.name "sparkybot"
           git config user.email "sparkybot@users.noreply.github.com"
-          git add data/records/ 2>/dev/null || true
+          git add data/records/ data/nightly-report/ data/nhl-ids.json 2>/dev/null || true
           if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
           git commit -m "Records $(date -u +%Y-%m-%d)"
           for i in 1 2 3; do git pull --rebase --quiet && git push --quiet && break; sleep 5; done
