@@ -1,0 +1,199 @@
+{
+  "postedAt": "2026-10-11T18:50:31",
+  "period": 2,
+  "lock": "2026-10-12T10:00:00",
+  "minStreak": 2,
+  "players": [
+    {
+      "id": "03e1m",
+      "name": "Brayden Point",
+      "team": "5c6dwdhkmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "05ran",
+      "name": "Matt Coronato",
+      "team": "5c6dwdhkmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "042vl",
+      "name": "Jordan Kyrou",
+      "team": "5c6dwdhkmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "04y80",
+      "name": "Shane Wright",
+      "team": "djdo03kcmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "050rc",
+      "name": "Dmitri Voronkov",
+      "team": "djdo03kcmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "04mtp",
+      "name": "Dylan Cozens",
+      "team": "djdo03kcmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "06maz",
+      "name": "Ilya Protas",
+      "team": "djdo03kcmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "06mb0",
+      "name": "Matvei Gridin",
+      "team": "djdo03kcmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "05r3d",
+      "name": "Josh Doan",
+      "team": "djdo03kcmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "0457f",
+      "name": "Nico Hischier",
+      "team": "mo75fhhjmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "004cq",
+      "name": "Alex Ovechkin",
+      "team": "mo75fhhjmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "05uao",
+      "name": "Collin Graf",
+      "team": "mo75fhhjmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "03ra7",
+      "name": "Zach Werenski",
+      "team": "mo75fhhjmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "03bfj",
+      "name": "Artemi Panarin",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "02un5",
+      "name": "Sam Reinhart",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "05y3a",
+      "name": "Leo Carlsson",
+      "team": "lo1c2zefmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "03uzr",
+      "name": "Matthew Tkachuk",
+      "team": "lo1c2zefmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "0579x",
+      "name": "Adam Fantilli",
+      "team": "lo1c2zefmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "04y8g",
+      "name": "Trevor Zegras",
+      "team": "lo1c2zefmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "05tpa",
+      "name": "Ville Koivunen",
+      "team": "h13alq00mo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "067xd",
+      "name": "T.J. Hughes",
+      "team": "h13alq00mo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "064mz",
+      "name": "Charlie Stramel",
+      "team": "h13alq00mo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "06loc",
+      "name": "Egor Surin",
+      "team": "h13alq00mo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "06bui",
+      "name": "Felix Unger Sorum",
+      "team": "h13alq00mo319aqw",
+      "streak": 2
+    }
+  ],
+  "leftOutInjured": [
+    {
+      "id": "02uws",
+      "name": "Mathew Barzal",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "05gvq",
+      "name": "Seth Jarvis",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "004jl",
+      "name": "Brad Marchand",
+      "status": "Out"
+    },
+    {
+      "id": "02422",
+      "name": "Ryan Nugent-Hopkins",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "05rjd",
+      "name": "Cutter Gauthier",
+      "status": "Day-To-Day"
+    },
+    {
+      "id": "05tcz",
+      "name": "Oliver Kapanen",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "03rik",
+      "name": "Troy Terry",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "04y4m",
+      "name": "Connor Bedard",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "01ex7",
+      "name": "Matt Duchene",
+      "status": "Injured Reserve"
+    }
+  ]
+}
