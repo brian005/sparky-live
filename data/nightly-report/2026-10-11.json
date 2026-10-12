@@ -2,12 +2,8 @@
   "date": "2026-10-11",
   "period": 1,
   "games": 3,
-  "goals": 6,
-  "notFinal": [
-    "SEA@WSH (LIVE)",
-    "VAN@NYR (LIVE)",
-    "CAR@PHI (PRE)"
-  ],
+  "goals": 21,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
       "eligible": 1,
@@ -17,37 +13,41 @@
       "a1": 0,
       "a2": 0,
       "pp": 0,
-      "en": 0
+      "en": 0,
+      "gp": 0
     },
     "djdo03kcmo319aqw": {
-      "eligible": 3,
-      "scored": 1,
-      "g": 0,
-      "a": 1,
+      "eligible": 7,
+      "scored": 3,
+      "g": 1,
+      "a": 2,
       "a1": 0,
-      "a2": 1,
+      "a2": 2,
       "pp": 0,
-      "en": 0
+      "en": 0,
+      "gp": 6
     },
     "mo75fhhjmo319aqw": {
-      "eligible": 1,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
-      "a1": 0,
+      "eligible": 4,
+      "scored": 2,
+      "g": 1,
+      "a": 1,
+      "a1": 1,
       "a2": 0,
       "pp": 0,
-      "en": 0
+      "en": 0,
+      "gp": 1
     },
     "smc5vz9tmo319aqw": {
-      "eligible": 2,
+      "eligible": 3,
       "scored": 0,
       "g": 0,
       "a": 0,
       "a1": 0,
       "a2": 0,
       "pp": 0,
-      "en": 0
+      "en": 0,
+      "gp": 3
     },
     "lo1c2zefmo319aqw": {
       "eligible": 0,
@@ -57,7 +57,8 @@
       "a1": 0,
       "a2": 0,
       "pp": 0,
-      "en": 0
+      "en": 0,
+      "gp": 0
     },
     "h13alq00mo319aqw": {
       "eligible": 0,
@@ -67,7 +68,8 @@
       "a1": 0,
       "a2": 0,
       "pp": 0,
-      "en": 0
+      "en": 0,
+      "gp": 1
     }
   },
   "players": {
@@ -75,6 +77,16 @@
       "team": "djdo03kcmo319aqw",
       "name": "Aliaksei Protas",
       "pts": 1
+    },
+    "048vf": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Andrei Svechnikov",
+      "pts": 2
+    },
+    "03rmx": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Sebastian Aho",
+      "pts": 2
     }
   }
 }
