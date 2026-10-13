@@ -30,7 +30,7 @@
 // Env:
 //   F2_BASE, F2_USER, F2_PASSWORD     sparkypool.ca sign-in (same as the janitor)
 //   SLACK_BOT_TOKEN, SLACK_CHANNEL    bot token (needs chat:write.customize) and where to post
-//   SLACK_USERNAME                    default "Lisa"
+//   SLACK_USERNAME                    default "Lisa Turtle"
 //   SLACK_ICON                        emoji or image URL; default ":nail_care:"
 //   NIGHTLY_REPORT_DIR                default data/nightly-report
 //   NHL_ID_CACHE                      default data/nhl-ids.json
@@ -51,7 +51,7 @@ const F2_USER = need("F2_USER");
 const F2_PASSWORD = need("F2_PASSWORD");
 const SLACK_TOKEN = process.env.SLACK_BOT_TOKEN || "";
 const SLACK_CHANNEL = process.env.SLACK_CHANNEL || "";
-const SLACK_USERNAME = process.env.SLACK_USERNAME || "Lisa";
+const SLACK_USERNAME = process.env.SLACK_USERNAME || "Lisa Turtle";
 const SLACK_ICON = process.env.SLACK_ICON || ":nail_care:";
 const ROOT = path.join(__dirname, "..");
 const REPORT_DIR = process.env.NIGHTLY_REPORT_DIR || path.join(ROOT, "data", "nightly-report");

@@ -1,8 +1,8 @@
-name: Sunday report (Lisa, actual vs projected vs optimal)
+name: Sunday report (Lisa Turtle, actual vs projected vs optimal)
 
 # Every Sunday morning, 09:30 Pacific (08:30 in PST; cron is UTC and doesn't follow DST): the current
 # period's points per franchise against projected and optimal, games played and remaining, and the
-# projected finish three ways (current pace, projected lineup, optimal lineup). Posted by Lisa.
+# projected finish three ways (current pace, projected lineup, optimal lineup). Posted by Lisa Turtle.
 # Reads last night's nightly report file, so it runs after the 09:00 nightly report.
 
 on:
@@ -58,6 +58,6 @@ jobs:
           F2_PASSWORD: ${{ secrets.F2_PASSWORD }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL: ${{ github.event.inputs.channel || vars.NIGHTLY_REPORT_SLACK_CHANNEL || vars.F1_MIRROR_SLACK_CHANNEL }}
-          SLACK_USERNAME: ${{ vars.NIGHTLY_REPORT_SLACK_USERNAME || 'Lisa' }}
+          SLACK_USERNAME: ${{ vars.NIGHTLY_REPORT_SLACK_USERNAME || 'Lisa Turtle' }}
           SLACK_ICON: ${{ vars.NIGHTLY_REPORT_SLACK_ICON || ':nail_care:' }}
         run: node src/projection-report.js ${{ steps.args.outputs.args }}

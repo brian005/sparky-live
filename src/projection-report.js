@@ -31,7 +31,7 @@
 //
 // Env (standalone):
 //   F2_BASE, F2_USER, F2_PASSWORD
-//   SLACK_BOT_TOKEN, SLACK_CHANNEL, SLACK_USERNAME (default "Lisa"), SLACK_ICON (default ":nail_care:")
+//   SLACK_BOT_TOKEN, SLACK_CHANNEL, SLACK_USERNAME (default "Lisa Turtle"), SLACK_ICON (default ":nail_care:")
 //   ACTIVE_F, ACTIVE_D                default 15 and 4 (the Active lineup's forward / defence slots)
 //   NIGHTLY_REPORT_DIR                default data/nightly-report
 //   FRANCHISE_CODES                   optional JSON override of franchise -> initialism
@@ -152,22 +152,28 @@ function table(head, lines) {
   return "```\n" + all.map((r) => r.map((c, i) => (i === 0 ? String(c).padEnd(w[i]) : String(c).padStart(w[i]))).join(" ")).join("\n") + "\n```";
 }
 
+// the report's day is the morning after asOf: on the period's last day (or after it) it's the
+// "last day of period" report, otherwise "mid-period"
+function reportTitle(p) {
+  const day = addDays(p.asOf || addDays(p.period.start_date, -1), 1);
+  return `F2 stats department: ${day >= p.period.end_date ? "last day of period" : "mid-period"} report (Period ${p.period.number})`;
+}
+
 function formatProjection(p, { title = true } = {}) {
   if (!p) return "";
   const out = [];
-  if (title) out.push(`*Period ${p.period.number}: actual vs projected vs optimal*`);
+  if (title) out.push(`*${reportTitle(p)}*`);
   if (p.asOf) {
     out.push(`To date, through ${pretty(p.asOf)}`);
     const byAct = [...p.rows].sort((a, b) => b.act - a.act);
-    out.push(table(["", "Act", "Prj", "Opt", "GP", "GR"], byAct.map((r) => [r.code, r0(r.act), r0(r.prjToDate), r0(r.optToDate), r.gp, r.gr])));
+    out.push(table(["", "Points", "Prj", "Opt", "GP", "GR"], byAct.map((r) => [r.code, r0(r.act), r0(r.prjToDate), r0(r.optToDate), r.gp, r.gr])));
   } else {
     out.push(`Period ${p.period.number} starts ${pretty(p.period.start_date)}.`);
   }
   out.push(`Projected finish, ${p.daysLeft} day${p.daysLeft === 1 ? "" : "s"} left`);
-  const rank = (key) => [...p.rows].sort((a, b) => b[key] - a[key]);
-  const pace = rank("pace"), prj = rank("prjEnd"), opt = rank("optEnd");
-  const lines = p.rows.map((_, i) => [`${i + 1}.`, pace[i].code, r0(pace[i].pace), prj[i].code, r0(prj[i].prjEnd), opt[i].code, r0(opt[i].optEnd)]);
-  out.push(table(["", "", "Pace", "", "Proj", "", "Opt"], lines));
+  // ordered by Pace; each franchise's Projected and Optimal finish on the same line
+  const byPace = [...p.rows].sort((a, b) => b.pace - a.pace);
+  out.push(table(["", "", "Pace", "Projected", "Optimal"], byPace.map((r, i) => [`${i + 1}.`, r.code, r0(r.pace), r0(r.prjEnd), r0(r.optEnd)])));
   if (p.missingGp) out.push("_Some nights have no GP yet, so Pace is short: re-run the nightly backfill._");
   return out.join("\n");
 }
@@ -183,7 +189,7 @@ if (require.main === module) {
   const F2_BASE = need("F2_BASE").replace(/\/+$/, "");
   const F2_USER = need("F2_USER"), F2_PASSWORD = need("F2_PASSWORD");
   const SLACK_TOKEN = process.env.SLACK_BOT_TOKEN || "", SLACK_CHANNEL = process.env.SLACK_CHANNEL || "";
-  const SLACK_USERNAME = process.env.SLACK_USERNAME || "Lisa", SLACK_ICON = process.env.SLACK_ICON || ":nail_care:";
+  const SLACK_USERNAME = process.env.SLACK_USERNAME || "Lisa Turtle", SLACK_ICON = process.env.SLACK_ICON || ":nail_care:";
   const jar = {};
   const cookie = () => Object.entries(jar).map(([k, v]) => `${k}=${v}`).join("; ");
 
@@ -203,7 +209,7 @@ if (require.main === module) {
     const asOf = arg("--date") || addDays(ymdInTz(new Date()), -1);
     const p = await buildProjection({ f2, league, asOf });
     if (!p) { console.log(`No scoring period around ${asOf}.`); return; }
-    const text = `*Sunday check-in: Period ${p.period.number}*\n` + formatProjection(p, { title: false });
+    const text = formatProjection(p);
     console.log("\n" + text);
     if (NO_SLACK || !SLACK_TOKEN || !SLACK_CHANNEL) { console.log("(not posting to Slack)"); return; }
     const s = await fetch("https://slack.com/api/chat.postMessage", {
