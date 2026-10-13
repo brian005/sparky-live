@@ -3,7 +3,9 @@
 // ============================================================
 // For one night's NHL games (default: yesterday, Pacific), per franchise:
 // Each night's file also lists every Active player who scored (players: { fantraxId: { team, name, pts } }),
-// which records.js uses for player records and milestones.
+// which records.js uses for player records and milestones, and every non-Active rostered player who scored
+// (bench), which the projection report uses for the optimal lineup.
+// When posting, the actual vs projected vs optimal block from projection-report.js goes under the table.
 //
 //   TR         points by EVERY rostered player (Active + Reserve + Minors; prospects sit in Minors)
 //   AR         points by Active players (what actually counts)
@@ -171,15 +173,20 @@ async function nightSkaters(ids) {
 const blank = () => ({ eligible: 0, scored: 0, g: 0, a: 0, a1: 0, a2: 0, pp: 0, en: 0, gp: 0 });
 
 // players: { fantraxId: { team, name, pts } } for every Active player who scored tonight (used by records.js
-// for franchise scoring leaders and drafted-player milestones)
-function tally(goals, own, teams, players = {}) {
+// for franchise scoring leaders and drafted-player milestones); bench: the same for rostered players who
+// scored outside the Active lineup (with their status), for the projection report's optimal lineup
+function tally(goals, own, teams, players = {}, bench = {}) {
   const out = Object.fromEntries(teams.map((t) => [t.id, blank()]));
   const credit = (nhlId, kind, goal) => {
     const o = own[nhlId];
     if (!o || !out[o.team]) return;
     const t = out[o.team];
     t.eligible += 1;
-    if (o.status !== "ACTIVE") return;
+    if (o.status !== "ACTIVE") {
+      const b = (bench[o.fantraxId] = bench[o.fantraxId] || { team: o.team, name: o.name, status: o.status, pts: 0 });
+      b.pts += 1;
+      return;
+    }
     t.scored += 1;
     const pl = (players[o.fantraxId] = players[o.fantraxId] || { team: o.team, name: o.name, pts: 0 });
     pl.pts += 1;
@@ -206,12 +213,13 @@ async function runNight(league, ymd, ids) {
   if (!night.games) return { date: ymd, period: period.number, games: 0, teams: {} };
   const own = await ownership(league, period, ids);
   const players = {};
-  const teams = tally(night.goals, own, league.teams, players);
+  const bench = {};
+  const teams = tally(night.goals, own, league.teams, players, bench);
   for (const nhlId of await nightSkaters(night.ids)) {
     const o = own[nhlId];
     if (o && o.status === "ACTIVE" && teams[o.team]) teams[o.team].gp += 1;
   }
-  const rec = { date: ymd, period: period.number, games: night.games, goals: night.goals.length, notFinal: night.notFinal, teams, players };
+  const rec = { date: ymd, period: period.number, games: night.games, goals: night.goals.length, notFinal: night.notFinal, teams, players, bench };
   fs.mkdirSync(REPORT_DIR, { recursive: true });
   fs.writeFileSync(path.join(REPORT_DIR, `${ymd}.json`), JSON.stringify(rec, null, 2));
   return rec;
@@ -326,7 +334,15 @@ async function slack(text) {
   if (unmapped.length) log(`Players with no NHL id (not counted): ${unmapped.join(", ")}`);
 
   if (rec.skipped) { log(`Nothing to post: ${rec.skipped}`); return; }
-  const text = compose(league, rec, periodToDate(league, rec));
+  let text = compose(league, rec, periodToDate(league, rec));
+  // actual vs projected vs optimal and the projected finish (projection-report.js), when posting
+  if (!NO_SLACK) {
+    try {
+      const { buildProjection, formatProjection } = require("./projection-report");
+      const p = await buildProjection({ f2, league, asOf: rec.date });
+      if (p) text += "\n\n" + formatProjection(p);
+    } catch (e) { log(`Projection skipped: ${e.message}`); }
+  }
   log("\n" + text);
   await slack(text);
 })().catch((e) => { console.error("FAILED:", e.message); process.exitCode = 1; });

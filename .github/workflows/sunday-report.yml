@@ -1,0 +1,63 @@
+name: Sunday report (Lisa, actual vs projected vs optimal)
+
+# Every Sunday morning, 09:30 Pacific (08:30 in PST; cron is UTC and doesn't follow DST): the current
+# period's points per franchise against projected and optimal, games played and remaining, and the
+# projected finish three ways (current pace, projected lineup, optimal lineup). Posted by Lisa.
+# Reads last night's nightly report file, so it runs after the 09:00 nightly report.
+
+on:
+  schedule:
+    - cron: "30 16 * * 0"    # Sundays 09:30 PDT / 08:30 PST
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Last night to count, YYYY-MM-DD (blank = yesterday)"
+        required: false
+        default: ""
+      slack:
+        description: "Post to Slack"
+        type: boolean
+        default: true
+      channel:
+        description: "Slack channel ID to post to instead (blank = #sparky). For test posts."
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sunday-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build args
+        id: args
+        shell: bash
+        run: |
+          A=""
+          [ -n "${{ github.event.inputs.date }}" ] && A="$A --date ${{ github.event.inputs.date }}"
+          [ "${{ github.event.inputs.slack }}" = "false" ] && A="$A --no-slack"
+          echo "args=$A" >> "$GITHUB_OUTPUT"
+
+      # no npm install needed: the script uses only Node built-ins
+      - name: Sunday report
+        env:
+          F2_BASE: ${{ vars.F2_BASE }}
+          F2_USER: ${{ secrets.F2_USER }}
+          F2_PASSWORD: ${{ secrets.F2_PASSWORD }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ github.event.inputs.channel || vars.NIGHTLY_REPORT_SLACK_CHANNEL || vars.F1_MIRROR_SLACK_CHANNEL }}
+          SLACK_USERNAME: ${{ vars.NIGHTLY_REPORT_SLACK_USERNAME || 'Lisa' }}
+          SLACK_ICON: ${{ vars.NIGHTLY_REPORT_SLACK_ICON || ':nail_care:' }}
+        run: node src/projection-report.js ${{ steps.args.outputs.args }}
