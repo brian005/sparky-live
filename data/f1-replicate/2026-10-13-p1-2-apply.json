@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-13T15:11:41.340Z",
+  "at": "2026-10-13T17:52:48.021Z",
   "mode": "apply",
   "periods": [
     {
@@ -26,7 +26,88 @@
       "remaining": []
     },
     {
-      "f2Period": 2
+      "f2Period": 2,
+      "fxPeriod": 2,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [
+        "DROP   Dylan Cozens from Cmack's PWN",
+        "DROP   Josh Doan from Cmack's PWN",
+        "DROP   Dmitry Voronkov from Cmack's PWN",
+        "LINEUP Brian's Endless Winter: Logan Stankoven RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Mason McTavish RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Dylan Larkin RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Travis Konecny ACTIVE -> RESERVE",
+        "LINEUP Brian's Endless Winter: Gabriel Vilardi ACTIVE -> RESERVE",
+        "LINEUP Brian's Endless Winter: Jake Neighbours ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: Gabe Perreault MINORS -> ACTIVE",
+        "LINEUP Cmack's PWN: Shane Pinto RESERVE -> ACTIVE",
+        "LINEUP Cmack's PWN: Gavin McKenna MINORS -> ACTIVE",
+        "LINEUP Cmack's PWN: Igor Chernyshov MINORS -> ACTIVE",
+        "LINEUP Cmack's PWN: Matty Beniers ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: Aliaksei Protas ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: Zach Benson ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: Bradly Nadeau ACTIVE -> RESERVE",
+        "LINEUP Richie's Meatspinners: Roope Hintz RESERVE -> ACTIVE",
+        "LINEUP Richie's Meatspinners: Mavrik Bourque ACTIVE -> RESERVE"
+      ],
+      "results": [
+        {
+          "step": "claimdrop",
+          "tid": "djdo03kcmo319aqw",
+          "drop": "04mtp",
+          "ok": true,
+          "msg": "<b>Dylan Cozens</b> has been removed from Cmack's PWN effective <b>Period 2</b>. (Oct 12/26 - Oct 25/26)."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "djdo03kcmo319aqw",
+          "drop": "05r3d",
+          "ok": true,
+          "msg": "<b>Josh Doan</b> has been removed from Cmack's PWN effective <b>Period 2</b>. (Oct 12/26 - Oct 25/26)."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "djdo03kcmo319aqw",
+          "drop": "050rc",
+          "ok": true,
+          "msg": "<b>Dmitry Voronkov</b> has been removed from Cmack's PWN effective <b>Period 2</b>. (Oct 12/26 - Oct 25/26)."
+        },
+        {
+          "step": "lineup",
+          "team": "Brian's Endless Winter",
+          "ok": true,
+          "msg": "? changes"
+        },
+        {
+          "step": "lineup",
+          "team": "Cmack's PWN",
+          "ok": true,
+          "msg": "? changes"
+        },
+        {
+          "step": "lineup",
+          "team": "Richie's Meatspinners",
+          "ok": true,
+          "msg": "? changes"
+        }
+      ],
+      "remaining": []
     }
   ],
   "swept": [
@@ -34,5 +115,60 @@
     2
   ],
   "lockTs": "2026-10-12T10:00:00",
-  "error": "No Fantrax period starts on or within 2 days of 2026-10-12 (F2 period 2); Fantrax showed: period 2 from 2026-09-28, period 3 from 2026-09-28, period 1 from 2026-09-28, period 4 from 2026-09-28"
+  "standings": [
+    {
+      "id": "smc5vz9tmo319aqw",
+      "team": "Jason's Gaucho Chudpumpers",
+      "f2": 77,
+      "fantrax": 77,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "5c6dwdhkmo319aqw",
+      "team": "Brian's Endless Winter",
+      "f2": 76,
+      "fantrax": 76,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "mo75fhhjmo319aqw",
+      "team": "Graeme's Downtown Demons",
+      "f2": 67,
+      "fantrax": 67,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "h13alq00mo319aqw",
+      "team": "Richie's Meatspinners",
+      "f2": 65,
+      "fantrax": 65,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "djdo03kcmo319aqw",
+      "team": "Cmack's PWN",
+      "f2": 60,
+      "fantrax": 60,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "lo1c2zefmo319aqw",
+      "team": "Matt's mid tier perpetual projects",
+      "f2": 59,
+      "fantrax": 59,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    }
+  ]
 }
