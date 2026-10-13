@@ -1,0 +1,93 @@
+{
+  "date": "2026-10-13",
+  "period": 2,
+  "games": 16,
+  "goals": 0,
+  "notFinal": [
+    "NJD@DET (FUT)",
+    "FLA@CBJ (FUT)",
+    "BUF@MTL (FUT)",
+    "WSH@CAR (FUT)",
+    "SEA@PHI (FUT)",
+    "TBL@NYR (FUT)",
+    "STL@OTT (FUT)",
+    "VAN@NYI (FUT)",
+    "PIT@CHI (FUT)",
+    "MIN@WPG (FUT)",
+    "COL@DAL (FUT)",
+    "VGK@NSH (FUT)",
+    "TOR@UTA (FUT)",
+    "CGY@ANA (FUT)",
+    "EDM@LAK (FUT)",
+    "BOS@SJS (FUT)"
+  ],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    }
+  },
+  "players": {}
+}
