@@ -88,5 +88,55 @@
       "name": "Sebastian Aho",
       "pts": 2
     }
+  },
+  "bench": {
+    "042vl": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Jordan Kyrou",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06fzv": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Cole Hutson",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "0644f": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Ryan Leonard",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "004cq": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Alex Ovechkin",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06maz": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Ilya Protas",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "04amg": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Alexis Lafrenière",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "05xcm": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Jonathan Lekkerimäki",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "06axe": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Gabe Perreault",
+      "status": "MINORS",
+      "pts": 2
+    }
   }
 }

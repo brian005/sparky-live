@@ -108,5 +108,43 @@
       "name": "Connor McDavid",
       "pts": 3
     }
+  },
+  "bench": {
+    "06snb": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Ben Kindel",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "0644f": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Ryan Leonard",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "042vl": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Jordan Kyrou",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06fzv": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Cole Hutson",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "03kra": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Kyle Connor",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "05y3a": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Leo Carlsson",
+      "status": "RESERVE",
+      "pts": 2
+    }
   }
 }

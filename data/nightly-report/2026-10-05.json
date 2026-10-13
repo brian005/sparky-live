@@ -108,5 +108,43 @@
       "name": "Mikko Rantanen",
       "pts": 1
     }
+  },
+  "bench": {
+    "03e1m": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Brayden Point",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "051lz": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Shane Pinto",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06ag2": {
+      "team": "djdo03kcmo319aqw",
+      "name": "James Hagens",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "06snb": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Ben Kindel",
+      "status": "MINORS",
+      "pts": 2
+    },
+    "05tpa": {
+      "team": "h13alq00mo319aqw",
+      "name": "Ville Koivunen",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "03rf2": {
+      "team": "h13alq00mo319aqw",
+      "name": "Roope Hintz",
+      "status": "RESERVE",
+      "pts": 2
+    }
   }
 }

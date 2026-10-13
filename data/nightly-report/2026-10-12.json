@@ -128,5 +128,37 @@
       "name": "Kirill Kaprizov",
       "pts": 1
     }
+  },
+  "bench": {
+    "02un5": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Sam Reinhart",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "03uzr": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Matthew Tkachuk",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "04kyh": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Brady Tkachuk",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05ylt": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Zach Benson",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05rjg": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Danila Yurov",
+      "status": "MINORS",
+      "pts": 1
+    }
   }
 }

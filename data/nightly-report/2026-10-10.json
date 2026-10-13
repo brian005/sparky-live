@@ -13,7 +13,8 @@
       "a1": 3,
       "a2": 2,
       "pp": 1,
-      "en": 0
+      "en": 0,
+      "gp": 12
     },
     "djdo03kcmo319aqw": {
       "eligible": 13,
@@ -23,7 +24,8 @@
       "a1": 2,
       "a2": 0,
       "pp": 2,
-      "en": 0
+      "en": 0,
+      "gp": 11
     },
     "mo75fhhjmo319aqw": {
       "eligible": 25,
@@ -33,7 +35,8 @@
       "a1": 6,
       "a2": 2,
       "pp": 6,
-      "en": 0
+      "en": 0,
+      "gp": 12
     },
     "smc5vz9tmo319aqw": {
       "eligible": 12,
@@ -43,7 +46,8 @@
       "a1": 5,
       "a2": 3,
       "pp": 5,
-      "en": 1
+      "en": 1,
+      "gp": 14
     },
     "lo1c2zefmo319aqw": {
       "eligible": 16,
@@ -53,7 +57,8 @@
       "a1": 2,
       "a2": 3,
       "pp": 3,
-      "en": 1
+      "en": 1,
+      "gp": 10
     },
     "h13alq00mo319aqw": {
       "eligible": 15,
@@ -63,7 +68,8 @@
       "a1": 3,
       "a2": 7,
       "pp": 5,
-      "en": 1
+      "en": 1,
+      "gp": 13
     }
   },
   "players": {
@@ -271,6 +277,134 @@
       "team": "mo75fhhjmo319aqw",
       "name": "Mitch Marner",
       "pts": 2
+    }
+  },
+  "bench": {
+    "06hj9": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Porter Martone",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "06ag2": {
+      "team": "djdo03kcmo319aqw",
+      "name": "James Hagens",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "0457f": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Nico Hischier",
+      "status": "RESERVE",
+      "pts": 3
+    },
+    "061im": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Michael Misa",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "03uzr": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Matthew Tkachuk",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "04mtp": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Dylan Cozens",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "051lz": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Shane Pinto",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05rf2": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Logan Stankoven",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "0644e": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Oliver Moore",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "05gda": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Kent Johnson",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "0579x": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Adam Fantilli",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "03ra7": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Zach Werenski",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05gd8": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Mason McTavish",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "04alw": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Cale Makar",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "062h5": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Gavin McKenna",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "03jxy": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Auston Matthews",
+      "status": "RESERVE",
+      "pts": 4
+    },
+    "06bap": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Easton Cowan",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05y3a": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Leo Carlsson",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05ran": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Matt Coronato",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "06h8h": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Trevor Connelly",
+      "status": "MINORS",
+      "pts": 2
+    },
+    "03bfj": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Artemi Panarin",
+      "status": "RESERVE",
+      "pts": 1
     }
   }
 }

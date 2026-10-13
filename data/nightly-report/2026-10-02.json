@@ -143,5 +143,79 @@
       "name": "Mitch Marner",
       "pts": 1
     }
+  },
+  "bench": {
+    "06axe": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Gabe Perreault",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "004cq": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Alex Ovechkin",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06fzv": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Cole Hutson",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06maz": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Ilya Protas",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "0644f": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Ryan Leonard",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "05rf2": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Logan Stankoven",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06ag2": {
+      "team": "djdo03kcmo319aqw",
+      "name": "James Hagens",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "03kra": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Kyle Connor",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "05gd8": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Mason McTavish",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05ui4": {
+      "team": "h13alq00mo319aqw",
+      "name": "Dalibor Dvorsky",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "05y3a": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Leo Carlsson",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "05rjd": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Cutter Gauthier",
+      "status": "RESERVE",
+      "pts": 1
+    }
   }
 }

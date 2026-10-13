@@ -98,5 +98,31 @@
       "name": "Martin Necas",
       "pts": 1
     }
+  },
+  "bench": {
+    "05tpa": {
+      "team": "h13alq00mo319aqw",
+      "name": "Ville Koivunen",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06bap": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Easton Cowan",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "04alw": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Cale Makar",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "03bfj": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Artemi Panarin",
+      "status": "RESERVE",
+      "pts": 1
+    }
   }
 }

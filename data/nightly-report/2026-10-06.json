@@ -238,5 +238,103 @@
       "name": "Jack Eichel",
       "pts": 4
     }
+  },
+  "bench": {
+    "02fzm": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Filip Forsberg",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "062h5": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Gavin McKenna",
+      "status": "MINORS",
+      "pts": 2
+    },
+    "03jxy": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Auston Matthews",
+      "status": "RESERVE",
+      "pts": 4
+    },
+    "01f6d": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Ryan O'Reilly",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06449": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Nate Danielson",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "03duf": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Dylan Larkin",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "05rjg": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Danila Yurov",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "060jl": {
+      "team": "h13alq00mo319aqw",
+      "name": "Jiri Kulich",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "04amg": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Alexis Lafrenière",
+      "status": "RESERVE",
+      "pts": 4
+    },
+    "05w9b": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Calum Ritchie",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "06axe": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Gabe Perreault",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "05gd8": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Mason McTavish",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06jhd": {
+      "team": "h13alq00mo319aqw",
+      "name": "Anton Frondell",
+      "status": "MINORS",
+      "pts": 2
+    },
+    "06h8h": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Trevor Connelly",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "04y80": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Shane Wright",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "03uzr": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Matthew Tkachuk",
+      "status": "RESERVE",
+      "pts": 1
+    }
   }
 }

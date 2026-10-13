@@ -133,5 +133,31 @@
       "name": "Mark Stone",
       "pts": 1
     }
+  },
+  "bench": {
+    "06bap": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Easton Cowan",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05ym6": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Liam Ohgren",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "05xcm": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Jonathan Lekkerimäki",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "06h8h": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Trevor Connelly",
+      "status": "MINORS",
+      "pts": 1
+    }
   }
 }

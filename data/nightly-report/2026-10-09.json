@@ -108,5 +108,43 @@
       "name": "Mark Scheifele",
       "pts": 1
     }
+  },
+  "bench": {
+    "065nx": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Berkly Catton",
+      "status": "MINORS",
+      "pts": 2
+    },
+    "066on": {
+      "team": "h13alq00mo319aqw",
+      "name": "Michael Brandsegg-Nygård",
+      "status": "MINORS",
+      "pts": 2
+    },
+    "04amg": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Alexis Lafrenière",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "0644f": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Ryan Leonard",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "03ra7": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Zach Werenski",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "03kra": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Kyle Connor",
+      "status": "RESERVE",
+      "pts": 1
+    }
   }
 }
