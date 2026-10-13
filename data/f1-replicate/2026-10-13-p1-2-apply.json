@@ -1,0 +1,38 @@
+{
+  "at": "2026-10-13T06:36:11.866Z",
+  "mode": "apply",
+  "periods": [
+    {
+      "f2Period": 1,
+      "fxPeriod": 1,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 2
+    }
+  ],
+  "swept": [
+    1,
+    2
+  ],
+  "lockTs": "2026-10-12T10:00:00",
+  "error": "No Fantrax period starts on 2026-10-12 (F2 period 2)"
+}
