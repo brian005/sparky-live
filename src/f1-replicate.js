@@ -365,28 +365,40 @@ async function readFxTeam(fx, teamId, fxPeriod) {
       };
     }
   }
-  return { roster: out, sel: d.displayedSelections || {}, commissioner: !!d.commissioner };
+  return { roster: out, sel: d.displayedSelections || {}, lists: d.displayedLists || {}, commissioner: !!d.commissioner };
 }
 
-// Fantrax's period numbering may or may not include F2's Period 0, and its period boundaries can sit a day
-// off F2's (the two sites were set up separately). Find the period by date, don't assume:
+// Which Fantrax period is F2's period N? Fantrax's numbering may or may not include F2's Period 0, so go
+// by dates. The roster page's period dropdown (displayedLists.periodList) labels every period with its
+// dates, e.g. "2 (Oct 12 - Oct 25)": match F2's start date to one of those. (displayedSelections'
+// displayedStartDate is NOT the period's start: it's the same date for every period.)
 //   1. a Fantrax period that starts the same day as F2's -> that one
 //   2. otherwise the one starting closest to it, within 2 days -> that one, with a note in the report and
 //      on Slack (the day or two in between scores under the neighbouring period's lineup on Fantrax)
-//   3. otherwise fail, listing the start dates Fantrax showed
-async function resolveFxPeriod(fx, teamId, f2Period) {
-  const seen = [];
-  for (const off of [0, 1, -1, 2]) {
-    const n = f2Period.number + off;
-    if (n < 1) continue;
-    const { sel, commissioner } = await readFxTeam(fx, teamId, n);
-    if (!commissioner) throw new Error("This Fantrax login is not a commissioner of the league");
-    const start = sel.displayedStartDate;
-    if (!start) continue;
-    const days = [dayInTz(start, "America/New_York"), dayInTz(start, TZ)];
-    if (days.includes(f2Period.start_date)) return { n, note: null };
-    seen.push({ n, day: days[1] });
+//   3. otherwise fail, listing the periods Fantrax showed
+const MONTHS = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+function fxPeriodStarts(lists, nearYmd) {
+  const out = [];
+  for (const item of lists.periodList || []) {
+    const label = typeof item === "string" ? item : (item && (item.name || item.label || item.text)) || "";
+    const m = String(label).match(/^\s*(\d+)\s*\(\s*([A-Z][a-z]{2})\s+(\d{1,2})/);
+    if (!m || MONTHS[m[2]] == null) continue;
+    // the label has no year: take the one that puts it nearest F2's date (seasons cross New Year)
+    const y0 = Number(nearYmd.slice(0, 4));
+    const cands = [y0 - 1, y0, y0 + 1].map((y) => new Date(Date.UTC(y, MONTHS[m[2]], Number(m[3]), 12)));
+    const near = Date.parse(nearYmd + "T12:00:00Z");
+    cands.sort((a, b) => Math.abs(a - near) - Math.abs(b - near));
+    out.push({ n: Number(m[1]), day: cands[0].toISOString().slice(0, 10), label: String(label) });
   }
+  return out;
+}
+
+async function resolveFxPeriod(fx, teamId, f2Period) {
+  const first = await readFxTeam(fx, teamId, Math.max(1, f2Period.number));
+  if (!first.commissioner) throw new Error("This Fantrax login is not a commissioner of the league");
+  const seen = fxPeriodStarts(first.lists, f2Period.start_date);
+  const exact = seen.find((x) => x.day === f2Period.start_date);
+  if (exact) return { n: exact.n, note: null };
   const gap = (d) => Math.round((Date.parse(d + "T12:00:00Z") - Date.parse(f2Period.start_date + "T12:00:00Z")) / 86400000);
   const near = seen.filter((x) => Math.abs(gap(x.day)) <= 2).sort((a, b) => Math.abs(gap(a.day)) - Math.abs(gap(b.day)))[0];
   if (near) {
@@ -395,7 +407,7 @@ async function resolveFxPeriod(fx, teamId, f2Period) {
       `mirrored to Fantrax period ${near.n}. Fantrax scores ${Math.abs(g)} day${Math.abs(g) === 1 ? "" : "s"} ${g > 0 ? "at the start of F2's period under the previous period's lineup" : "before F2's period under this period's lineup"}, so season points may drift.`;
     return { n: near.n, note };
   }
-  throw new Error(`No Fantrax period starts on or within 2 days of ${f2Period.start_date} (F2 period ${f2Period.number}); Fantrax showed: ${seen.map((x) => `period ${x.n} from ${x.day}`).join(", ") || "no start dates"}`);
+  throw new Error(`No Fantrax period starts on or within 2 days of ${f2Period.start_date} (F2 period ${f2Period.number}); Fantrax's periods: ${seen.slice(0, 6).map((x) => x.label).join(", ") || "none listed"}`);
 }
 
 async function readFx(fx, teams, fxPeriod) {
