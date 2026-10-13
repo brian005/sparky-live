@@ -1,7 +1,7 @@
 name: Nightly report (eligible vs scored, A1/A2, PP/EN)
 
 # Every morning, 09:00 Pacific (08:00 in PST; cron is UTC and doesn't follow DST): last night's NHL games,
-# tallied per franchise against the F2 roster for that night's scoring period, posted by SparkyBot.
+# tallied per franchise against the F2 roster for that night's scoring period, posted by Lisa.
 # Each night's numbers are committed to data/nightly-report/ (that's where season-to-date comes from),
 # and data/nhl-ids.json caches each player's NHL id so only new players are looked up.
 
@@ -59,6 +59,8 @@ jobs:
           F2_PASSWORD: ${{ secrets.F2_PASSWORD }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL: ${{ vars.NIGHTLY_REPORT_SLACK_CHANNEL || vars.F1_MIRROR_SLACK_CHANNEL }}
+          SLACK_USERNAME: ${{ vars.NIGHTLY_REPORT_SLACK_USERNAME || 'Lisa' }}
+          SLACK_ICON: ${{ vars.NIGHTLY_REPORT_SLACK_ICON || ':nail_care:' }}
         run: node src/nightly-report.js ${{ steps.args.outputs.args }}
 
       - name: Commit the night

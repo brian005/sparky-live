@@ -27,7 +27,9 @@
 //
 // Env:
 //   F2_BASE, F2_USER, F2_PASSWORD     sparkypool.ca sign-in (same as the janitor)
-//   SLACK_BOT_TOKEN, SLACK_CHANNEL    SparkyBot and where to post
+//   SLACK_BOT_TOKEN, SLACK_CHANNEL    bot token (needs chat:write.customize) and where to post
+//   SLACK_USERNAME                    default "Lisa"
+//   SLACK_ICON                        emoji or image URL; default ":nail_care:"
 //   NIGHTLY_REPORT_DIR                default data/nightly-report
 //   NHL_ID_CACHE                      default data/nhl-ids.json
 // ============================================================
@@ -47,6 +49,8 @@ const F2_USER = need("F2_USER");
 const F2_PASSWORD = need("F2_PASSWORD");
 const SLACK_TOKEN = process.env.SLACK_BOT_TOKEN || "";
 const SLACK_CHANNEL = process.env.SLACK_CHANNEL || "";
+const SLACK_USERNAME = process.env.SLACK_USERNAME || "Lisa";
+const SLACK_ICON = process.env.SLACK_ICON || ":nail_care:";
 const ROOT = path.join(__dirname, "..");
 const REPORT_DIR = process.env.NIGHTLY_REPORT_DIR || path.join(ROOT, "data", "nightly-report");
 const ID_CACHE = process.env.NHL_ID_CACHE || path.join(ROOT, "data", "nhl-ids.json");
@@ -285,7 +289,11 @@ async function slack(text) {
   const r = await fetch("https://slack.com/api/chat.postMessage", {
     method: "POST",
     headers: { "Content-Type": "application/json; charset=utf-8", Authorization: `Bearer ${SLACK_TOKEN}` },
-    body: JSON.stringify({ channel: SLACK_CHANNEL, text, unfurl_links: false }),
+    body: JSON.stringify({
+      channel: SLACK_CHANNEL, text, unfurl_links: false,
+      username: SLACK_USERNAME,
+      ...(SLACK_ICON.startsWith("http") ? { icon_url: SLACK_ICON } : { icon_emoji: SLACK_ICON }),
+    }),
   });
   const o = await r.json();
   if (!o.ok) throw new Error(`Slack: ${o.error}`);
