@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-13T06:36:11.866Z",
+  "at": "2026-10-13T15:11:41.340Z",
   "mode": "apply",
   "periods": [
     {
@@ -34,5 +34,5 @@
     2
   ],
   "lockTs": "2026-10-12T10:00:00",
-  "error": "No Fantrax period starts on 2026-10-12 (F2 period 2)"
+  "error": "No Fantrax period starts on or within 2 days of 2026-10-12 (F2 period 2); Fantrax showed: period 2 from 2026-09-28, period 3 from 2026-09-28, period 1 from 2026-09-28, period 4 from 2026-09-28"
 }
