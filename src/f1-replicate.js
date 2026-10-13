@@ -368,9 +368,15 @@ async function readFxTeam(fx, teamId, fxPeriod) {
   return { roster: out, sel: d.displayedSelections || {}, commissioner: !!d.commissioner };
 }
 
-// Fantrax's period numbering may or may not include F2's Period 0. Find it by date, don't assume.
+// Fantrax's period numbering may or may not include F2's Period 0, and its period boundaries can sit a day
+// off F2's (the two sites were set up separately). Find the period by date, don't assume:
+//   1. a Fantrax period that starts the same day as F2's -> that one
+//   2. otherwise the one starting closest to it, within 2 days -> that one, with a note in the report and
+//      on Slack (the day or two in between scores under the neighbouring period's lineup on Fantrax)
+//   3. otherwise fail, listing the start dates Fantrax showed
 async function resolveFxPeriod(fx, teamId, f2Period) {
-  for (const off of [0, 1, -1]) {
+  const seen = [];
+  for (const off of [0, 1, -1, 2]) {
     const n = f2Period.number + off;
     if (n < 1) continue;
     const { sel, commissioner } = await readFxTeam(fx, teamId, n);
@@ -378,9 +384,18 @@ async function resolveFxPeriod(fx, teamId, f2Period) {
     const start = sel.displayedStartDate;
     if (!start) continue;
     const days = [dayInTz(start, "America/New_York"), dayInTz(start, TZ)];
-    if (days.includes(f2Period.start_date)) return n;
+    if (days.includes(f2Period.start_date)) return { n, note: null };
+    seen.push({ n, day: days[1] });
   }
-  throw new Error(`No Fantrax period starts on ${f2Period.start_date} (F2 period ${f2Period.number})`);
+  const gap = (d) => Math.round((Date.parse(d + "T12:00:00Z") - Date.parse(f2Period.start_date + "T12:00:00Z")) / 86400000);
+  const near = seen.filter((x) => Math.abs(gap(x.day)) <= 2).sort((a, b) => Math.abs(gap(a.day)) - Math.abs(gap(b.day)))[0];
+  if (near) {
+    const g = gap(near.day);
+    const note = `Fantrax period ${near.n} starts ${near.day}, F2 Period ${f2Period.number} starts ${f2Period.start_date}: ` +
+      `mirrored to Fantrax period ${near.n}. Fantrax scores ${Math.abs(g)} day${Math.abs(g) === 1 ? "" : "s"} ${g > 0 ? "at the start of F2's period under the previous period's lineup" : "before F2's period under this period's lineup"}, so season points may drift.`;
+    return { n: near.n, note };
+  }
+  throw new Error(`No Fantrax period starts on or within 2 days of ${f2Period.start_date} (F2 period ${f2Period.number}); Fantrax showed: ${seen.map((x) => `period ${x.n} from ${x.day}`).join(", ") || "no start dates"}`);
 }
 
 async function readFx(fx, teams, fxPeriod) {
@@ -637,8 +652,9 @@ async function slack(text) {
       const problems = sanityF2(f2data);
       if (problems.length) throw new Error(`F2 failed sanity checks for Period ${period.number}, refusing to mirror:\n  ` + problems.join("\n  "));
 
-      const fxPeriod = await resolveFxPeriod(fx, f2data.teams[0].id, period);
+      const { n: fxPeriod, note: fxNote } = await resolveFxPeriod(fx, f2data.teams[0].id, period);
       pr.fxPeriod = fxPeriod;
+      if (fxNote) { pr.fxNote = fxNote; log(`NOTE: ${fxNote}`); }
 
       const names = {};
       for (const r of Object.values(f2data.rosters)) for (const [pid, p] of Object.entries(r)) names[pid] = p.name;
@@ -699,6 +715,7 @@ async function slack(text) {
     if (!APPLY && !VERIFY_ONLY) lines.push(`*Fantrax janitor (dry run): ${span}*`);
     else if (!left.length) lines.push(`:white_check_mark: *Fantrax janitor: ${span}*: all 6 rosters match F2 in every period.`);
     else lines.push(`:warning: *Fantrax janitor: ${span}*: ${left.map((p) => `Period ${p.f2Period} (${p.remaining.length})`).join(", ")} still differ.`);
+    for (const p of report.periods) if (p.fxNote) lines.push(`• :calendar: ${p.fxNote}`);
     if (applied.length) lines.push(`Fixed tonight: ${applied.length - fails.length}/${applied.length} changes across ${new Set(applied.map((r) => r.period)).size} period(s).`);
     for (const f of fails) lines.push(`• Period ${f.period}: failed ${f.step} ${f.team || teamName(f.tid) || ""}: ${f.msg || "no message"}`);
     for (const u of unresolved) lines.push(`• :warning: Period ${u.period}: couldn't place ${u.name} (${teamName(u.team)}): ${u.why}. Fix by hand on Fantrax; drops on that team were held`);
