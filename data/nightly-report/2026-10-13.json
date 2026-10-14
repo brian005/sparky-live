@@ -2,10 +2,8 @@
   "date": "2026-10-13",
   "period": 2,
   "games": 16,
-  "goals": 109,
-  "notFinal": [
-    "BOS@SJS (CRIT)"
-  ],
+  "goals": 110,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
       "eligible": 21,
@@ -16,7 +14,7 @@
       "a2": 8,
       "pp": 2,
       "en": 1,
-      "gp": 12
+      "gp": 15
     },
     "djdo03kcmo319aqw": {
       "eligible": 13,
@@ -27,7 +25,7 @@
       "a2": 3,
       "pp": 5,
       "en": 1,
-      "gp": 12
+      "gp": 14
     },
     "mo75fhhjmo319aqw": {
       "eligible": 25,
@@ -38,7 +36,7 @@
       "a2": 6,
       "pp": 5,
       "en": 1,
-      "gp": 14
+      "gp": 15
     },
     "smc5vz9tmo319aqw": {
       "eligible": 24,
@@ -49,7 +47,7 @@
       "a2": 3,
       "pp": 3,
       "en": 1,
-      "gp": 13
+      "gp": 14
     },
     "lo1c2zefmo319aqw": {
       "eligible": 25,
@@ -60,7 +58,7 @@
       "a2": 3,
       "pp": 1,
       "en": 0,
-      "gp": 11
+      "gp": 12
     },
     "h13alq00mo319aqw": {
       "eligible": 17,
@@ -71,7 +69,7 @@
       "a2": 1,
       "pp": 2,
       "en": 0,
-      "gp": 13
+      "gp": 14
     }
   },
   "players": {
