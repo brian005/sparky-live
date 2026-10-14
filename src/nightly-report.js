@@ -4,8 +4,7 @@
 // For one night's NHL games (default: yesterday, Pacific), per franchise:
 // Each night's file also lists every Active player who scored (players: { fantraxId: { team, name, pts } }),
 // which records.js uses for player records and milestones, and every non-Active rostered player who scored
-// (bench), which the projection report uses for the optimal lineup.
-// When posting, the actual vs projected vs optimal block from projection-report.js goes under the table.
+// (bench), which the projection report (Lisa's Sunday F2 stats department post) uses for the optimal lineup.
 //
 //   TR         points by EVERY rostered player (Active + Reserve + Minors; prospects sit in Minors)
 //   AR         points by Active players (what actually counts)
@@ -334,15 +333,7 @@ async function slack(text) {
   if (unmapped.length) log(`Players with no NHL id (not counted): ${unmapped.join(", ")}`);
 
   if (rec.skipped) { log(`Nothing to post: ${rec.skipped}`); return; }
-  let text = compose(league, rec, periodToDate(league, rec));
-  // actual vs projected vs optimal and the projected finish (projection-report.js), when posting
-  if (!NO_SLACK) {
-    try {
-      const { buildProjection, formatProjection } = require("./projection-report");
-      const p = await buildProjection({ f2, league, asOf: rec.date });
-      if (p) text += "\n\n" + formatProjection(p);
-    } catch (e) { log(`Projection skipped: ${e.message}`); }
-  }
+  const text = compose(league, rec, periodToDate(league, rec));
   log("\n" + text);
   await slack(text);
 })().catch((e) => { console.error("FAILED:", e.message); process.exitCode = 1; });

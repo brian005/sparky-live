@@ -3,6 +3,8 @@ name: Sunday report (Lisa Turtle, actual vs projected vs optimal)
 # Every Sunday morning, 09:30 Pacific (08:30 in PST; cron is UTC and doesn't follow DST): the current
 # period's points per franchise against projected and optimal, games played and remaining, and the
 # projected finish three ways (current pace, projected lineup, optimal lineup). Posted by Lisa Turtle.
+# Periods run Monday to the second Sunday, so this is the "mid-period" report on a period's first Sunday
+# and the "last day of period" report on its second. It's the only place this report appears.
 # Reads last night's nightly report file, so it runs after the 09:00 nightly report.
 
 on:

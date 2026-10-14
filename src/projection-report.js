@@ -17,10 +17,9 @@
 //     Opt   the best locked lineup for the whole period: top 15 F + 4 D by
 //           (points so far this period + projected ppg x games remaining)
 //
-// Used two ways:
-//   - nightly-report.js adds it under Lisa's nightly table (buildProjection)
-//   - on its own, Lisa's Sunday-morning report:   node src/projection-report.js [--date YYYY-MM-DD] [--no-slack]
-//     (--date = the last night to count; default yesterday, Pacific)
+// Posted twice a period, both Sunday mornings (periods run Monday to the second Sunday): the mid-period
+// report and the last day of period report.   node src/projection-report.js [--date YYYY-MM-DD] [--no-slack]
+// (--date = the last night to count; default yesterday, Pacific)
 //
 // Data:
 //   F2    /api/league (periods, teams), /api/teams/{id}/roster?rcp=N (the period's locked roster: status,
