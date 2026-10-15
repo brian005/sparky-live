@@ -1,0 +1,124 @@
+{
+  "date": "2026-10-14",
+  "period": 2,
+  "games": 2,
+  "goals": 13,
+  "notFinal": [],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 3,
+      "scored": 1,
+      "g": 1,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "gp": 1
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 4,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 3,
+      "scored": 2,
+      "g": 1,
+      "a": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "gp": 2
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 1,
+      "scored": 1,
+      "g": 0,
+      "a": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 3
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 3
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1
+    }
+  },
+  "players": {
+    "05wwg": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Lane Hutson",
+      "pts": 2
+    },
+    "048xc": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Nick Suzuki",
+      "pts": 1
+    },
+    "03mn9": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Mikko Rantanen",
+      "pts": 1
+    }
+  },
+  "bench": {
+    "042vl": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Jordan Kyrou",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "06fzv": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Cole Hutson",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05r2y": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Ivan Miroshnichenko",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "06maz": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Ilya Protas",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "004cq": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Alex Ovechkin",
+      "status": "RESERVE",
+      "pts": 1
+    }
+  }
+}
