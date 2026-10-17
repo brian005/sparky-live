@@ -1,0 +1,149 @@
+{
+  "date": "2026-10-16",
+  "period": 2,
+  "games": 2,
+  "goals": 13,
+  "notFinal": [],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 3,
+      "scored": 3,
+      "g": 0,
+      "a": 3,
+      "a1": 1,
+      "a2": 2,
+      "pp": 3,
+      "en": 0,
+      "gp": 3
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 2,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 1,
+      "scored": 1,
+      "g": 1,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 2
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 4,
+      "scored": 2,
+      "g": 1,
+      "a": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 2,
+      "en": 0,
+      "gp": 1
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 10,
+      "scored": 10,
+      "g": 2,
+      "a": 8,
+      "a1": 4,
+      "a2": 4,
+      "pp": 3,
+      "en": 0,
+      "gp": 4
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 2,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1
+    }
+  },
+  "players": {
+    "0045k": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Evgeni Malkin",
+      "pts": 1
+    },
+    "02f9l": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Nathan MacKinnon",
+      "pts": 4
+    },
+    "049k7": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Martin Necas",
+      "pts": 3
+    },
+    "04alw": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Cale Makar",
+      "pts": 2
+    },
+    "06hcw": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Beckett Sennecke",
+      "pts": 1
+    },
+    "03d12": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "David Pastrnak",
+      "pts": 2
+    },
+    "03l0t": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Pavel Zacha",
+      "pts": 2
+    },
+    "04a9v": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Morgan Geekie",
+      "pts": 1
+    }
+  },
+  "bench": {
+    "05tpa": {
+      "team": "h13alq00mo319aqw",
+      "name": "Ville Koivunen",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "00454": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Sidney Crosby",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "067xd": {
+      "team": "h13alq00mo319aqw",
+      "name": "T.J. Hughes",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05rjd": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Cutter Gauthier",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06ag2": {
+      "team": "djdo03kcmo319aqw",
+      "name": "James Hagens",
+      "status": "MINORS",
+      "pts": 2
+    }
+  }
+}
