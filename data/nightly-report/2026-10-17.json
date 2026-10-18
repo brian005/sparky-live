@@ -61,7 +61,7 @@
       "gp": 9
     },
     "h13alq00mo319aqw": {
-      "eligible": 8,
+      "eligible": 7,
       "scored": 5,
       "g": 3,
       "a": 2,
@@ -427,12 +427,6 @@
     "00454": {
       "team": "smc5vz9tmo319aqw",
       "name": "Sidney Crosby",
-      "status": "RESERVE",
-      "pts": 1
-    },
-    "05tpa": {
-      "team": "h13alq00mo319aqw",
-      "name": "Ville Koivunen",
       "status": "RESERVE",
       "pts": 1
     }
