@@ -1,0 +1,82 @@
+{
+  "date": "2026-10-19",
+  "period": 2,
+  "games": 4,
+  "goals": 0,
+  "notFinal": [
+    "ANA@NYR (FUT)",
+    "COL@PHI (FUT)",
+    "SJS@TOR (FUT)",
+    "PIT@UTA (FUT)"
+  ],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    }
+  },
+  "players": {},
+  "bench": {}
+}
