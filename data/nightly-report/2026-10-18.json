@@ -1,0 +1,129 @@
+{
+  "date": "2026-10-18",
+  "period": 2,
+  "games": 2,
+  "goals": 8,
+  "notFinal": [],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 1,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 2
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 1,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 3
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 2,
+      "scored": 2,
+      "g": 0,
+      "a": 2,
+      "a1": 1,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "gp": 2
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 1,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 2
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 4,
+      "scored": 2,
+      "g": 1,
+      "a": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "gp": 1
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 1,
+      "scored": 1,
+      "g": 1,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "gp": 1
+    }
+  },
+  "players": {
+    "03ra7": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Zach Werenski",
+      "pts": 1
+    },
+    "03rh3": {
+      "team": "h13alq00mo319aqw",
+      "name": "Kirill Kaprizov",
+      "pts": 1
+    },
+    "04ezy": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Morgan Frost",
+      "pts": 2
+    },
+    "03rmx": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Sebastian Aho",
+      "pts": 1
+    }
+  },
+  "bench": {
+    "05rjg": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Danila Yurov",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "0579x": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Adam Fantilli",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06mb0": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Matvei Gridin",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05ran": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Matt Coronato",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06hco": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Zayne Parekh",
+      "status": "MINORS",
+      "pts": 1
+    }
+  }
+}
