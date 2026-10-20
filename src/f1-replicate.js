@@ -305,8 +305,17 @@ async function fantraxLogin(page) {
   log("Fantrax: logged in");
 }
 
+// Fantrax API calls run as fetch() inside the page. A request Fantrax never answers used to hang the
+// page.evaluate until Puppeteer's protocol timeout killed the whole run ("Runtime.callFunctionOn timed
+// out", Oct 20 2026). Now each fetch has its own deadline, the protocol timeout sits above it so the
+// fetch always gives up first, and read calls retry. Write calls never retry: a write that timed out may
+// still have landed on Fantrax, and tomorrow's sweep re-reads and re-plans anyway.
+const FX_FETCH_TIMEOUT_MS = 45000;
+const FX_READ_ATTEMPTS = 3;
+const FX_RETRY_WAIT_MS = [5000, 15000];
+
 async function fantraxSession() {
-  const browser = await puppeteer.launch({ headless: HEADLESS ? "new" : false, args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu"] });
+  const browser = await puppeteer.launch({ headless: HEADLESS ? "new" : false, protocolTimeout: FX_FETCH_TIMEOUT_MS + 30000, args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu"] });
   const page = await browser.newPage();
   page.setDefaultTimeout(60000);
   await page.setViewport({ width: 1400, height: 900 });
@@ -328,18 +337,50 @@ async function fantraxSession() {
     log("Fantrax: WARNING could not read client version, falling back to", envelope.v);
   } else log("Fantrax: client version", envelope.v);
 
-  async function fx(method, data = {}) {
+  // One request. Returns the parsed reply, or throws an Error with .retryable set for timeouts,
+  // network errors, 5xx and non-JSON (maintenance) pages.
+  async function fxOnce(method, data) {
     const body = JSON.stringify({ msgs: [{ method, data }], uiv: envelope.uiv, refUrl: page.url(), dt: 0, at: 0, tz: TZ, v: envelope.v });
-    const text = await page.evaluate(async (url, b) => {
-      const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: b, credentials: "include" });
-      return r.text();
-    }, `/fxpa/req?leagueId=${LEAGUE}`, body);
+    const r = await page.evaluate(async (url, b, ms) => {
+      const ctl = new AbortController();
+      const t = setTimeout(() => ctl.abort(), ms);
+      try {
+        const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: b, credentials: "include", signal: ctl.signal });
+        return { status: res.status, text: await res.text() };
+      } catch (err) {
+        return { failed: err && err.name === "AbortError" ? "timeout" : String((err && err.message) || err) };
+      } finally {
+        clearTimeout(t);
+      }
+    }, `/fxpa/req?leagueId=${LEAGUE}`, body, FX_FETCH_TIMEOUT_MS);
+    const fail = (msg, retryable) => Object.assign(new Error(`${method}: ${msg}`), { retryable });
+    if (r.failed === "timeout") throw fail(`Fantrax didn't answer within ${FX_FETCH_TIMEOUT_MS / 1000}s`, true);
+    if (r.failed) throw fail(`request failed: ${r.failed}`, true);
+    if (r.status >= 500) throw fail(`HTTP ${r.status}`, true);
     let o;
-    try { o = JSON.parse(text); } catch (_) { throw new Error(`${method}: non-JSON reply ${text.slice(0, 200)}`); }
-    if (o.pageError) throw new Error(`${method}: ${JSON.stringify(o.pageError).slice(0, 300)}`);
+    try { o = JSON.parse(r.text); } catch (_) { throw fail(`non-JSON reply ${r.text.slice(0, 200)}`, true); }
+    if (o.pageError) throw fail(JSON.stringify(o.pageError).slice(0, 300), false);
     const resp = (o.responses || [])[0] || {};
-    if (resp.pageError) throw new Error(`${method}: ${JSON.stringify(resp.pageError).slice(0, 300)}`);
+    if (resp.pageError) throw fail(JSON.stringify(resp.pageError).slice(0, 300), false);
     return resp.data !== undefined ? resp.data : resp;
+  }
+
+  async function fx(method, data = {}) {
+    const isRead = /^get/.test(method);
+    for (let attempt = 1; ; attempt++) {
+      try {
+        return await fxOnce(method, data);
+      } catch (e) {
+        if (!isRead || !e.retryable || attempt >= FX_READ_ATTEMPTS) {
+          if (!isRead && e.retryable) e.message += " (a write: it may or may not have applied on Fantrax; the next run re-reads and re-plans)";
+          if (isRead && e.retryable && attempt > 1) e.message += ` (after ${attempt} tries)`;
+          throw e;
+        }
+        const wait = FX_RETRY_WAIT_MS[attempt - 1] || FX_RETRY_WAIT_MS[FX_RETRY_WAIT_MS.length - 1];
+        log(`Fantrax: ${e.message}; retrying in ${wait / 1000}s (try ${attempt + 1} of ${FX_READ_ATTEMPTS})`);
+        await new Promise((res) => setTimeout(res, wait));
+      }
+    }
   }
 
   return { browser, page, fx };
