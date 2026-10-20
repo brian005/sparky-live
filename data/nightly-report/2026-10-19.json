@@ -2,81 +2,166 @@
   "date": "2026-10-19",
   "period": 2,
   "games": 4,
-  "goals": 0,
-  "notFinal": [
-    "ANA@NYR (FUT)",
-    "COL@PHI (FUT)",
-    "SJS@TOR (FUT)",
-    "PIT@UTA (FUT)"
-  ],
+  "goals": 25,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
+      "eligible": 2,
+      "scored": 2,
+      "g": 1,
+      "a": 1,
       "a1": 0,
-      "a2": 0,
-      "pp": 0,
+      "a2": 1,
+      "pp": 1,
       "en": 0,
-      "gp": 0
+      "gp": 1
     },
     "djdo03kcmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
-      "a1": 0,
+      "eligible": 3,
+      "scored": 3,
+      "g": 2,
+      "a": 1,
+      "a1": 1,
       "a2": 0,
-      "pp": 0,
+      "pp": 1,
       "en": 0,
-      "gp": 0
+      "gp": 5
     },
     "mo75fhhjmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
-      "a1": 0,
-      "a2": 0,
-      "pp": 0,
-      "en": 0,
-      "gp": 0
+      "eligible": 4,
+      "scored": 4,
+      "g": 1,
+      "a": 3,
+      "a1": 2,
+      "a2": 1,
+      "pp": 3,
+      "en": 1,
+      "gp": 6
     },
     "smc5vz9tmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
+      "eligible": 4,
+      "scored": 4,
+      "g": 2,
+      "a": 2,
       "a1": 0,
-      "a2": 0,
-      "pp": 0,
+      "a2": 2,
+      "pp": 2,
       "en": 0,
-      "gp": 0
+      "gp": 2
     },
     "lo1c2zefmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
-      "a1": 0,
-      "a2": 0,
-      "pp": 0,
+      "eligible": 8,
+      "scored": 4,
+      "g": 2,
+      "a": 2,
+      "a1": 1,
+      "a2": 1,
+      "pp": 2,
       "en": 0,
-      "gp": 0
+      "gp": 8
     },
     "h13alq00mo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
-      "a1": 0,
+      "eligible": 4,
+      "scored": 3,
+      "g": 2,
+      "a": 1,
+      "a1": 1,
       "a2": 0,
-      "pp": 0,
+      "pp": 1,
       "en": 0,
-      "gp": 0
+      "gp": 2
     }
   },
-  "players": {},
-  "bench": {}
+  "players": {
+    "04zo0": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Pavel Dorofeyev",
+      "pts": 1
+    },
+    "04amg": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Alexis Lafrenière",
+      "pts": 2
+    },
+    "06axe": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Gabe Perreault",
+      "pts": 1
+    },
+    "05gvo": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Matvei Michkov",
+      "pts": 2
+    },
+    "049k7": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Martin Necas",
+      "pts": 1
+    },
+    "03wor": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Mason Marchment",
+      "pts": 1
+    },
+    "03jxy": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Auston Matthews",
+      "pts": 3
+    },
+    "04qy5": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Kirill Marchenko",
+      "pts": 1
+    },
+    "062h5": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Gavin McKenna",
+      "pts": 1
+    },
+    "02yjj": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "William Nylander",
+      "pts": 1
+    },
+    "03mn8": {
+      "team": "h13alq00mo319aqw",
+      "name": "Clayton Keller",
+      "pts": 2
+    },
+    "02unz": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Nick Schmaltz",
+      "pts": 2
+    },
+    "05ui2": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Logan Cooley",
+      "pts": 1
+    },
+    "051xf": {
+      "team": "h13alq00mo319aqw",
+      "name": "Egor Chinakhov",
+      "pts": 1
+    }
+  },
+  "bench": {
+    "04y8g": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Trevor Zegras",
+      "status": "RESERVE",
+      "pts": 3
+    },
+    "067xd": {
+      "team": "h13alq00mo319aqw",
+      "name": "T.J. Hughes",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "0644c": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Daniil But",
+      "status": "MINORS",
+      "pts": 1
+    }
+  }
 }
