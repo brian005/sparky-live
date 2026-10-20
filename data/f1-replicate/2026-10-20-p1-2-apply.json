@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-20T06:30:00.781Z",
+  "mode": "apply",
+  "periods": [
+    {
+      "f2Period": 1
+    }
+  ],
+  "swept": [
+    1,
+    2
+  ],
+  "lockTs": "2026-10-12T10:00:00",
+  "error": "Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed."
+}
