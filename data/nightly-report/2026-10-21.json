@@ -1,0 +1,127 @@
+{
+  "date": "2026-10-21",
+  "period": 2,
+  "games": 2,
+  "goals": 10,
+  "notFinal": [],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 1,
+      "scored": 1,
+      "g": 1,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 2
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 2,
+      "scored": 1,
+      "g": 0,
+      "a": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "gp": 1
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 1,
+      "scored": 1,
+      "g": 0,
+      "a": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "gp": 2
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 2,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 4,
+      "scored": 4,
+      "g": 1,
+      "a": 3,
+      "a1": 2,
+      "a2": 1,
+      "pp": 3,
+      "en": 0,
+      "gp": 3
+    }
+  },
+  "players": {
+    "05gvo": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Matvei Michkov",
+      "pts": 1
+    },
+    "05g42": {
+      "team": "h13alq00mo319aqw",
+      "name": "Jack Quinn",
+      "pts": 1
+    },
+    "05rjh": {
+      "team": "h13alq00mo319aqw",
+      "name": "Noah Ostlund",
+      "pts": 1
+    },
+    "051z0": {
+      "team": "h13alq00mo319aqw",
+      "name": "Tim Stützle",
+      "pts": 2
+    },
+    "051lz": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Shane Pinto",
+      "pts": 1
+    },
+    "04f2d": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Drake Batherson",
+      "pts": 1
+    }
+  },
+  "bench": {
+    "04y8g": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Trevor Zegras",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "04kyh": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Brady Tkachuk",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "03uzr": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Matthew Tkachuk",
+      "status": "RESERVE",
+      "pts": 1
+    }
+  }
+}
