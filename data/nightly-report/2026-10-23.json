@@ -1,0 +1,117 @@
+{
+  "date": "2026-10-23",
+  "period": 2,
+  "games": 2,
+  "goals": 14,
+  "notFinal": [],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 2,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 2,
+      "scored": 2,
+      "g": 2,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "gp": 2
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 3
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 8,
+      "scored": 8,
+      "g": 2,
+      "a": 6,
+      "a1": 2,
+      "a2": 4,
+      "pp": 1,
+      "en": 1,
+      "gp": 5
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 2,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    }
+  },
+  "players": {
+    "049k7": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Martin Necas",
+      "pts": 3
+    },
+    "02f9l": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Nathan MacKinnon",
+      "pts": 4
+    },
+    "031p0": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Jake Guentzel",
+      "pts": 2
+    },
+    "042yb": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Brandon Hagel",
+      "pts": 1
+    }
+  },
+  "bench": {
+    "04y4m": {
+      "team": "h13alq00mo319aqw",
+      "name": "Connor Bedard",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "067xd": {
+      "team": "h13alq00mo319aqw",
+      "name": "T.J. Hughes",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "03e1m": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Brayden Point",
+      "status": "RESERVE",
+      "pts": 2
+    }
+  }
+}
