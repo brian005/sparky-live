@@ -1,0 +1,183 @@
+{
+  "postedAt": "2026-10-25T18:35:19",
+  "period": 3,
+  "lock": "2026-10-26T16:00:00",
+  "minStreak": 2,
+  "players": [
+    {
+      "id": "042vl",
+      "name": "Jordan Kyrou",
+      "team": "5c6dwdhkmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "059e5",
+      "name": "Jake Neighbours",
+      "team": "5c6dwdhkmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "03w5m",
+      "name": "Gabriel Vilardi",
+      "team": "5c6dwdhkmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "06maz",
+      "name": "Ilya Protas",
+      "team": "djdo03kcmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "06mb0",
+      "name": "Matvei Gridin",
+      "team": "djdo03kcmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "04y80",
+      "name": "Shane Wright",
+      "team": "djdo03kcmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "06axz",
+      "name": "Bradly Nadeau",
+      "team": "djdo03kcmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "05r1c",
+      "name": "Juraj Slafkovský",
+      "team": "mo75fhhjmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "0457f",
+      "name": "Nico Hischier",
+      "team": "mo75fhhjmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "004cq",
+      "name": "Alex Ovechkin",
+      "team": "mo75fhhjmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "01ztp",
+      "name": "Zach Hyman",
+      "team": "mo75fhhjmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "03bfj",
+      "name": "Artemi Panarin",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "00454",
+      "name": "Sidney Crosby",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "05rjd",
+      "name": "Cutter Gauthier",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "06axb",
+      "name": "Nick Lardis",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "05tcz",
+      "name": "Oliver Kapanen",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "05y3a",
+      "name": "Leo Carlsson",
+      "team": "lo1c2zefmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "04y8g",
+      "name": "Trevor Zegras",
+      "team": "lo1c2zefmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "0579x",
+      "name": "Adam Fantilli",
+      "team": "lo1c2zefmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "05tpa",
+      "name": "Ville Koivunen",
+      "team": "h13alq00mo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "04zp9",
+      "name": "Mavrik Bourque",
+      "team": "h13alq00mo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "06loc",
+      "name": "Egor Surin",
+      "team": "h13alq00mo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "06bui",
+      "name": "Felix Unger Sörum",
+      "team": "h13alq00mo319aqw",
+      "streak": 3
+    }
+  ],
+  "leftOutInjured": [
+    {
+      "id": "038vb",
+      "name": "Travis Konecny",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "02uws",
+      "name": "Mathew Barzal",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "01c12",
+      "name": "John Tavares",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "004jl",
+      "name": "Brad Marchand",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "03rik",
+      "name": "Troy Terry",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "05r1l",
+      "name": "William Eklund",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "02un7",
+      "name": "Aleksander Barkov",
+      "status": "Injured Reserve"
+    }
+  ]
+}
