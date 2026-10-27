@@ -1,8 +1,10 @@
 name: Fantrax janitor (F2 rosters -> Fantrax)
 
 # One run a night, 23:00 Pacific (22:00 in PST: cron is UTC and doesn't follow DST; either way it's after
-# every lock). It sweeps EVERY locked period, oldest to newest, fixes whatever on Fantrax doesn't match F2,
-# re-reads to prove it, then compares season points. Idempotent: nothing differs, nothing is written.
+# every lock), plus a Monday 14:00 run before the afternoon lock. It sweeps EVERY locked period, oldest to
+# newest, fixes whatever on Fantrax doesn't match F2, re-reads to prove it, then compares season points.
+# It also pre-sets the NEXT, unlocked period's trades and pickups (membership only, no lineups) so they're
+# on Fantrax before that period starts. Idempotent: nothing differs, nothing is written.
 # Timing isn't critical: Fantrax rescores a period whenever its roster changes.
 # Points: F2 adds a day's games to its totals after midnight, so at 23:00 it holds games through yesterday.
 # The run compares that with Fantrax's totals as recorded by last night's run (also through yesterday,
@@ -17,6 +19,10 @@ name: Fantrax janitor (F2 rosters -> Fantrax)
 on:
   schedule:
     - cron: "0 6 * * *"      # 23:00 PDT / 22:00 PST
+    # Lock-day catch-up: periods start (and lock) on Mondays. This run pre-sets trades and pickups made
+    # since last night's run into the period that locks this afternoon, before it starts. On the
+    # off-week Monday it's a no-op. 14:00 PDT / 13:00 PST.
+    - cron: "0 21 * * 1"
   workflow_dispatch:
     inputs:
       mode:

@@ -5,6 +5,14 @@
 // period match F2's, using commissioner mode, then re-reads Fantrax to
 // prove it and compares season standings between the two.
 //
+// UPCOMING PERIOD (Oct 27 2026): trades and waiver pickups made during a
+// period take effect in the NEXT period, and they must be on Fantrax's next-
+// period rosters BEFORE that period starts - a commissioner trade into a
+// period that's already underway gets refused (Quinn <-> Nazar, Period 3).
+// So every run also pre-sets the next, not-yet-locked F2 period: membership
+// only (trades, claims, drops), carried forward to later periods. Lineups
+// stay with the lock-night sweep, because owners can change them until lock.
+//
 // Read side (F2):  GET {F2_BASE}/api/league                     -> periods, teams
 //                  GET {F2_BASE}/api/teams/{id}/roster?rcp=N    -> the ledger replayed to period N
 //                  GET {F2_BASE}/api/standings                  -> season points per team
@@ -24,6 +32,8 @@
 //   node src/f1-replicate.js --period 2       # only F2 period 2
 //   node src/f1-replicate.js --apply --force  # skip the too-many-changes guard
 //   node src/f1-replicate.js --verify-only    # diff + standings, no writes
+//   node src/f1-replicate.js --no-upcoming    # skip the next-period membership pre-set
+// (--period N on a period that hasn't locked yet does the upcoming pass for it: membership only)
 //
 // Env:
 //   FANTRAX_USERNAME (or FANTRAX_EMAIL), FANTRAX_PASSWORD   commissioner Fantrax login (required)
@@ -52,6 +62,7 @@ const APPLY = ARGS.includes("--apply");
 const VERIFY_ONLY = ARGS.includes("--verify-only");
 const FORCE = ARGS.includes("--force");
 const LATEST_ONLY = ARGS.includes("--latest");
+const NO_UPCOMING = ARGS.includes("--no-upcoming");
 const PERIOD_ARG = (() => { const i = ARGS.indexOf("--period"); return i >= 0 ? parseInt(ARGS[i + 1], 10) : null; })();
 
 const need = (k) => { const v = process.env[k]; if (!v) { console.error(`Missing env ${k}`); process.exit(2); } return v; };
@@ -213,6 +224,11 @@ function pickPeriod(league, useArg = true) {
   const locked = rcps.filter((r) => r.lock_ts ? r.lock_ts <= now : r.start_date <= now.slice(0, 10));
   if (!locked.length) throw new Error("No F2 period has locked yet");
   return locked[locked.length - 1];
+}
+
+function isLocked(rcp) {
+  const now = vancouverNowIso();
+  return rcp.lock_ts ? rcp.lock_ts <= now : rcp.start_date <= now.slice(0, 10);
 }
 
 async function readF2(period) {
@@ -495,6 +511,12 @@ function diff(f2r, fxr, teams, noDrop = new Set()) {
   return { trades, drops, claims, lineups, blockedDrops, membership, lineupCount, clean: membership === 0 && lineupCount === 0 && blockedDrops.length === 0 };
 }
 
+// The upcoming period: lineups are the owners' until lock, so only membership counts.
+function membershipOnly(d, upcoming) {
+  if (!upcoming) return d;
+  return { ...d, lineups: {}, lineupCount: 0, clean: d.membership === 0 && d.blockedDrops.length === 0 };
+}
+
 function describe(d, names, teamName) {
   const nm = (pid) => names[pid] || pid;
   const lines = [];
@@ -508,17 +530,35 @@ function describe(d, names, teamName) {
 
 // ---- Fantrax writes --------------------------------------------------------
 
+// A trade F2 has already approved but Fantrax refuses (e.g. "Sorry, but we cannot process that
+// request" for a trade into a period already underway) is retried ONCE with the commissioner override -
+// what a commissioner does by hand. The result says when the override was needed.
 async function doTrades(fx, d, fxPeriod, results, carryForward = true) {
+  const send = async (transactions, override) => {
+    // the Commissioner Trade page's own request (Fantrax client, chunk-NIZJ754D): adminMode + future + override + period
+    const r = await fx("createTrade", { adminMode: true, future: carryForward, override, transactions, msg: "F2 mirror", period: fxPeriod });
+    const bad = (r.txResponses || []).find((t) => ["WARNING", "DENIED", "ERROR"].includes(t.code));
+    const tx = bad || (r.txResponses || [])[0];
+    return { ok: !bad && !!tx, msg: tx && (tx.message || tx.genericMessage || tx.genericMsg) };
+  };
   for (const legs of Object.values(d.trades)) {
     const transactions = {};
     legs.forEach((l, i) => { transactions[String(i)] = `SC,${l.pid},${l.src},${l.dst},${i}`; });
+    let first;
     try {
-      // the Commissioner Trade page's own request (Fantrax client, chunk-NIZJ754D): adminMode + future + override:false + period
-      const r = await fx("createTrade", { adminMode: true, future: carryForward, override: false, transactions, msg: "F2 mirror", period: fxPeriod });
-      const bad = (r.txResponses || []).find((t) => ["WARNING", "DENIED", "ERROR"].includes(t.code));
-      const tx = bad || (r.txResponses || [])[0];
-      results.push({ step: "trade", legs, ok: !bad && !!tx, msg: tx && (tx.message || tx.genericMessage || tx.genericMsg) });
-    } catch (e) { results.push({ step: "trade", legs, ok: false, msg: e.message }); }
+      first = await send(transactions, false);
+      if (first.ok) { results.push({ step: "trade", legs, ok: true, msg: first.msg }); continue; }
+    } catch (e) {
+      // a write that may have landed: don't override blind, the next run re-reads and re-plans
+      results.push({ step: "trade", legs, ok: false, msg: e.message });
+      continue;
+    }
+    try {
+      log(`Trade refused (${first.msg || "no message"}); retrying once with the commissioner override`);
+      const forced = await send(transactions, true);
+      results.push({ step: "trade", legs, ok: forced.ok, override: true,
+        msg: forced.ok ? `applied with commissioner override (first refusal: ${first.msg || "no message"})` : `refused even with override: ${forced.msg || "no message"}` });
+    } catch (e) { results.push({ step: "trade", legs, ok: false, override: true, msg: e.message }); }
   }
 }
 
@@ -684,10 +724,16 @@ async function slack(text) {
     const league = await f2("/api/league");
     const newest = pickPeriod(league, false);                                   // the newest period that has locked
     const locked = (league.rcps || []).filter((r) => r.number >= 1 && r.number <= newest.number).sort((a, b) => a.number - b.number);
-    const sweep = PERIOD_ARG != null ? [pickPeriod(league)] : LATEST_ONLY ? [newest] : locked;
+    const sweep = PERIOD_ARG != null ? [pickPeriod(league)] : LATEST_ONLY ? [newest] : locked.slice();
     report.swept = sweep.map((p) => p.number);
     report.lockTs = locked[locked.length - 1].lock_ts;
-    log(`F2: sweeping period${sweep.length > 1 ? "s" : ""} ${sweep.map((p) => p.number).join(", ")}`);
+    // the next period that hasn't locked: pre-set its trades and pickups before it starts
+    const next = (league.rcps || []).filter((r) => r.number > newest.number).sort((a, b) => a.number - b.number)[0];
+    if (next && PERIOD_ARG == null && !NO_UPCOMING && !isLocked(next)) {
+      sweep.push(next);
+      report.upcoming = next.number;
+    }
+    log(`F2: sweeping period${report.swept.length > 1 ? "s" : ""} ${report.swept.join(", ")}${report.upcoming ? `, plus upcoming Period ${report.upcoming} (membership only)` : ""}`);
 
     session = await fantraxSession();
     const { fx } = session;
@@ -696,13 +742,30 @@ async function slack(text) {
 
     for (const period of sweep) {
       const isNewest = period.number === newest.number;
+      const upcoming = !isLocked(period);
       const pr = { f2Period: period.number };
+      if (upcoming) { pr.upcoming = true; pr.locksAt = period.lock_ts || period.start_date; }
       report.periods.push(pr);
-      log(`--- Period ${period.number} (${period.start_date} - ${period.end_date})`);
+      log(`--- Period ${period.number} (${period.start_date} - ${period.end_date})${upcoming ? " UPCOMING: trades/claims/drops only" : ""}`);
 
-      const f2data = await readF2(period);
+      let f2data;
+      try {
+        f2data = await readF2(period);
+      } catch (e) {
+        if (!upcoming) throw e;
+        // F2 not serving the upcoming period's rosters must never fail the locked sweep
+        pr.skipped = `F2 didn't return Period ${period.number} rosters: ${e.message.slice(0, 200)}`;
+        log(`Upcoming Period ${period.number} skipped: ${pr.skipped}`);
+        continue;
+      }
       teamName = (id) => (f2data.teams.find((t) => t.id === id) || {}).name || id;
       const problems = sanityF2(f2data);
+      if (problems.length && upcoming) {
+        // an unfinished upcoming period on F2 is not worth failing the locked sweep over
+        pr.skipped = `F2 failed sanity checks: ${problems.join("; ")}`;
+        log(`Upcoming Period ${period.number} skipped: ${pr.skipped}`);
+        continue;
+      }
       if (problems.length) throw new Error(`F2 failed sanity checks for Period ${period.number}, refusing to mirror:\n  ` + problems.join("\n  "));
 
       const { n: fxPeriod, note: fxNote } = await resolveFxPeriod(fx, f2data.teams[0].id, period);
@@ -720,7 +783,7 @@ async function slack(text) {
       for (const u of ids.unresolved) log(`ID: UNRESOLVED ${u.name} (F2 ${u.f2}) on ${teamName(u.team)}: ${u.why}. Skipped, drops on that team held`);
       const noDrop = ids.noDropTeams;
 
-      const before = diff(f2data.rosters, fxr, f2data.teams, noDrop);
+      const before = membershipOnly(diff(f2data.rosters, fxr, f2data.teams, noDrop), upcoming);
       pr.plan = describe(before, names, teamName);
       log(before.clean ? "In sync." : `Plan (${before.membership} membership, ${before.lineupCount} lineup):\n  ` + pr.plan.join("\n  "));
       if (!APPLY || VERIFY_ONLY || before.clean) { pr.remaining = APPLY ? [] : pr.plan; continue; }
@@ -733,12 +796,14 @@ async function slack(text) {
       if (Object.keys(before.trades).length) { log("Trades..."); await doTrades(fx, before, fxPeriod, results, true); }
       if (Object.keys(before.drops).length || Object.keys(before.claims).length) { log("Claims/drops..."); await doClaimsDrops(fx, before, f2data.rosters, fxPeriod, results, true); }
       fxr = await readFx(fx, f2data.teams, fxPeriod);
-      log("Lineups...");
-      await doLineups(fx, f2data.teams, f2data.rosters, fxr, fxPeriod, results, isNewest);
+      if (!upcoming) {
+        log("Lineups...");
+        await doLineups(fx, f2data.teams, f2data.rosters, fxr, fxPeriod, results, isNewest);
+        fxr = await readFx(fx, f2data.teams, fxPeriod);
+      }
       pr.results = results;
 
-      fxr = await readFx(fx, f2data.teams, fxPeriod);
-      const after = diff(f2data.rosters, fxr, f2data.teams, noDrop);
+      const after = membershipOnly(diff(f2data.rosters, fxr, f2data.teams, noDrop), upcoming);
       pr.remaining = describe(after, names, teamName);
     }
 
@@ -757,7 +822,9 @@ async function slack(text) {
 
   async function post(report, teamName) {
     const P = report.periods;
-    const span = P.length > 1 ? `Periods ${P[0].f2Period}-${P[P.length - 1].f2Period}` : `Period ${P[0] ? P[0].f2Period : "?"}`;
+    const L0 = P.filter((p) => !p.upcoming);
+    const L = L0.length ? L0 : P;                       // --period N on an upcoming period: name that one
+    const span = L.length > 1 ? `Periods ${L[0].f2Period}-${L[L.length - 1].f2Period}` : `Period ${L[0] ? L[0].f2Period : "?"}`;
     const applied = P.flatMap((p) => (p.results || []).map((r) => ({ ...r, period: p.f2Period })));
     const fails = applied.filter((r) => !r.ok);
     const left = P.filter((p) => (p.remaining || []).length);
@@ -769,6 +836,12 @@ async function slack(text) {
     else if (!left.length) lines.push(`:white_check_mark: *Fantrax janitor: ${span}*: all 6 rosters match F2 in every period.`);
     else lines.push(`:warning: *Fantrax janitor: ${span}*: ${left.map((p) => `Period ${p.f2Period} (${p.remaining.length})`).join(", ")} still differ.`);
     for (const p of report.periods) if (p.fxNote) lines.push(`• :calendar: ${p.fxNote}`);
+    for (const p of P.filter((x) => x.upcoming)) {
+      if (p.skipped) lines.push(`• :hourglass: Upcoming Period ${p.f2Period}: not pre-set (${p.skipped})`);
+      else if ((p.results || []).length) lines.push(`• :hourglass: Upcoming Period ${p.f2Period} (locks ${p.locksAt}): trades and pickups pre-set on Fantrax, ${(p.results || []).filter((r) => r.ok).length}/${p.results.length} applied.`);
+    }
+    const forced = P.flatMap((p) => (p.results || []).filter((r) => r.override && r.ok).map((r) => ({ ...r, period: p.f2Period })));
+    for (const f of forced) lines.push(`• :hammer: Period ${f.period}: trade applied with the commissioner override (${f.legs.length} players)`);
     if (applied.length) lines.push(`Fixed tonight: ${applied.length - fails.length}/${applied.length} changes across ${new Set(applied.map((r) => r.period)).size} period(s).`);
     for (const f of fails) lines.push(`• Period ${f.period}: failed ${f.step} ${f.team || teamName(f.tid) || ""}: ${f.msg || "no message"}`);
     for (const u of unresolved) lines.push(`• :warning: Period ${u.period}: couldn't place ${u.name} (${teamName(u.team)}): ${u.why}. Fix by hand on Fantrax; drops on that team were held`);
