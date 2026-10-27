@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-27T06:30:55.577Z",
+  "at": "2026-10-27T17:06:53.315Z",
   "mode": "apply",
   "periods": [
     {
@@ -102,8 +102,8 @@
         "CLAIM  Joel Eriksson Ek to Matt's mid tier perpetual projects",
         "CLAIM  Arseny Gritsyuk to Matt's mid tier perpetual projects",
         "CLAIM  Kaapo Kakko to Richie's Meatspinners",
-        "LINEUP Brian's Endless Winter: Brayden Point RESERVE -> ACTIVE",
         "LINEUP Brian's Endless Winter: Matt Coronato RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Brayden Point RESERVE -> ACTIVE",
         "LINEUP Brian's Endless Winter: Seth Jarvis RESERVE -> ACTIVE",
         "LINEUP Brian's Endless Winter: Nick Suzuki ACTIVE -> RESERVE",
         "LINEUP Brian's Endless Winter: Morgan Geekie ACTIVE -> RESERVE",
@@ -134,6 +134,241 @@
         "LINEUP Richie's Meatspinners: Egor Chinakhov ACTIVE -> RESERVE",
         "LINEUP Richie's Meatspinners: Jiri Kulich MINORS -> RESERVE",
         "LINEUP Richie's Meatspinners: Matthew Wood ACTIVE -> RESERVE"
+      ],
+      "results": [
+        {
+          "step": "trade",
+          "legs": [
+            {
+              "pid": "05g42",
+              "src": "h13alq00mo319aqw",
+              "dst": "lo1c2zefmo319aqw"
+            },
+            {
+              "pid": "05m17",
+              "src": "lo1c2zefmo319aqw",
+              "dst": "h13alq00mo319aqw"
+            }
+          ],
+          "ok": false,
+          "msg": "Sorry, but we cannot process that request."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "djdo03kcmo319aqw",
+          "drop": "051tx",
+          "ok": true,
+          "msg": "<b>Aliaksei Protas</b> has been removed from Cmack's PWN effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "djdo03kcmo319aqw",
+          "drop": "04y80",
+          "ok": true,
+          "msg": "<b>Shane Wright</b> has been removed from Cmack's PWN effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "djdo03kcmo319aqw",
+          "drop": "066q1",
+          "ok": true,
+          "msg": "<b>Sacha Boisvert</b> has been removed from Cmack's PWN effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "djdo03kcmo319aqw",
+          "drop": "05ram",
+          "ok": true,
+          "msg": "<b>Riley Heidt</b> has been removed from Cmack's PWN effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "h13alq00mo319aqw",
+          "drop": "06hk9",
+          "ok": true,
+          "msg": "<b>Vitali Pinchuk</b> has been removed from Richie's Meatspinners effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "h13alq00mo319aqw",
+          "drop": "01ex7",
+          "ok": true,
+          "msg": "<b>Matt Duchene</b> has been removed from Richie's Meatspinners effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "h13alq00mo319aqw",
+          "drop": "064mz",
+          "ok": true,
+          "msg": "<b>Charlie Stramel</b> has been removed from Richie's Meatspinners effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "h13alq00mo319aqw",
+          "drop": "06bui",
+          "ok": true,
+          "msg": "<b>Felix Unger Sorum</b> has been removed from Richie's Meatspinners effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "h13alq00mo319aqw",
+          "drop": "05xrx",
+          "ok": true,
+          "msg": "<b>Marco Kasper</b> has been removed from Richie's Meatspinners effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "h13alq00mo319aqw",
+          "drop": "06lop",
+          "ok": true,
+          "msg": "<b>Ivan Ryabkin</b> has been removed from Richie's Meatspinners effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)."
+        },
+        {
+          "step": "claimdrop",
+          "tid": "5c6dwdhkmo319aqw",
+          "claim": "03rag",
+          "drop": "059e5",
+          "ok": true,
+          "msg": "<b>Jack Roslovic</b> now appears on Brian's Endless Winter effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26) <b>Jake Neighbours</b> has been removed from Brian's Endless Winter effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26).",
+          "claimPeriod": 3
+        },
+        {
+          "step": "claimdrop",
+          "tid": "djdo03kcmo319aqw",
+          "claim": "04uqa",
+          "drop": "051lz",
+          "ok": true,
+          "msg": "<b>Vasily Podkolzin</b> now appears on Cmack's PWN effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26) <b>Shane Pinto</b> has been removed from Cmack's PWN effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26).",
+          "claimPeriod": 3
+        },
+        {
+          "step": "claimdrop",
+          "tid": "djdo03kcmo319aqw",
+          "claim": "05ymq",
+          "drop": "04ad7",
+          "ok": true,
+          "msg": "<b>Matthew Poitras</b> now appears on Cmack's PWN effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26) <b>Rasmus Dahlin</b> has been removed from Cmack's PWN effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26).",
+          "claimPeriod": 3
+        },
+        {
+          "step": "claimdrop",
+          "tid": "smc5vz9tmo319aqw",
+          "claim": "06imq",
+          "drop": "02fzm",
+          "ok": true,
+          "msg": "<b>Maxim Shabanov</b> now appears on Jason's Gaucho Chudpumpers effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26) <b>Filip Forsberg</b> has been removed from Jason's Gaucho Chudpumpers effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26).",
+          "claimPeriod": 3
+        },
+        {
+          "step": "claimdrop",
+          "tid": "smc5vz9tmo319aqw",
+          "claim": "042w4",
+          "drop": "05tcz",
+          "ok": true,
+          "msg": "<b>Adam Fox</b> now appears on Jason's Gaucho Chudpumpers effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26) <b>Oliver Kapanen</b> has been removed from Jason's Gaucho Chudpumpers effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26).",
+          "claimPeriod": 3
+        },
+        {
+          "step": "claimdrop",
+          "tid": "smc5vz9tmo319aqw",
+          "claim": "066sp",
+          "drop": "01f5z",
+          "ok": true,
+          "msg": "<b>Aydar Suniev</b> now appears on Jason's Gaucho Chudpumpers effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26) <b>Chris Kreider</b> has been removed from Jason's Gaucho Chudpumpers effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26).",
+          "claimPeriod": 3
+        },
+        {
+          "step": "claimdrop",
+          "tid": "lo1c2zefmo319aqw",
+          "claim": "03rae",
+          "drop": "04ezy",
+          "ok": true,
+          "msg": "<b>Joel Eriksson Ek</b> now appears on Matt's mid tier perpetual projects effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26) <b>Morgan Frost</b> has been removed from Matt's mid tier perpetual projects effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26).",
+          "claimPeriod": 3
+        },
+        {
+          "step": "claimdrop",
+          "tid": "lo1c2zefmo319aqw",
+          "claim": "051um",
+          "drop": "03wor",
+          "ok": true,
+          "msg": "<b>Arseny Gritsyuk</b> now appears on Matt's mid tier perpetual projects effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26) <b>Mason Marchment</b> has been removed from Matt's mid tier perpetual projects effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26).",
+          "claimPeriod": 3
+        },
+        {
+          "step": "claimdrop",
+          "tid": "h13alq00mo319aqw",
+          "claim": "04mto",
+          "drop": "03rf2",
+          "ok": true,
+          "msg": "<b>Kaapo Kakko</b> now appears on Richie's Meatspinners effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26) <b>Roope Hintz</b> has been removed from Richie's Meatspinners effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26).",
+          "claimPeriod": 3
+        },
+        {
+          "step": "claimdrop",
+          "tid": "5c6dwdhkmo319aqw",
+          "claim": "06cl1",
+          "ok": true,
+          "msg": "<b>Emmitt Finnie</b> now appears on Brian's Endless Winter effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)",
+          "claimPeriod": 3
+        },
+        {
+          "step": "claimdrop",
+          "tid": "5c6dwdhkmo319aqw",
+          "claim": "005ho",
+          "ok": true,
+          "msg": "<b>Lars Eller</b> now appears on Brian's Endless Winter effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)",
+          "claimPeriod": 3
+        },
+        {
+          "step": "claimdrop",
+          "tid": "mo75fhhjmo319aqw",
+          "claim": "04lcf",
+          "ok": true,
+          "msg": "<b>Joel Farabee</b> now appears on Graeme's Downtown Demons effective <b>Period 3</b>. (Oct 26/26 - Nov 8/26)",
+          "claimPeriod": 3
+        },
+        {
+          "step": "lineup",
+          "team": "Brian's Endless Winter",
+          "ok": true,
+          "msg": "? changes"
+        },
+        {
+          "step": "lineup",
+          "team": "Cmack's PWN",
+          "ok": true,
+          "msg": "? changes"
+        },
+        {
+          "step": "lineup",
+          "team": "Graeme's Downtown Demons",
+          "ok": true,
+          "msg": "? changes"
+        },
+        {
+          "step": "lineup",
+          "team": "Jason's Gaucho Chudpumpers",
+          "ok": true,
+          "msg": "? changes"
+        },
+        {
+          "step": "lineup",
+          "team": "Matt's mid tier perpetual projects",
+          "ok": true,
+          "msg": "? changes",
+          "warn": "Your changes will take effect in Period 3 (Oct 26, 2026 - Nov 8, 2026). Please confirm that the following changes are correct:"
+        },
+        {
+          "step": "lineup",
+          "team": "Richie's Meatspinners",
+          "ok": true,
+          "msg": "? changes"
+        }
+      ],
+      "remaining": [
+        "TRADE  Jack Quinn: Richie's Meatspinners -> Matt's mid tier perpetual projects",
+        "TRADE  Frank Nazar: Matt's mid tier perpetual projects -> Richie's Meatspinners"
       ]
     }
   ],
@@ -143,5 +378,60 @@
     3
   ],
   "lockTs": "2026-10-26T16:00:00",
-  "error": "33 membership changes (through Period 3) exceeds MAX_MEMBERSHIP_CHANGES=12. Check F2, then rerun with --force."
+  "standings": [
+    {
+      "id": "smc5vz9tmo319aqw",
+      "team": "Jason's Gaucho Chudpumpers",
+      "f2": 178,
+      "fantrax": 178,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "5c6dwdhkmo319aqw",
+      "team": "Brian's Endless Winter",
+      "f2": 168,
+      "fantrax": 168,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "mo75fhhjmo319aqw",
+      "team": "Graeme's Downtown Demons",
+      "f2": 163,
+      "fantrax": 163,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "h13alq00mo319aqw",
+      "team": "Richie's Meatspinners",
+      "f2": 136,
+      "fantrax": 136,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "lo1c2zefmo319aqw",
+      "team": "Matt's mid tier perpetual projects",
+      "f2": 134,
+      "fantrax": 134,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "djdo03kcmo319aqw",
+      "team": "Cmack's PWN",
+      "f2": 120,
+      "fantrax": 120,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    }
+  ]
 }
