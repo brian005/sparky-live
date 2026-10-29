@@ -1,0 +1,157 @@
+{
+  "date": "2026-10-28",
+  "period": 3,
+  "games": 4,
+  "goals": 27,
+  "notFinal": [],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 5,
+      "scored": 3,
+      "g": 1,
+      "a": 2,
+      "a1": 0,
+      "a2": 2,
+      "pp": 1,
+      "en": 0,
+      "gp": 4
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 5,
+      "scored": 3,
+      "g": 2,
+      "a": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 2,
+      "en": 0,
+      "gp": 2
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 7,
+      "scored": 7,
+      "g": 1,
+      "a": 6,
+      "a1": 5,
+      "a2": 1,
+      "pp": 3,
+      "en": 0,
+      "gp": 5
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 6,
+      "scored": 6,
+      "g": 1,
+      "a": 5,
+      "a1": 5,
+      "a2": 0,
+      "pp": 3,
+      "en": 0,
+      "gp": 5
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 3,
+      "scored": 2,
+      "g": 1,
+      "a": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "gp": 5
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 3
+    }
+  },
+  "players": {
+    "03as9": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Dylan Strome",
+      "pts": 3
+    },
+    "05gvo": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Matvei Michkov",
+      "pts": 1
+    },
+    "04y8g": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Trevor Zegras",
+      "pts": 1
+    },
+    "02un4": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Connor McDavid",
+      "pts": 2
+    },
+    "04lc0": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Evan Bouchard",
+      "pts": 1
+    },
+    "02422": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Ryan Nugent-Hopkins",
+      "pts": 2
+    },
+    "02f9l": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Nathan MacKinnon",
+      "pts": 1
+    },
+    "02ybk": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Artturi Lehkonen",
+      "pts": 1
+    },
+    "062h5": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Gavin McKenna",
+      "pts": 3
+    },
+    "03jxy": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Auston Matthews",
+      "pts": 3
+    },
+    "03rag": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Jack Roslovic",
+      "pts": 2
+    },
+    "06bap": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Easton Cowan",
+      "pts": 1
+    }
+  },
+  "bench": {
+    "042vl": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Jordan Kyrou",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "065nx": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Berkly Catton",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "05r1i": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Matty Beniers",
+      "status": "RESERVE",
+      "pts": 2
+    }
+  }
+}
