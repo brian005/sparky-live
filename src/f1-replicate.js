@@ -678,20 +678,32 @@ async function standingsParity(fx) {
   });
 }
 
-// Fantrax's totals from the previous night's run (18 to 30 hours ago), the "through yesterday" baseline.
+// Fantrax's totals from the previous night's run, the "through yesterday" baseline.
+// Oct 29 2026 fix: this used to walk the report FILES newest-name-first and take the first one 18-30h
+// old. Names sort "apply" before "dry-run", so a same-day dry-run always won over the nightly apply -
+// on Oct 29 the baseline was an 18:51 PT manual dry-run (taken before that night's games), and all six
+// teams falsely "differed". Same-day runs of one mode also overwrote each other's file, which lost the
+// Oct 27 nightly baseline. Now: read every report from the last 3 days, keep those 18-30h old, and take
+// the one closest to exactly 24h - i.e. last night's scheduled run, not a manual run from the evening
+// or afternoon before. Filenames carry the UTC time now (finish()), so no report overwrites another.
 function previousRun() {
   try {
     const now = Date.now();
-    const files = fs.readdirSync(REPORT_DIR).filter((f) => f.endsWith(".json")).sort().reverse();
-    for (const f of files) {
-      const r = JSON.parse(fs.readFileSync(path.join(REPORT_DIR, f), "utf8"));
+    const cutoff = new Date(now - 3 * 86400e3).toISOString().slice(0, 10);
+    let best = null;
+    for (const f of fs.readdirSync(REPORT_DIR)) {
+      if (!f.endsWith(".json") || f.slice(0, 10) < cutoff) continue;
+      let r; try { r = JSON.parse(fs.readFileSync(path.join(REPORT_DIR, f), "utf8")); } catch (_) { continue; }
+      if (!Array.isArray(r.standings)) continue;
       const age = now - Date.parse(r.at || 0);
-      if (!Array.isArray(r.standings) || age < 18 * 3600e3) continue;
-      if (age > 30 * 3600e3) return null;                      // last night's run is missing: no fair baseline
-      const fx = {};
-      for (const s of r.standings) if (s.id) fx[s.id] = s.fantrax;
-      return Object.keys(fx).length ? { at: r.at, fx } : null;
+      if (!(age >= 18 * 3600e3 && age <= 30 * 3600e3)) continue;   // outside the window: no fair baseline
+      const off = Math.abs(age - 24 * 3600e3);
+      if (!best || off < best.off) best = { off, r };
     }
+    if (!best) return null;                                        // last night's run is missing
+    const fx = {};
+    for (const s of best.r.standings) if (s.id) fx[s.id] = s.fantrax;
+    return Object.keys(fx).length ? { at: best.r.at, fx } : null;
   } catch (_) {}
   return null;
 }
@@ -871,7 +883,8 @@ function finish(report, code = 0) {
   try {
     fs.mkdirSync(REPORT_DIR, { recursive: true });
     const tag = report.swept && report.swept.length > 1 ? `p${report.swept[0]}-${report.swept[report.swept.length - 1]}` : `p${(report.swept || ["x"])[0]}`;
-    const f = path.join(REPORT_DIR, `${report.at.slice(0, 10)}-${tag}-${report.mode}.json`);
+    // YYYY-MM-DD-HHMMZ-...: the time keeps two runs on one UTC day from overwriting each other (Oct 29 2026).
+    const f = path.join(REPORT_DIR, `${report.at.slice(0, 10)}-${report.at.slice(11, 13)}${report.at.slice(14, 16)}Z-${tag}-${report.mode}.json`);
     fs.writeFileSync(f, JSON.stringify(report, null, 2));
     log("Report:", f);
   } catch (e) { log("Could not write report:", e.message); }

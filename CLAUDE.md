@@ -65,11 +65,15 @@ The Saved by the Bell persona bots post to **#sparkybots**, not #sparky.
   re-reads anyway. Don't add write retries.
 - Scheduled runs are quiet: Slack only on a lock night (receipt), anything fixed or
   failed, an unplaced player, or points that disagree. Manual runs always post.
-- Every run commits a JSON report to `data/f1-replicate/YYYY-MM-DD-p<a>-<b>-<mode>.json`.
-  That is the audit trail AND the repo activity that stops GitHub disabling
-  schedules after 60 quiet days. Filename `p1-3` = locked periods 1-3 swept; the
-  upcoming period is `report.upcoming` and an entry in `periods` with
-  `upcoming: true`.
+- Every run commits a JSON report to `data/f1-replicate/YYYY-MM-DD-HHMMZ-p<a>-<b>-<mode>.json`
+  (UTC time added 2026-10-29; older files have no `HHMMZ`). That is the audit trail
+  AND the repo activity that stops GitHub disabling schedules after 60 quiet days.
+  `p1-3` = locked periods 1-3 swept; the upcoming period is `report.upcoming` and an
+  entry in `periods` with `upcoming: true`.
+- **Points parity baseline:** F2 at 23:00 counts games through yesterday; Fantrax
+  already counts tonight's. So F2 tonight is compared to Fantrax as recorded by the
+  report closest to exactly 24h old (window 18-30h), chosen by `report.at`, never by
+  filename. A manual run the evening before is NOT a fair baseline (fewer games).
 - Offline harness: build a fake F2 API + fake Fantrax (stub Puppeteer page whose
   `evaluate` answers `/fxpa/req` bodies) + fake Slack, then `require` the script with
   args. That's how the upcoming pass and override retry were tested on 2026-10-27
@@ -85,6 +89,11 @@ Dispatch (from Brian's PowerShell):
   runs hourly; Brian's agent **Danny** reads it and DMs a 10:45 AM brief.
 - Danny opens issues here titled `[heartbeats] <job> - <cause>` for persistent
   faults. Reference them in fix commits (`fixes #N`).
+- **Parked (2026-10-27, Brian: "not yet"):** an issue-triggered Claude responder -
+  Danny opens a `[heartbeats]` issue, an Action runs Claude in the repo, Claude
+  replies in the issue (diagnosis or fix PR), Danny relays it in his brief, Brian
+  merges. Gate on issues authored by brian005 (repo is public). Needs an
+  `ANTHROPIC_API_KEY` secret here. Revisit when Brian says the flow is ready.
 - The janitor is an immediate-page job only on the night after a lock.
 
 ## Conventions
@@ -93,6 +102,9 @@ Dispatch (from Brian's PowerShell):
   googleapis, @anthropic-ai/sdk, canvas.
 - Brian works in Windows PowerShell. Deliver complete files and one-line
   PowerShell blocks for every step (git, gh), in run order.
+- **Delivering files:** right above the file cards, a destination map - one
+  repo-relative path per line, each in inline code (backticks), never a fenced block,
+  never inside a paragraph, nothing else on the line.
 - **Always `git pull --rebase` before pushing** - workflows commit reports nightly,
   so local copies are always behind.
 - `src/config.js` still carries the 2025-26 Fantrax `PERIODS` table; check whether
@@ -102,6 +114,14 @@ Dispatch (from Brian's PowerShell):
 
 ## Change log
 
+- **2026-10-29** - Points-parity false alarm on the Oct 28 23:00 run (all six teams
+  "differed" by 3-8). Cause: `previousRun()` picked the baseline by filename, and
+  `...-dry-run.json` sorts ahead of `...-apply.json`, so Brian's 18:51 PT manual
+  dry-run (pre-games) beat the 23:00 nightly. Danny caught it; F2's totals matched the
+  nightly baseline exactly. Fix: baseline chosen by `report.at`, closest to 24h; report
+  filenames now carry `HHMMZ` so same-day runs stop overwriting each other (that had
+  also cost the Oct 27 nightly baseline). Upcoming pass confirmed working: F2 serves
+  `rcp=4`; Period 4 pre-set plan was empty (nothing pending) on Oct 28 and 29.
 - **2026-10-27 (later)** - Upcoming-period pass (trades/claims/drops pre-set into
   the next period before it locks), Monday 14:00 pre-lock schedule, one-shot
   commissioner-override retry for refused trades. Forced Period 3 run had applied
