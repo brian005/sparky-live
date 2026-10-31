@@ -1,0 +1,160 @@
+{
+  "date": "2026-10-30",
+  "period": 3,
+  "games": 3,
+  "goals": 22,
+  "notFinal": [],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 5,
+      "scored": 5,
+      "g": 1,
+      "a": 4,
+      "a1": 1,
+      "a2": 3,
+      "pp": 2,
+      "en": 0,
+      "gp": 3
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 2,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 6,
+      "scored": 3,
+      "g": 1,
+      "a": 2,
+      "a1": 2,
+      "a2": 0,
+      "pp": 2,
+      "en": 0,
+      "gp": 3
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 5,
+      "scored": 2,
+      "g": 2,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "gp": 1
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 5,
+      "scored": 3,
+      "g": 2,
+      "a": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "gp": 3
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 2,
+      "scored": 2,
+      "g": 0,
+      "a": 2,
+      "a1": 2,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "gp": 4
+    }
+  },
+  "players": {
+    "01zvf": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Mark Stone",
+      "pts": 1
+    },
+    "03jvu": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Mitch Marner",
+      "pts": 2
+    },
+    "051um": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Arseny Gritsyuk",
+      "pts": 2
+    },
+    "04bdb": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Jack Hughes",
+      "pts": 2
+    },
+    "042ye": {
+      "team": "h13alq00mo319aqw",
+      "name": "Jesper Bratt",
+      "pts": 1
+    },
+    "02azb": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Mark Scheifele",
+      "pts": 1
+    },
+    "005ho": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Lars Eller",
+      "pts": 1
+    },
+    "05ran": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Matt Coronato",
+      "pts": 4
+    },
+    "04mto": {
+      "team": "h13alq00mo319aqw",
+      "name": "Kaapo Kakko",
+      "pts": 1
+    }
+  },
+  "bench": {
+    "02un5": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Sam Reinhart",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "03kra": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Kyle Connor",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "04lcf": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Joel Farabee",
+      "status": "RESERVE",
+      "pts": 3
+    },
+    "066sp": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Aydar Suniev",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06mb0": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Matvei Gridin",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "065nx": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Berkly Catton",
+      "status": "MINORS",
+      "pts": 1
+    }
+  }
+}
