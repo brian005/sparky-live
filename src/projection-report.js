@@ -210,14 +210,10 @@ if (require.main === module) {
     if (!p) { console.log(`No scoring period around ${asOf}.`); return; }
     const text = formatProjection(p);
     console.log("\n" + text);
-    if (NO_SLACK || !SLACK_TOKEN || !SLACK_CHANNEL) { console.log("(not posting to Slack)"); return; }
-    const s = await fetch("https://slack.com/api/chat.postMessage", {
-      method: "POST",
-      headers: { "Content-Type": "application/json; charset=utf-8", Authorization: `Bearer ${SLACK_TOKEN}` },
-      body: JSON.stringify({ channel: SLACK_CHANNEL, text, unfurl_links: false, username: SLACK_USERNAME,
-        ...(SLACK_ICON.startsWith("http") ? { icon_url: SLACK_ICON } : { icon_emoji: SLACK_ICON }) }),
-    });
-    const o = await s.json();
-    if (!o.ok) throw new Error(`Slack: ${o.error}`);
+    // Sparky chat when CHAT_WEBHOOK_URL is set, else Slack (src/chat.js)
+    const chat = require("./chat");
+    if (NO_SLACK || !chat.configured()) { console.log("(not posting)"); return; }
+    await chat.post(text, { username: SLACK_USERNAME, icon: SLACK_ICON });
+    console.log(`Posted to ${chat.where()}.`);
   })().catch((e) => { console.error("FAILED:", e.message); process.exitCode = 1; });
 }

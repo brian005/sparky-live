@@ -30,6 +30,20 @@ secrets/variables. Committed reports in `data/` are visible to anyone.
 
 The Saved by the Bell persona bots post to **#sparkybots**, not #sparky.
 
+## Chat (Sparky chat on sparkypool.ca, formerly Slack)
+
+- Every active bot posts through `src/chat.js`: **Sparky chat** (Chris's Mattermost-based chat
+  in F2) when the `CHAT_WEBHOOK_URL` Actions secret is set, otherwise Slack the old way
+  (`SLACK_BOT_TOKEN` + `SLACK_CHANNEL`). Delete the secret to fall back to Slack.
+- The webhook posts to #sparkybots. `CHAT_CHANNEL` (the workflows' `channel` input) asks for
+  another channel or a DM (`@brian`); honoured only if the webhook isn't locked to its channel.
+- The bots still write Slack-style text; `chat.js` converts it: `*bold*` -> `**bold**` (single
+  stars are italic in Sparky chat), `<url|label>` -> `[label](url)`. Code is left alone.
+- Not migrated (still Slack-only, all disabled): `scorigami.js`, `index.js` / `slack.js`
+  (Game Night), `test-post.js`.
+- The webhook URL and the sparkybot API key work as passwords: Actions secrets only, never
+  committed (this repo is public).
+
 ## The janitor (f1-replicate) - read before touching it
 
 - Sweeps **every locked F2 period**, oldest to newest, fixes whatever on Fantrax
@@ -113,6 +127,10 @@ Dispatch (from Brian's PowerShell):
   finishing #1 in points.
 
 ## Change log
+
+- **2026-11-01** - Moved every active bot (Belding, Screech, Lisa Turtle nightly + Sunday,
+  Zack Morris) from Slack to Sparky chat via a new `src/chat.js` and the `CHAT_WEBHOOK_URL`
+  secret; Slack stays as the fallback.
 
 - **2026-10-29** - Points-parity false alarm on the Oct 28 23:00 run (all six teams
   "differed" by 3-8). Cause: `previousRun()` picked the baseline by filename, and

@@ -97,6 +97,9 @@ jobs:
           F2_USER: ${{ secrets.F2_USER }}
           F2_PASSWORD: ${{ secrets.F2_PASSWORD }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          # Sparky chat (sparkypool.ca) wins when this secret is set; delete it to fall back to Slack (src/chat.js)
+          CHAT_WEBHOOK_URL: ${{ secrets.CHAT_WEBHOOK_URL }}
+          CHAT_CHANNEL: ${{ github.event.inputs.channel || '' }}
           SLACK_CHANNEL: ${{ github.event.inputs.channel || vars.RECORDS_SLACK_CHANNEL || vars.F1_MIRROR_SLACK_CHANNEL }}
           SLACK_USERNAME: ${{ vars.RECORDS_SLACK_USERNAME || 'Screech' }}
           SLACK_ICON: ${{ vars.RECORDS_SLACK_ICON || ':trophy:' }}

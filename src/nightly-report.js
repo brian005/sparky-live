@@ -35,6 +35,7 @@
 //   NHL_ID_CACHE                      default data/nhl-ids.json
 // ============================================================
 
+const chat = require("./chat");
 const fs = require("fs");
 const path = require("path");
 
@@ -292,18 +293,11 @@ const CODES = Object.assign({ brian: "BEW", chris: "PWN", graeme: "GDD", jason: 
 function initialism(t) { return CODES[t.franchise] || (t.name || t.id).slice(0, 3).toUpperCase(); }
 
 async function slack(text) {
-  if (NO_SLACK || !SLACK_TOKEN || !SLACK_CHANNEL) { log("(not posting to Slack)"); return; }
-  const r = await fetch("https://slack.com/api/chat.postMessage", {
-    method: "POST",
-    headers: { "Content-Type": "application/json; charset=utf-8", Authorization: `Bearer ${SLACK_TOKEN}` },
-    body: JSON.stringify({
-      channel: SLACK_CHANNEL, text, unfurl_links: false,
-      username: SLACK_USERNAME,
-      ...(SLACK_ICON.startsWith("http") ? { icon_url: SLACK_ICON } : { icon_emoji: SLACK_ICON }),
-    }),
-  });
-  const o = await r.json();
-  if (!o.ok) throw new Error(`Slack: ${o.error}`);
+  // Sparky chat when CHAT_WEBHOOK_URL is set, else Slack (src/chat.js)
+  if (NO_SLACK || !chat.configured()) { log("(not posting)"); return; }
+  await chat.post(text, { username: SLACK_USERNAME, icon: SLACK_ICON });
+  log(`Posted to ${chat.where()}.`);
+  return;
 }
 
 // ---- main ----------------------------------------------------------------------------------------

@@ -53,6 +53,7 @@
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 puppeteer.use(StealthPlugin());
+const chat = require("./chat");
 const fs = require("fs");
 const path = require("path");
 
@@ -710,18 +711,10 @@ function previousRun() {
 
 // ---- Slack -----------------------------------------------------------------------
 async function slack(text) {
-  if (!SLACK_TOKEN || !SLACK_CHANNEL) return;
-  const r = await fetch("https://slack.com/api/chat.postMessage", {
-    method: "POST",
-    headers: { "Content-Type": "application/json; charset=utf-8", Authorization: `Bearer ${SLACK_TOKEN}` },
-    body: JSON.stringify({
-      channel: SLACK_CHANNEL, text, unfurl_links: false,
-      ...(SLACK_USERNAME ? { username: SLACK_USERNAME } : {}),
-      ...(SLACK_ICON ? (SLACK_ICON.startsWith("http") ? { icon_url: SLACK_ICON } : { icon_emoji: SLACK_ICON }) : {}),
-    }),
-  });
-  const o = await r.json();
-  if (!o.ok) log("Slack error:", o.error);
+  // Sparky chat when CHAT_WEBHOOK_URL is set, else Slack (src/chat.js)
+  if (!chat.configured()) return;
+  try { await chat.post(text, { username: SLACK_USERNAME, icon: SLACK_ICON }); }
+  catch (e) { log("Chat error:", e.message); }
 }
 
 // ---- main: the janitor sweep -----------------------------------------------------------
