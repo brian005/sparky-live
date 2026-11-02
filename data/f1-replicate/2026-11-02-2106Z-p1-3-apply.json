@@ -1,0 +1,163 @@
+{
+  "at": "2026-11-02T21:06:47.920Z",
+  "mode": "apply",
+  "periods": [
+    {
+      "f2Period": 1,
+      "fxPeriod": 1,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 2,
+      "fxPeriod": 2,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 3,
+      "fxPeriod": 3,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 4,
+      "upcoming": true,
+      "locksAt": "2026-11-09T18:00:00",
+      "fxPeriod": 4,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    }
+  ],
+  "swept": [
+    1,
+    2,
+    3
+  ],
+  "lockTs": "2026-10-26T16:00:00",
+  "upcoming": 4,
+  "standings": [
+    {
+      "id": "smc5vz9tmo319aqw",
+      "team": "Jason's Gaucho Chudpumpers",
+      "f2": 224,
+      "fantrax": 224,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "mo75fhhjmo319aqw",
+      "team": "Graeme's Downtown Demons",
+      "f2": 207,
+      "fantrax": 207,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "5c6dwdhkmo319aqw",
+      "team": "Brian's Endless Winter",
+      "f2": 206,
+      "fantrax": 206,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "lo1c2zefmo319aqw",
+      "team": "Matt's mid tier perpetual projects",
+      "f2": 177,
+      "fantrax": 177,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "h13alq00mo319aqw",
+      "team": "Richie's Meatspinners",
+      "f2": 166,
+      "fantrax": 166,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "djdo03kcmo319aqw",
+      "team": "Cmack's PWN",
+      "f2": 154,
+      "fantrax": 154,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    }
+  ]
+}
