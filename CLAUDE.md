@@ -150,6 +150,15 @@ Dispatch (from Brian's PowerShell):
   ("⭐ FRANCHISE RECORD", "🤝 TIED POOL RECORD"), what it is ("Most goals in a Period 2 night"), the number big,
   and the old mark / who it's shared with. Period, milestone, player and prospect lines go in plain cards. Every
   card carries its sentence as `fallback`. Designed at phone width (no thumbnails: they drop below the text there).
+- Names and wording (Brian, 2026-11-02), a name and a line under it: SPARKY RECORD / all-time (any franchise,
+  any night, gold); P5 RECORD / all-time (any franchise, a Period 5 night, orange); FRANCHISE RECORD / Brian's
+  Endless Winter (that franchise's own, any night, green); P5 FRANCHISE RECORD / Brian's Endless Winter (its own in
+  a Period 5 night, blue); WHOLE-POOL RECORD and P5 WHOLE-POOL RECORD / all-time for the pool added up (purple).
+  A card says the record once ("Most points from one NHL game in a Period 1 night:") then only the number and its
+  unit ("7 points"). Every old mark and "shared with" names the franchise as well as the date. The DOMINATION
+  margin stat is "biggest margin of victory".
+- Image cards (prototype, not wired in): one 500x300 image a record, designed in HTML and rendered with Playwright;
+  F2 chat shows a post's images full width, at most 350px tall, and folds a post after ~3 of them ("Show more").
 - `--replay-from YYYY-MM-DD` (workflow input `replay`) prints what the night records would have said; with a
   channel it test-posts. `data/records/lens.json` is the record book + the last 14 nights' records for Lens;
   posted to Lens's Drive web app when `RECORDS_DRIVE_URL` / `RECORDS_TOKEN` are set (not yet).

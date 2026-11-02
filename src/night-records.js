@@ -50,10 +50,10 @@ const FR_STATS = [
   { key: "en", big: (e) => `${e.en} empty-net points`, detail: true, label: "most empty-net points", val: (e) => e.en, show: (e) => `${e.en}` },
   { key: "pros", big: (e) => `${e.pros} prospect points`, sub: (e) => (e.prosWho || []).join(" · "), label: "most prospect points", val: (e) => e.pros, show: (e) => `${e.pros}${e.prosWho && e.prosWho.length ? ` (${e.prosWho.join(", ")})` : ""}` },
   { key: "prosN", big: (e) => `${e.prosN} prospects scoring`, sub: (e) => (e.prosWho || []).join(" · "), levels: ["pool-any", "fr-any"], noTies: true, label: "most different prospects scoring", val: (e) => e.prosN, show: (e) => `${e.prosN}${e.prosWho && e.prosWho.length ? ` (${e.prosWho.join(", ")})` : ""}` },
-  { key: "dom", big: (e) => `+${e.margin}`, sub: (e) => `${e.pts} points to ${e.others} for everyone else combined`, label: "biggest DOMINATION", val: (e) => e.margin, num: (v) => `+${v}`, show: (e) => `+${e.margin} (${e.pts} points to ${e.others} for everyone else combined)`, ref: (o) => ` (${o.pts} to ${o.others})` },
+  { key: "dom", big: (e) => `+${e.margin} points`, sub: (e) => `${e.pts} points to ${e.others} for everyone else combined`, label: "biggest margin of victory", val: (e) => e.margin, num: (v) => `+${v}`, show: (e) => `+${e.margin} points (${e.pts} to ${e.others} for everyone else combined)`, ref: (o) => ` (${o.pts} to ${o.others})` },
 ];
 const POOL_STATS = [
-  { key: "lg-pts", big: (e) => `${e.pts} points`, sub: (e) => `all six franchises, ${e.gp} games played`, label: "most points", val: (e) => e.pts, show: (e) => `${e.pts} points (${e.gp} GP)` },
+  { key: "lg-pts", big: (e) => `${e.pts} points`, sub: (e) => `${e.n} franchises, ${e.gp} games played`, label: "most points", val: (e) => e.pts, show: (e) => `${e.pts} points (${e.gp} GP)` },
   { key: "lg-ppg", big: (e) => `${two(e.pts / e.gp)} PPG`, sub: (e) => `${e.pts} points from ${e.gp} games played`, label: "best PPG", val: (e) => (e.gp >= POOL_MIN_GP ? e.pts / e.gp : null), num: two, show: (e) => `${two(e.pts / e.gp)} ppg (${e.pts} in ${e.gp} GP)` },
 ];
 const STATS = [...FR_STATS, ...POOL_STATS];
@@ -82,7 +82,7 @@ function finishNight(list) {
     e.margin = list.length > 1 && e.pts > e.others ? e.pts - e.others : null;
   }
   const f = list[0];
-  return { season: f.season, date: f.date, period: f.period, code: "ALL", pts: total, gp, pool: true };
+  return { season: f.season, date: f.date, period: f.period, code: "ALL", pts: total, gp, n: list.length, pool: true };
 }
 
 // ---- history -----------------------------------------------------------------------------------------
@@ -234,7 +234,7 @@ function wording(fname, prettyDate) {
     }[r.level];
   };
   const num = (stat, v) => (stat.num ? stat.num(v) : String(v));
-  const ref = (r, o) => `${num(r.stat, r.old.v)}${r.stat.ref ? r.stat.ref(o) : ""}, ${r.level.startsWith("pool") && !o.pool ? `${fname(o.code)}, ` : ""}${prettyDate(o.date)}`;
+  const ref = (r, o) => `${num(r.stat, r.old.v)}${r.stat.ref ? r.stat.ref(o) : ""}, ${!o.pool ? `${fname(o.code)}, ` : ""}${prettyDate(o.date)}`;
   const line = (r) => {
     const h = r.old.holders;
     let old;
@@ -251,22 +251,29 @@ function wording(fname, prettyDate) {
 // ---- cards (Mattermost / Slack message attachments) ---------------------------------------------------------
 // One card a record: the level's colour down the side, the franchise and its logo, what the record is, the number
 // big, and the old mark (or who it's shared with) underneath. Text is Slack-style (*bold*); src/chat.js converts it.
-// (the title stays one line on a phone; "in a Period N night" is in the card's first line, and the colour says it too)
+// The four kinds (Brian's names, 2026-11-02), each a name and a line under it:
+//   SPARKY RECORD           all-time                  any franchise, any night               gold
+//   P5 RECORD               all-time                  any franchise, a Period 5 night         orange
+//   FRANCHISE RECORD        Brian's Endless Winter    that franchise's own, any night        green
+//   P5 FRANCHISE RECORD     Brian's Endless Winter    that franchise's own, a Period 5 night  blue
+// (the whole pool added up: WHOLE-POOL RECORD / P5 WHOLE-POOL RECORD, all-time, purple)
 const LEVEL = {
-  "pool-any": { color: "#F5B301", title: "🏆 POOL RECORD" },
-  "pool-n": { color: "#FF7A45", title: "🏆 POOL RECORD" },
-  "fr-any": { color: "#3DDC84", title: "⭐ FRANCHISE RECORD" },
-  "fr-n": { color: "#6FB7FF", title: "⭐ FRANCHISE RECORD" },
+  "pool-any": { color: "#F5B301", icon: "🏆", name: () => "SPARKY RECORD" },
+  "pool-n": { color: "#FF7A45", icon: "🏆", name: (e) => `P${e.period} RECORD` },
+  "fr-any": { color: "#3DDC84", icon: "⭐", name: () => "FRANCHISE RECORD" },
+  "fr-n": { color: "#6FB7FF", icon: "⭐", name: (e) => `P${e.period} FRANCHISE RECORD` },
 };
+const levelName = (r) => (r.e.pool ? (r.level === "pool-n" ? `P${r.e.period} WHOLE-POOL RECORD` : "WHOLE-POOL RECORD") : LEVEL[r.level].name(r.e));
+const levelScope = (r, fname) => (r.e.pool || r.level.startsWith("pool") ? "all-time" : fname(r.e.code));
 const POOL_COLOR = "#A78BFA", DOM_COLOR = "#E5484D";
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 function cards(fname, prettyDate, logo) {
   const short = (d) => prettyDate(d).replace(/, \d{4}$/, (y) => (y.slice(2) === String(new Date().getFullYear()) ? "" : y));
   const num = (stat, v) => (stat.num ? stat.num(v) : String(v));
-  const ref = (r, o) => `${num(r.stat, r.old.v)}${r.stat.ref ? r.stat.ref(o) : ""} · ${r.level.startsWith("pool") && !o.pool ? `${fname(o.code)} · ` : ""}${short(o.date)}`;
+  const ref = (r, o) => `${num(r.stat, r.old.v)}${r.stat.ref ? r.stat.ref(o) : ""} · ${!o.pool ? `${fname(o.code)} · ` : ""}${short(o.date)}`;
   const record = (r, fallback) => {
     const lv = LEVEL[r.level], n = r.e.period, h = r.old.holders;
-    const what = `${cap(r.stat.label)} in a${r.level.endsWith("-n") ? ` Period ${n}` : ""} night`;
+    const what = `${cap(r.stat.label)} in a${r.level.endsWith("-n") ? ` Period ${n}` : ""} night:`;
     let oldTitle, oldVal;
     if (!r.tie) { oldTitle = "Old mark"; oldVal = `${ref(r, h[0])}${h.length > 1 ? ` (tied ${h.length - 1}× since)` : ""}`; }
     else if (h.length <= 3) { oldTitle = "Shared with"; oldVal = h.map((o) => ref(r, o)).join("\n"); }
@@ -277,8 +284,8 @@ function cards(fname, prettyDate, logo) {
       fallback,
       color: r.e.pool ? POOL_COLOR : lv.color,
       author_name: who, ...(icon ? { author_icon: icon } : {}),
-      title: (r.tie ? `🤝 TIED ${lv.title.replace(/^\S+ /, "")}` : lv.title).replace("POOL RECORD", r.e.pool ? "WHOLE-POOL RECORD" : "POOL RECORD"),
-      text: `*${what}*\n### ${r.stat.big(r.e)}${sub ? `\n${sub}` : ""}`,
+      title: r.tie ? `🤝 TIED · ${levelName(r)}` : `${lv.icon} ${levelName(r)}`,
+      text: `_${levelScope(r, fname)}_\n*${what}*\n### ${r.stat.big(r.e)}${sub ? `\n${sub}` : ""}`,
       fields: [{ title: oldTitle, value: oldVal, short: false }],
     };
   };
