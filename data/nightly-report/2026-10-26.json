@@ -14,7 +14,11 @@
       "a2": 1,
       "pp": 1,
       "en": 1,
-      "gp": 6
+      "gp": 6,
+      "games": {
+        "TOR@CGY": 3,
+        "DET@EDM": 3
+      }
     },
     "djdo03kcmo319aqw": {
       "eligible": 7,
@@ -25,7 +29,11 @@
       "a2": 0,
       "pp": 2,
       "en": 0,
-      "gp": 5
+      "gp": 5,
+      "games": {
+        "LAK@NYR": 1,
+        "DET@EDM": 3
+      }
     },
     "mo75fhhjmo319aqw": {
       "eligible": 6,
@@ -36,7 +44,11 @@
       "a2": 2,
       "pp": 0,
       "en": 0,
-      "gp": 4
+      "gp": 4,
+      "games": {
+        "TOR@CGY": 3,
+        "DET@EDM": 1
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 5,
@@ -47,7 +59,11 @@
       "a2": 2,
       "pp": 2,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "LAK@NYR": 2,
+        "DET@EDM": 1
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 1,
@@ -58,7 +74,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {}
     },
     "h13alq00mo319aqw": {
       "eligible": 0,
@@ -69,84 +86,175 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {}
     }
   },
   "players": {
     "042w4": {
       "team": "smc5vz9tmo319aqw",
       "name": "Adam Fox",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "LAK@NYR"
     },
     "04zo0": {
       "team": "djdo03kcmo319aqw",
       "name": "Pavel Dorofeyev",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "LAK@NYR"
     },
     "04amg": {
       "team": "smc5vz9tmo319aqw",
       "name": "Alexis Lafrenière",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "LAK@NYR"
     },
     "05ran": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Matt Coronato",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 2,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "game": "TOR@CGY"
     },
     "06bap": {
       "team": "mo75fhhjmo319aqw",
       "name": "Easton Cowan",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "TOR@CGY"
     },
     "02yjj": {
       "team": "mo75fhhjmo319aqw",
       "name": "William Nylander",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "TOR@CGY"
     },
     "03rag": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Jack Roslovic",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "TOR@CGY"
     },
     "03jxy": {
       "team": "mo75fhhjmo319aqw",
       "name": "Auston Matthews",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "TOR@CGY"
     },
     "04uqa": {
       "team": "djdo03kcmo319aqw",
       "name": "Vasily Podkolzin",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "DET@EDM"
     },
     "02yjl": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Leon Draisaitl",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "DET@EDM"
     },
     "02un4": {
       "team": "smc5vz9tmo319aqw",
       "name": "Connor McDavid",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "DET@EDM"
     },
     "04ymt": {
       "team": "djdo03kcmo319aqw",
       "name": "Lucas Raymond",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 2,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "DET@EDM"
     },
     "03v70": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Alex DeBrincat",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "DET@EDM"
     },
     "06cl1": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Emmitt Finnie",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "DET@EDM"
     },
     "02422": {
       "team": "mo75fhhjmo319aqw",
       "name": "Ryan Nugent-Hopkins",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "DET@EDM"
     }
   },
   "bench": {

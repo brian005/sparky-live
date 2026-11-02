@@ -14,7 +14,13 @@
       "a2": 3,
       "pp": 3,
       "en": 0,
-      "gp": 13
+      "gp": 13,
+      "games": {
+        "SJS@BOS": 3,
+        "CAR@STL": 1,
+        "TOR@EDM": 4,
+        "MIN@SEA": 1
+      }
     },
     "djdo03kcmo319aqw": {
       "eligible": 16,
@@ -25,7 +31,15 @@
       "a2": 2,
       "pp": 1,
       "en": 0,
-      "gp": 12
+      "gp": 12,
+      "games": {
+        "SJS@BOS": 1,
+        "NYR@OTT": 1,
+        "BUF@WSH": 1,
+        "CAR@STL": 2,
+        "TOR@EDM": 1,
+        "TBL@UTA": 1
+      }
     },
     "mo75fhhjmo319aqw": {
       "eligible": 13,
@@ -36,7 +50,14 @@
       "a2": 3,
       "pp": 2,
       "en": 2,
-      "gp": 9
+      "gp": 9,
+      "games": {
+        "SJS@BOS": 1,
+        "NYR@OTT": 4,
+        "VGK@CBJ": 1,
+        "CAR@STL": 2,
+        "TOR@EDM": 4
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 17,
@@ -47,7 +68,18 @@
       "a2": 2,
       "pp": 4,
       "en": 1,
-      "gp": 11
+      "gp": 11,
+      "games": {
+        "ANA@PHI": 2,
+        "LAK@NJD": 1,
+        "SJS@BOS": 1,
+        "NYR@OTT": 1,
+        "BUF@WSH": 3,
+        "VGK@CBJ": 2,
+        "TOR@EDM": 2,
+        "TBL@UTA": 1,
+        "MIN@SEA": 1
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 14,
@@ -58,7 +90,15 @@
       "a2": 3,
       "pp": 4,
       "en": 0,
-      "gp": 8
+      "gp": 8,
+      "games": {
+        "ANA@PHI": 1,
+        "SJS@BOS": 1,
+        "NSH@PIT": 1,
+        "TOR@EDM": 2,
+        "TBL@UTA": 1,
+        "DET@CGY": 1
+      }
     },
     "h13alq00mo319aqw": {
       "eligible": 12,
@@ -69,229 +109,502 @@
       "a2": 3,
       "pp": 2,
       "en": 1,
-      "gp": 11
+      "gp": 11,
+      "games": {
+        "LAK@NJD": 2,
+        "SJS@BOS": 2,
+        "NYR@OTT": 1,
+        "NSH@PIT": 1,
+        "BUF@WSH": 2,
+        "TBL@UTA": 1,
+        "MIN@SEA": 2
+      }
     }
   },
   "players": {
     "05gvo": {
       "team": "smc5vz9tmo319aqw",
       "name": "Matvei Michkov",
-      "pts": 2
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "ANA@PHI"
     },
     "06hcw": {
       "team": "lo1c2zefmo319aqw",
       "name": "Beckett Sennecke",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "ANA@PHI"
     },
     "05gdo": {
       "team": "h13alq00mo319aqw",
       "name": "Luke Evangelista",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "LAK@NJD"
     },
     "04bdb": {
       "team": "smc5vz9tmo319aqw",
       "name": "Jack Hughes",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "game": "LAK@NJD"
     },
     "042ye": {
       "team": "h13alq00mo319aqw",
       "name": "Jesper Bratt",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 1,
+      "game": "LAK@NJD"
     },
     "04a9v": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Morgan Geekie",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "SJS@BOS"
     },
     "05yn2": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Fraser Minten",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "SJS@BOS"
     },
     "03wor": {
       "team": "lo1c2zefmo319aqw",
       "name": "Mason Marchment",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "SJS@BOS"
     },
     "03d12": {
       "team": "smc5vz9tmo319aqw",
       "name": "David Pastrnak",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "SJS@BOS"
     },
     "04zj5": {
       "team": "h13alq00mo319aqw",
       "name": "JJ Peterka",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 2,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "SJS@BOS"
     },
     "0644b": {
       "team": "djdo03kcmo319aqw",
       "name": "Will Smith",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "SJS@BOS"
     },
     "05w9c": {
       "team": "mo75fhhjmo319aqw",
       "name": "Macklin Celebrini",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "SJS@BOS"
     },
     "04f2d": {
       "team": "mo75fhhjmo319aqw",
       "name": "Drake Batherson",
-      "pts": 4
+      "pts": 4,
+      "g": 3,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "game": "NYR@OTT"
     },
     "051z0": {
       "team": "h13alq00mo319aqw",
       "name": "Tim Stützle",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NYR@OTT"
     },
     "04amg": {
       "team": "smc5vz9tmo319aqw",
       "name": "Alexis Lafrenière",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NYR@OTT"
     },
     "04zo0": {
       "team": "djdo03kcmo319aqw",
       "name": "Pavel Dorofeyev",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NYR@OTT"
     },
     "065d1": {
       "team": "h13alq00mo319aqw",
       "name": "Matthew Wood",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NSH@PIT"
     },
     "01f6d": {
       "team": "lo1c2zefmo319aqw",
       "name": "Ryan O'Reilly",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "NSH@PIT"
     },
     "05g42": {
       "team": "h13alq00mo319aqw",
       "name": "Jack Quinn",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "BUF@WSH"
     },
     "03as9": {
       "team": "smc5vz9tmo319aqw",
       "name": "Dylan Strome",
-      "pts": 3
+      "pts": 3,
+      "g": 2,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "BUF@WSH"
     },
     "05rjh": {
       "team": "h13alq00mo319aqw",
       "name": "Noah Ostlund",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "BUF@WSH"
     },
     "04ad7": {
       "team": "djdo03kcmo319aqw",
       "name": "Rasmus Dahlin",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "BUF@WSH"
     },
     "05gda": {
       "team": "smc5vz9tmo319aqw",
       "name": "Kent Johnson",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "VGK@CBJ"
     },
     "06h8h": {
       "team": "mo75fhhjmo319aqw",
       "name": "Trevor Connelly",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "VGK@CBJ"
     },
     "05tv0": {
       "team": "djdo03kcmo319aqw",
       "name": "Jackson Blake",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "CAR@STL"
     },
     "03rmx": {
       "team": "mo75fhhjmo319aqw",
       "name": "Sebastian Aho",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "CAR@STL"
     },
     "05rf2": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Logan Stankoven",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "CAR@STL"
     },
     "048vf": {
       "team": "djdo03kcmo319aqw",
       "name": "Andrei Svechnikov",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "CAR@STL"
     },
     "03jxy": {
       "team": "mo75fhhjmo319aqw",
       "name": "Auston Matthews",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "TOR@EDM"
     },
     "06bap": {
       "team": "mo75fhhjmo319aqw",
       "name": "Easton Cowan",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "TOR@EDM"
     },
     "04qy5": {
       "team": "lo1c2zefmo319aqw",
       "name": "Kirill Marchenko",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "TOR@EDM"
     },
     "02yjl": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Leon Draisaitl",
-      "pts": 2
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "TOR@EDM"
     },
     "02un4": {
       "team": "smc5vz9tmo319aqw",
       "name": "Connor McDavid",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 2,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "TOR@EDM"
     },
     "04lc0": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Evan Bouchard",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 0,
+      "a2": 2,
+      "pp": 1,
+      "en": 0,
+      "game": "TOR@EDM"
     },
     "02yjj": {
       "team": "mo75fhhjmo319aqw",
       "name": "William Nylander",
-      "pts": 2
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 1,
+      "game": "TOR@EDM"
     },
     "062h5": {
       "team": "djdo03kcmo319aqw",
       "name": "Gavin McKenna",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "TOR@EDM"
     },
     "031p0": {
       "team": "djdo03kcmo319aqw",
       "name": "Jake Guentzel",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "TBL@UTA"
     },
     "02b70": {
       "team": "smc5vz9tmo319aqw",
       "name": "Nikita Kucherov",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "TBL@UTA"
     },
     "04o0h": {
       "team": "lo1c2zefmo319aqw",
       "name": "Dylan Guenther",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "TBL@UTA"
     },
     "03mn8": {
       "team": "h13alq00mo319aqw",
       "name": "Clayton Keller",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "TBL@UTA"
     },
     "04ezy": {
       "team": "lo1c2zefmo319aqw",
       "name": "Morgan Frost",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "DET@CGY"
     },
     "03rh3": {
       "team": "h13alq00mo319aqw",
       "name": "Kirill Kaprizov",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "MIN@SEA"
     },
     "04lbz": {
       "team": "smc5vz9tmo319aqw",
       "name": "Quinn Hughes",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "MIN@SEA"
     },
     "04xec": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Matt Boldy",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "MIN@SEA"
     }
   },
   "bench": {

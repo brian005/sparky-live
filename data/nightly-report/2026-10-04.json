@@ -14,7 +14,12 @@
       "a2": 2,
       "pp": 3,
       "en": 0,
-      "gp": 4
+      "gp": 4,
+      "games": {
+        "WPG@DET": 2,
+        "UTA@NYR": 1,
+        "VGK@VAN": 1
+      }
     },
     "djdo03kcmo319aqw": {
       "eligible": 5,
@@ -25,7 +30,11 @@
       "a2": 1,
       "pp": 1,
       "en": 0,
-      "gp": 4
+      "gp": 4,
+      "games": {
+        "CGY@SEA": 1,
+        "VGK@VAN": 1
+      }
     },
     "mo75fhhjmo319aqw": {
       "eligible": 4,
@@ -36,7 +45,10 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "VGK@VAN": 2
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 4,
@@ -47,7 +59,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0
+      "gp": 0,
+      "games": {}
     },
     "lo1c2zefmo319aqw": {
       "eligible": 11,
@@ -58,7 +71,11 @@
       "a2": 0,
       "pp": 2,
       "en": 0,
-      "gp": 5
+      "gp": 5,
+      "games": {
+        "FLA@ANA": 1,
+        "CGY@SEA": 1
+      }
     },
     "h13alq00mo319aqw": {
       "eligible": 5,
@@ -69,69 +86,145 @@
       "a2": 2,
       "pp": 4,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "WPG@DET": 3,
+        "UTA@NYR": 1
+      }
     }
   },
   "players": {
     "04uql": {
       "team": "h13alq00mo319aqw",
       "name": "Cole Perfetti",
-      "pts": 3
+      "pts": 3,
+      "g": 1,
+      "a1": 0,
+      "a2": 2,
+      "pp": 3,
+      "en": 0,
+      "game": "WPG@DET"
     },
     "03w5m": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Gabriel Vilardi",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "WPG@DET"
     },
     "03v70": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Alex DeBrincat",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "WPG@DET"
     },
     "02unz": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Nick Schmaltz",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "UTA@NYR"
     },
     "03mn8": {
       "team": "h13alq00mo319aqw",
       "name": "Clayton Keller",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "UTA@NYR"
     },
     "06hcw": {
       "team": "lo1c2zefmo319aqw",
       "name": "Beckett Sennecke",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "FLA@ANA"
     },
     "05r1i": {
       "team": "djdo03kcmo319aqw",
       "name": "Matty Beniers",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "CGY@SEA"
     },
     "04ezy": {
       "team": "lo1c2zefmo319aqw",
       "name": "Morgan Frost",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "CGY@SEA"
     },
     "048x9": {
       "team": "djdo03kcmo319aqw",
       "name": "Elias Pettersson",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "VGK@VAN"
     },
     "03jvu": {
       "team": "mo75fhhjmo319aqw",
       "name": "Mitch Marner",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "VGK@VAN"
     },
     "01zvf": {
       "team": "mo75fhhjmo319aqw",
       "name": "Mark Stone",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "VGK@VAN"
     },
     "03924": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Jack Eichel",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "VGK@VAN"
     }
   },
   "bench": {

@@ -14,7 +14,12 @@
       "a2": 1,
       "pp": 3,
       "en": 2,
-      "gp": 8
+      "gp": 8,
+      "games": {
+        "NYR@BOS": 2,
+        "VAN@EDM": 6,
+        "CHI@VGK": 3
+      }
     },
     "djdo03kcmo319aqw": {
       "eligible": 1,
@@ -25,7 +30,10 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 5
+      "gp": 5,
+      "games": {
+        "VAN@EDM": 1
+      }
     },
     "mo75fhhjmo319aqw": {
       "eligible": 7,
@@ -36,7 +44,11 @@
       "a2": 1,
       "pp": 0,
       "en": 1,
-      "gp": 9
+      "gp": 9,
+      "games": {
+        "MTL@TOR": 3,
+        "CHI@VGK": 1
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 3,
@@ -47,7 +59,10 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 6
+      "gp": 6,
+      "games": {
+        "VAN@EDM": 2
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 1,
@@ -58,7 +73,10 @@
       "a2": 1,
       "pp": 0,
       "en": 0,
-      "gp": 4
+      "gp": 4,
+      "games": {
+        "MTL@TOR": 1
+      }
     },
     "h13alq00mo319aqw": {
       "eligible": 2,
@@ -69,69 +87,145 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 2
+      "gp": 2,
+      "games": {
+        "NYR@BOS": 1,
+        "VAN@EDM": 1
+      }
     }
   },
   "players": {
     "02yjj": {
       "team": "mo75fhhjmo319aqw",
       "name": "William Nylander",
-      "pts": 2
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "MTL@TOR"
     },
     "04qy5": {
       "team": "lo1c2zefmo319aqw",
       "name": "Kirill Marchenko",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "MTL@TOR"
     },
     "01c12": {
       "team": "mo75fhhjmo319aqw",
       "name": "John Tavares",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "MTL@TOR"
     },
     "05yn2": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Fraser Minten",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "game": "NYR@BOS"
     },
     "04zj5": {
       "team": "h13alq00mo319aqw",
       "name": "JJ Peterka",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NYR@BOS"
     },
     "04lc0": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Evan Bouchard",
-      "pts": 5
+      "pts": 5,
+      "g": 3,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "VAN@EDM"
     },
     "04o0g": {
       "team": "h13alq00mo319aqw",
       "name": "Marco Rossi",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "VAN@EDM"
     },
     "02un4": {
       "team": "smc5vz9tmo319aqw",
       "name": "Connor McDavid",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 2,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "VAN@EDM"
     },
     "048x9": {
       "team": "djdo03kcmo319aqw",
       "name": "Elias Pettersson",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "VAN@EDM"
     },
     "02yjl": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Leon Draisaitl",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "VAN@EDM"
     },
     "03924": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Jack Eichel",
-      "pts": 3
+      "pts": 3,
+      "g": 1,
+      "a1": 2,
+      "a2": 0,
+      "pp": 1,
+      "en": 1,
+      "game": "CHI@VGK"
     },
     "01zvf": {
       "team": "mo75fhhjmo319aqw",
       "name": "Mark Stone",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "game": "CHI@VGK"
     }
   },
   "bench": {

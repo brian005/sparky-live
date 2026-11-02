@@ -14,7 +14,10 @@
       "a2": 1,
       "pp": 1,
       "en": 0,
-      "gp": 4
+      "gp": 4,
+      "games": {
+        "EDM@ANA": 7
+      }
     },
     "djdo03kcmo319aqw": {
       "eligible": 1,
@@ -25,7 +28,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {}
     },
     "mo75fhhjmo319aqw": {
       "eligible": 1,
@@ -36,7 +40,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {}
     },
     "smc5vz9tmo319aqw": {
       "eligible": 5,
@@ -47,7 +52,11 @@
       "a2": 1,
       "pp": 1,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "PIT@WSH": 1,
+        "EDM@ANA": 3
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 8,
@@ -58,7 +67,11 @@
       "a2": 1,
       "pp": 2,
       "en": 0,
-      "gp": 4
+      "gp": 4,
+      "games": {
+        "COL@WPG": 2,
+        "EDM@ANA": 2
+      }
     },
     "h13alq00mo319aqw": {
       "eligible": 1,
@@ -69,44 +82,89 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 2
+      "gp": 2,
+      "games": {
+        "COL@WPG": 1
+      }
     }
   },
   "players": {
     "03as9": {
       "team": "smc5vz9tmo319aqw",
       "name": "Dylan Strome",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "PIT@WSH"
     },
     "04uql": {
       "team": "h13alq00mo319aqw",
       "name": "Cole Perfetti",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "COL@WPG"
     },
     "02azb": {
       "team": "lo1c2zefmo319aqw",
       "name": "Mark Scheifele",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 1,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "COL@WPG"
     },
     "06hcw": {
       "team": "lo1c2zefmo319aqw",
       "name": "Beckett Sennecke",
-      "pts": 2
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 2,
+      "en": 0,
+      "game": "EDM@ANA"
     },
     "04lc0": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Evan Bouchard",
-      "pts": 3
+      "pts": 3,
+      "g": 2,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "EDM@ANA"
     },
     "02yjl": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Leon Draisaitl",
-      "pts": 4
+      "pts": 4,
+      "g": 0,
+      "a1": 4,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "EDM@ANA"
     },
     "02un4": {
       "team": "smc5vz9tmo319aqw",
       "name": "Connor McDavid",
-      "pts": 3
+      "pts": 3,
+      "g": 1,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "EDM@ANA"
     }
   },
   "bench": {

@@ -14,7 +14,11 @@
       "a2": 2,
       "pp": 2,
       "en": 0,
-      "gp": 7
+      "gp": 7,
+      "games": {
+        "BOS@WPG": 2,
+        "ANA@VGK": 2
+      }
     },
     "djdo03kcmo319aqw": {
       "eligible": 9,
@@ -25,7 +29,11 @@
       "a2": 3,
       "pp": 2,
       "en": 1,
-      "gp": 6
+      "gp": 6,
+      "games": {
+        "WSH@CAR": 3,
+        "STL@DAL": 2
+      }
     },
     "mo75fhhjmo319aqw": {
       "eligible": 3,
@@ -36,7 +44,11 @@
       "a2": 0,
       "pp": 2,
       "en": 0,
-      "gp": 4
+      "gp": 4,
+      "games": {
+        "WSH@CAR": 1,
+        "ANA@VGK": 1
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 6,
@@ -47,7 +59,11 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 5
+      "gp": 5,
+      "games": {
+        "WSH@CAR": 2,
+        "BOS@WPG": 2
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 5,
@@ -58,7 +74,10 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "ANA@VGK": 1
+      }
     },
     "h13alq00mo319aqw": {
       "eligible": 3,
@@ -69,79 +88,166 @@
       "a2": 1,
       "pp": 1,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "BOS@WPG": 2
+      }
     }
   },
   "players": {
     "051tx": {
       "team": "djdo03kcmo319aqw",
       "name": "Aliaksei Protas",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "WSH@CAR"
     },
     "03as9": {
       "team": "smc5vz9tmo319aqw",
       "name": "Dylan Strome",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 2,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "WSH@CAR"
     },
     "03rmx": {
       "team": "mo75fhhjmo319aqw",
       "name": "Sebastian Aho",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "WSH@CAR"
     },
     "048vf": {
       "team": "djdo03kcmo319aqw",
       "name": "Andrei Svechnikov",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "WSH@CAR"
     },
     "05tv0": {
       "team": "djdo03kcmo319aqw",
       "name": "Jackson Blake",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "WSH@CAR"
     },
     "04a9v": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Morgan Geekie",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "BOS@WPG"
     },
     "03w5m": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Gabriel Vilardi",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "BOS@WPG"
     },
     "04uql": {
       "team": "h13alq00mo319aqw",
       "name": "Cole Perfetti",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "BOS@WPG"
     },
     "03d12": {
       "team": "smc5vz9tmo319aqw",
       "name": "David Pastrnak",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 2,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "BOS@WPG"
     },
     "04zj5": {
       "team": "h13alq00mo319aqw",
       "name": "JJ Peterka",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "BOS@WPG"
     },
     "05ymj": {
       "team": "djdo03kcmo319aqw",
       "name": "Jimmy Snuggerud",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 1,
+      "game": "STL@DAL"
     },
     "06hcw": {
       "team": "lo1c2zefmo319aqw",
       "name": "Beckett Sennecke",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "ANA@VGK"
     },
     "03924": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Jack Eichel",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 0,
+      "a2": 2,
+      "pp": 1,
+      "en": 0,
+      "game": "ANA@VGK"
     },
     "03jvu": {
       "team": "mo75fhhjmo319aqw",
       "name": "Mitch Marner",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "ANA@VGK"
     }
   },
   "bench": {

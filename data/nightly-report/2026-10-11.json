@@ -14,7 +14,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0
+      "gp": 0,
+      "games": {}
     },
     "djdo03kcmo319aqw": {
       "eligible": 7,
@@ -25,7 +26,11 @@
       "a2": 2,
       "pp": 0,
       "en": 0,
-      "gp": 6
+      "gp": 6,
+      "games": {
+        "SEA@WSH": 1,
+        "CAR@PHI": 2
+      }
     },
     "mo75fhhjmo319aqw": {
       "eligible": 4,
@@ -36,7 +41,10 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {
+        "CAR@PHI": 2
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 3,
@@ -47,7 +55,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {}
     },
     "lo1c2zefmo319aqw": {
       "eligible": 0,
@@ -58,7 +67,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0
+      "gp": 0,
+      "games": {}
     },
     "h13alq00mo319aqw": {
       "eligible": 0,
@@ -69,24 +79,43 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {}
     }
   },
   "players": {
     "051tx": {
       "team": "djdo03kcmo319aqw",
       "name": "Aliaksei Protas",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "SEA@WSH"
     },
     "048vf": {
       "team": "djdo03kcmo319aqw",
       "name": "Andrei Svechnikov",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "CAR@PHI"
     },
     "03rmx": {
       "team": "mo75fhhjmo319aqw",
       "name": "Sebastian Aho",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "CAR@PHI"
     }
   },
   "bench": {

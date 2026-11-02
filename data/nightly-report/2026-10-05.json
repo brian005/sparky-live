@@ -14,7 +14,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 5
+      "gp": 5,
+      "games": {}
     },
     "djdo03kcmo319aqw": {
       "eligible": 2,
@@ -25,7 +26,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 2
+      "gp": 2,
+      "games": {}
     },
     "mo75fhhjmo319aqw": {
       "eligible": 5,
@@ -36,7 +38,11 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "OTT@BOS": 1,
+        "SJS@DAL": 2
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 3,
@@ -47,7 +53,11 @@
       "a2": 1,
       "pp": 0,
       "en": 1,
-      "gp": 6
+      "gp": 6,
+      "games": {
+        "PHI@TBL": 2,
+        "SJS@DAL": 1
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 1,
@@ -58,7 +68,10 @@
       "a2": 0,
       "pp": 0,
       "en": 1,
-      "gp": 4
+      "gp": 4,
+      "games": {
+        "PHI@TBL": 1
+      }
     },
     "h13alq00mo319aqw": {
       "eligible": 7,
@@ -69,44 +82,90 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 4
+      "gp": 4,
+      "games": {
+        "OTT@BOS": 3,
+        "WPG@PIT": 1
+      }
     }
   },
   "players": {
     "02b70": {
       "team": "smc5vz9tmo319aqw",
       "name": "Nikita Kucherov",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 1,
+      "a2": 1,
+      "pp": 0,
+      "en": 1,
+      "game": "PHI@TBL"
     },
     "042yb": {
       "team": "lo1c2zefmo319aqw",
       "name": "Brandon Hagel",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "game": "PHI@TBL"
     },
     "051z0": {
       "team": "h13alq00mo319aqw",
       "name": "Tim Stützle",
-      "pts": 3
+      "pts": 3,
+      "g": 2,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "OTT@BOS"
     },
     "04f2d": {
       "team": "mo75fhhjmo319aqw",
       "name": "Drake Batherson",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "OTT@BOS"
     },
     "04uql": {
       "team": "h13alq00mo319aqw",
       "name": "Cole Perfetti",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "WPG@PIT"
     },
     "04dwj": {
       "team": "mo75fhhjmo319aqw",
       "name": "Jason Robertson",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "SJS@DAL"
     },
     "03mn9": {
       "team": "smc5vz9tmo319aqw",
       "name": "Mikko Rantanen",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "SJS@DAL"
     }
   },
   "bench": {

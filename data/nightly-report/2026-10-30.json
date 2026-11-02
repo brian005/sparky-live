@@ -14,7 +14,11 @@
       "a2": 3,
       "pp": 2,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "WPG@FLA": 1,
+        "SEA@CGY": 4
+      }
     },
     "djdo03kcmo319aqw": {
       "eligible": 2,
@@ -25,7 +29,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0
+      "gp": 0,
+      "games": {}
     },
     "mo75fhhjmo319aqw": {
       "eligible": 6,
@@ -36,7 +41,10 @@
       "a2": 0,
       "pp": 2,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "NJD@VGK": 3
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 5,
@@ -47,7 +55,10 @@
       "a2": 0,
       "pp": 0,
       "en": 1,
-      "gp": 1
+      "gp": 1,
+      "games": {
+        "NJD@VGK": 2
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 5,
@@ -58,7 +69,11 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "NJD@VGK": 2,
+        "WPG@FLA": 1
+      }
     },
     "h13alq00mo319aqw": {
       "eligible": 2,
@@ -69,54 +84,112 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 4
+      "gp": 4,
+      "games": {
+        "NJD@VGK": 1,
+        "SEA@CGY": 1
+      }
     }
   },
   "players": {
     "01zvf": {
       "team": "mo75fhhjmo319aqw",
       "name": "Mark Stone",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "NJD@VGK"
     },
     "03jvu": {
       "team": "mo75fhhjmo319aqw",
       "name": "Mitch Marner",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 2,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "NJD@VGK"
     },
     "051um": {
       "team": "lo1c2zefmo319aqw",
       "name": "Arseny Gritsyuk",
-      "pts": 2
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NJD@VGK"
     },
     "04bdb": {
       "team": "smc5vz9tmo319aqw",
       "name": "Jack Hughes",
-      "pts": 2
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "game": "NJD@VGK"
     },
     "042ye": {
       "team": "h13alq00mo319aqw",
       "name": "Jesper Bratt",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NJD@VGK"
     },
     "02azb": {
       "team": "lo1c2zefmo319aqw",
       "name": "Mark Scheifele",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "WPG@FLA"
     },
     "005ho": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Lars Eller",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "WPG@FLA"
     },
     "05ran": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Matt Coronato",
-      "pts": 4
+      "pts": 4,
+      "g": 1,
+      "a1": 0,
+      "a2": 3,
+      "pp": 2,
+      "en": 0,
+      "game": "SEA@CGY"
     },
     "04mto": {
       "team": "h13alq00mo319aqw",
       "name": "Kaapo Kakko",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "SEA@CGY"
     }
   },
   "bench": {

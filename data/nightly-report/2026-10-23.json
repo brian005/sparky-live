@@ -14,7 +14,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0
+      "gp": 0,
+      "games": {}
     },
     "djdo03kcmo319aqw": {
       "eligible": 2,
@@ -25,7 +26,10 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 2
+      "gp": 2,
+      "games": {
+        "TBL@COL": 2
+      }
     },
     "mo75fhhjmo319aqw": {
       "eligible": 0,
@@ -36,7 +40,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {}
     },
     "smc5vz9tmo319aqw": {
       "eligible": 0,
@@ -47,7 +52,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {}
     },
     "lo1c2zefmo319aqw": {
       "eligible": 8,
@@ -58,7 +64,10 @@
       "a2": 4,
       "pp": 1,
       "en": 1,
-      "gp": 5
+      "gp": 5,
+      "games": {
+        "TBL@COL": 8
+      }
     },
     "h13alq00mo319aqw": {
       "eligible": 2,
@@ -69,29 +78,54 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0
+      "gp": 0,
+      "games": {}
     }
   },
   "players": {
     "049k7": {
       "team": "lo1c2zefmo319aqw",
       "name": "Martin Necas",
-      "pts": 3
+      "pts": 3,
+      "g": 1,
+      "a1": 1,
+      "a2": 1,
+      "pp": 0,
+      "en": 1,
+      "game": "TBL@COL"
     },
     "02f9l": {
       "team": "lo1c2zefmo319aqw",
       "name": "Nathan MacKinnon",
-      "pts": 4
+      "pts": 4,
+      "g": 1,
+      "a1": 1,
+      "a2": 2,
+      "pp": 1,
+      "en": 0,
+      "game": "TBL@COL"
     },
     "031p0": {
       "team": "djdo03kcmo319aqw",
       "name": "Jake Guentzel",
-      "pts": 2
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "TBL@COL"
     },
     "042yb": {
       "team": "lo1c2zefmo319aqw",
       "name": "Brandon Hagel",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "TBL@COL"
     }
   },
   "bench": {

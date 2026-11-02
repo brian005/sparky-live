@@ -14,7 +14,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {}
     },
     "djdo03kcmo319aqw": {
       "eligible": 1,
@@ -25,7 +26,10 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 2
+      "gp": 2,
+      "games": {
+        "FLA@OTT": 1
+      }
     },
     "mo75fhhjmo319aqw": {
       "eligible": 2,
@@ -36,7 +40,10 @@
       "a2": 1,
       "pp": 0,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {
+        "FLA@OTT": 1
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 1,
@@ -47,7 +54,10 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 2
+      "gp": 2,
+      "games": {
+        "PHI@BUF": 1
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 2,
@@ -58,7 +68,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0
+      "gp": 0,
+      "games": {}
     },
     "h13alq00mo319aqw": {
       "eligible": 4,
@@ -69,39 +80,79 @@
       "a2": 1,
       "pp": 3,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "PHI@BUF": 2,
+        "FLA@OTT": 2
+      }
     }
   },
   "players": {
     "05gvo": {
       "team": "smc5vz9tmo319aqw",
       "name": "Matvei Michkov",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "PHI@BUF"
     },
     "05g42": {
       "team": "h13alq00mo319aqw",
       "name": "Jack Quinn",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "PHI@BUF"
     },
     "05rjh": {
       "team": "h13alq00mo319aqw",
       "name": "Noah Ostlund",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "PHI@BUF"
     },
     "051z0": {
       "team": "h13alq00mo319aqw",
       "name": "Tim Stützle",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "FLA@OTT"
     },
     "051lz": {
       "team": "djdo03kcmo319aqw",
       "name": "Shane Pinto",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "FLA@OTT"
     },
     "04f2d": {
       "team": "mo75fhhjmo319aqw",
       "name": "Drake Batherson",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "FLA@OTT"
     }
   },
   "bench": {

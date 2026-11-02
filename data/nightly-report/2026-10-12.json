@@ -14,7 +14,10 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "VGK@MIN": 1
+      }
     },
     "djdo03kcmo319aqw": {
       "eligible": 3,
@@ -25,7 +28,11 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 2
+      "gp": 2,
+      "games": {
+        "FLA@BUF": 1,
+        "OTT@NJD": 1
+      }
     },
     "mo75fhhjmo319aqw": {
       "eligible": 2,
@@ -36,7 +43,10 @@
       "a2": 1,
       "pp": 0,
       "en": 0,
-      "gp": 4
+      "gp": 4,
+      "games": {
+        "VGK@MIN": 1
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 8,
@@ -47,7 +57,12 @@
       "a2": 2,
       "pp": 2,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "FLA@BUF": 2,
+        "OTT@NJD": 1,
+        "VGK@MIN": 2
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 1,
@@ -58,7 +73,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0
+      "gp": 0,
+      "games": {}
     },
     "h13alq00mo319aqw": {
       "eligible": 6,
@@ -69,64 +85,135 @@
       "a2": 1,
       "pp": 4,
       "en": 1,
-      "gp": 6
+      "gp": 6,
+      "games": {
+        "FLA@BUF": 3,
+        "OTT@NJD": 2,
+        "VGK@MIN": 1
+      }
     }
   },
   "players": {
     "04ad7": {
       "team": "djdo03kcmo319aqw",
       "name": "Rasmus Dahlin",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "FLA@BUF"
     },
     "05g42": {
       "team": "h13alq00mo319aqw",
       "name": "Jack Quinn",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 1,
+      "a2": 1,
+      "pp": 2,
+      "en": 0,
+      "game": "FLA@BUF"
     },
     "042t5": {
       "team": "smc5vz9tmo319aqw",
       "name": "Tage Thompson",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "FLA@BUF"
     },
     "05rjh": {
       "team": "h13alq00mo319aqw",
       "name": "Noah Ostlund",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "FLA@BUF"
     },
     "051lz": {
       "team": "djdo03kcmo319aqw",
       "name": "Shane Pinto",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "OTT@NJD"
     },
     "051z0": {
       "team": "h13alq00mo319aqw",
       "name": "Tim Stützle",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "OTT@NJD"
     },
     "04bdb": {
       "team": "smc5vz9tmo319aqw",
       "name": "Jack Hughes",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "OTT@NJD"
     },
     "04xec": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Matt Boldy",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "VGK@MIN"
     },
     "04lbz": {
       "team": "smc5vz9tmo319aqw",
       "name": "Quinn Hughes",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "VGK@MIN"
     },
     "03jvu": {
       "team": "mo75fhhjmo319aqw",
       "name": "Mitch Marner",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "VGK@MIN"
     },
     "03rh3": {
       "team": "h13alq00mo319aqw",
       "name": "Kirill Kaprizov",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "game": "VGK@MIN"
     }
   },
   "bench": {

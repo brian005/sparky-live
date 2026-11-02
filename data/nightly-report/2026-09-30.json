@@ -14,7 +14,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {}
     },
     "djdo03kcmo319aqw": {
       "eligible": 0,
@@ -25,7 +26,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0
+      "gp": 0,
+      "games": {}
     },
     "mo75fhhjmo319aqw": {
       "eligible": 3,
@@ -36,7 +38,10 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 5
+      "gp": 5,
+      "games": {
+        "PIT@PHI": 1
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 2,
@@ -47,7 +52,10 @@
       "a2": 1,
       "pp": 0,
       "en": 0,
-      "gp": 2
+      "gp": 2,
+      "games": {
+        "PIT@PHI": 1
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 5,
@@ -58,7 +66,10 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "LAK@COL": 3
+      }
     },
     "h13alq00mo319aqw": {
       "eligible": 2,
@@ -69,34 +80,67 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {
+        "PIT@PHI": 1
+      }
     }
   },
   "players": {
     "00454": {
       "team": "smc5vz9tmo319aqw",
       "name": "Sidney Crosby",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "PIT@PHI"
     },
     "0045k": {
       "team": "mo75fhhjmo319aqw",
       "name": "Evgeni Malkin",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "PIT@PHI"
     },
     "051xf": {
       "team": "h13alq00mo319aqw",
       "name": "Egor Chinakhov",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "PIT@PHI"
     },
     "02f9l": {
       "team": "lo1c2zefmo319aqw",
       "name": "Nathan MacKinnon",
-      "pts": 2
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "LAK@COL"
     },
     "049k7": {
       "team": "lo1c2zefmo319aqw",
       "name": "Martin Necas",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "LAK@COL"
     }
   },
   "bench": {

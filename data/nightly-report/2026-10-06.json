@@ -14,7 +14,13 @@
       "a2": 5,
       "pp": 4,
       "en": 1,
-      "gp": 7
+      "gp": 7,
+      "games": {
+        "CAR@MTL": 2,
+        "OTT@DET": 3,
+        "UTA@NJD": 3,
+        "VGK@SEA": 4
+      }
     },
     "djdo03kcmo319aqw": {
       "eligible": 10,
@@ -25,7 +31,12 @@
       "a2": 3,
       "pp": 2,
       "en": 2,
-      "gp": 9
+      "gp": 9,
+      "games": {
+        "CAR@MTL": 2,
+        "OTT@DET": 3,
+        "MIN@BUF": 1
+      }
     },
     "mo75fhhjmo319aqw": {
       "eligible": 20,
@@ -36,7 +47,13 @@
       "a2": 3,
       "pp": 4,
       "en": 1,
-      "gp": 11
+      "gp": 11,
+      "games": {
+        "NSH@TOR": 4,
+        "CAR@MTL": 5,
+        "OTT@DET": 2,
+        "VGK@SEA": 2
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 15,
@@ -47,7 +64,13 @@
       "a2": 2,
       "pp": 3,
       "en": 0,
-      "gp": 7
+      "gp": 7,
+      "games": {
+        "CAR@MTL": 3,
+        "UTA@NJD": 1,
+        "MIN@BUF": 3,
+        "STL@CHI": 1
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 9,
@@ -58,7 +81,13 @@
       "a2": 2,
       "pp": 5,
       "en": 1,
-      "gp": 6
+      "gp": 6,
+      "games": {
+        "NSH@TOR": 1,
+        "OTT@DET": 2,
+        "UTA@NJD": 2,
+        "STL@CHI": 2
+      }
     },
     "h13alq00mo319aqw": {
       "eligible": 13,
@@ -69,174 +98,378 @@
       "a2": 4,
       "pp": 4,
       "en": 0,
-      "gp": 10
+      "gp": 10,
+      "games": {
+        "NSH@TOR": 2,
+        "OTT@DET": 2,
+        "UTA@NJD": 5,
+        "MIN@BUF": 1
+      }
     }
   },
   "players": {
     "065d1": {
       "team": "h13alq00mo319aqw",
       "name": "Matthew Wood",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "NSH@TOR"
     },
     "04zp9": {
       "team": "h13alq00mo319aqw",
       "name": "Mavrik Bourque",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "NSH@TOR"
     },
     "01c12": {
       "team": "mo75fhhjmo319aqw",
       "name": "John Tavares",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NSH@TOR"
     },
     "02yjj": {
       "team": "mo75fhhjmo319aqw",
       "name": "William Nylander",
-      "pts": 3
+      "pts": 3,
+      "g": 1,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "NSH@TOR"
     },
     "04qy5": {
       "team": "lo1c2zefmo319aqw",
       "name": "Kirill Marchenko",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "NSH@TOR"
     },
     "05tv0": {
       "team": "djdo03kcmo319aqw",
       "name": "Jackson Blake",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "CAR@MTL"
     },
     "048xc": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Nick Suzuki",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "CAR@MTL"
     },
     "01f5z": {
       "team": "smc5vz9tmo319aqw",
       "name": "Chris Kreider",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 2,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "CAR@MTL"
     },
     "05wwg": {
       "team": "mo75fhhjmo319aqw",
       "name": "Lane Hutson",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "CAR@MTL"
     },
     "03rmx": {
       "team": "mo75fhhjmo319aqw",
       "name": "Sebastian Aho",
-      "pts": 3
+      "pts": 3,
+      "g": 1,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 1,
+      "game": "CAR@MTL"
     },
     "03as8": {
       "team": "smc5vz9tmo319aqw",
       "name": "Nikolaj Ehlers",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "CAR@MTL"
     },
     "05r1c": {
       "team": "mo75fhhjmo319aqw",
       "name": "Juraj Slafkovský",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "CAR@MTL"
     },
     "048vf": {
       "team": "djdo03kcmo319aqw",
       "name": "Andrei Svechnikov",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "game": "CAR@MTL"
     },
     "051z0": {
       "team": "h13alq00mo319aqw",
       "name": "Tim Stützle",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "OTT@DET"
     },
     "04f2d": {
       "team": "mo75fhhjmo319aqw",
       "name": "Drake Batherson",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "OTT@DET"
     },
     "03v70": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Alex DeBrincat",
-      "pts": 3
+      "pts": 3,
+      "g": 2,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 1,
+      "game": "OTT@DET"
     },
     "04ymt": {
       "team": "djdo03kcmo319aqw",
       "name": "Lucas Raymond",
-      "pts": 3
+      "pts": 3,
+      "g": 0,
+      "a1": 1,
+      "a2": 2,
+      "pp": 2,
+      "en": 1,
+      "game": "OTT@DET"
     },
     "05r1l": {
       "team": "lo1c2zefmo319aqw",
       "name": "William Eklund",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "OTT@DET"
     },
     "03mn8": {
       "team": "h13alq00mo319aqw",
       "name": "Clayton Keller",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "UTA@NJD"
     },
     "05ui2": {
       "team": "lo1c2zefmo319aqw",
       "name": "Logan Cooley",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "UTA@NJD"
     },
     "05gdo": {
       "team": "h13alq00mo319aqw",
       "name": "Luke Evangelista",
-      "pts": 2
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "UTA@NJD"
     },
     "04bdb": {
       "team": "smc5vz9tmo319aqw",
       "name": "Jack Hughes",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "UTA@NJD"
     },
     "042ye": {
       "team": "h13alq00mo319aqw",
       "name": "Jesper Bratt",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "UTA@NJD"
     },
     "02unz": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Nick Schmaltz",
-      "pts": 3
+      "pts": 3,
+      "g": 1,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "UTA@NJD"
     },
     "04o0h": {
       "team": "lo1c2zefmo319aqw",
       "name": "Dylan Guenther",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "UTA@NJD"
     },
     "04lbz": {
       "team": "smc5vz9tmo319aqw",
       "name": "Quinn Hughes",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "MIN@BUF"
     },
     "05rjh": {
       "team": "h13alq00mo319aqw",
       "name": "Noah Ostlund",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "MIN@BUF"
     },
     "04ad7": {
       "team": "djdo03kcmo319aqw",
       "name": "Rasmus Dahlin",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "MIN@BUF"
     },
     "042t5": {
       "team": "smc5vz9tmo319aqw",
       "name": "Tage Thompson",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "MIN@BUF"
     },
     "05m17": {
       "team": "lo1c2zefmo319aqw",
       "name": "Frank Nazar",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 1,
+      "game": "STL@CHI"
     },
     "06axb": {
       "team": "smc5vz9tmo319aqw",
       "name": "Nick Lardis",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "STL@CHI"
     },
     "01zvf": {
       "team": "mo75fhhjmo319aqw",
       "name": "Mark Stone",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "VGK@SEA"
     },
     "03924": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Jack Eichel",
-      "pts": 4
+      "pts": 4,
+      "g": 1,
+      "a1": 1,
+      "a2": 2,
+      "pp": 2,
+      "en": 0,
+      "game": "VGK@SEA"
     }
   },
   "bench": {

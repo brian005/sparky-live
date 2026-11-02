@@ -14,7 +14,10 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {
+        "MTL@WSH": 1
+      }
     },
     "djdo03kcmo319aqw": {
       "eligible": 4,
@@ -25,7 +28,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {}
     },
     "mo75fhhjmo319aqw": {
       "eligible": 3,
@@ -36,7 +40,10 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 2
+      "gp": 2,
+      "games": {
+        "MTL@WSH": 2
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 1,
@@ -47,7 +54,10 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {
+        "DAL@COL": 1
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 0,
@@ -58,7 +68,8 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {}
     },
     "h13alq00mo319aqw": {
       "eligible": 0,
@@ -69,24 +80,43 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {}
     }
   },
   "players": {
     "05wwg": {
       "team": "mo75fhhjmo319aqw",
       "name": "Lane Hutson",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "MTL@WSH"
     },
     "048xc": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Nick Suzuki",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "MTL@WSH"
     },
     "03mn9": {
       "team": "smc5vz9tmo319aqw",
       "name": "Mikko Rantanen",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "DAL@COL"
     }
   },
   "bench": {

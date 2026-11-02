@@ -14,7 +14,10 @@
       "a2": 1,
       "pp": 1,
       "en": 0,
-      "gp": 1
+      "gp": 1,
+      "games": {
+        "PIT@UTA": 2
+      }
     },
     "djdo03kcmo319aqw": {
       "eligible": 3,
@@ -25,7 +28,11 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 5
+      "gp": 5,
+      "games": {
+        "ANA@NYR": 2,
+        "SJS@TOR": 1
+      }
     },
     "mo75fhhjmo319aqw": {
       "eligible": 4,
@@ -36,7 +43,10 @@
       "a2": 1,
       "pp": 3,
       "en": 1,
-      "gp": 6
+      "gp": 6,
+      "games": {
+        "SJS@TOR": 4
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 4,
@@ -47,7 +57,11 @@
       "a2": 2,
       "pp": 2,
       "en": 0,
-      "gp": 2
+      "gp": 2,
+      "games": {
+        "ANA@NYR": 2,
+        "COL@PHI": 2
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 8,
@@ -58,7 +72,12 @@
       "a2": 1,
       "pp": 2,
       "en": 0,
-      "gp": 8
+      "gp": 8,
+      "games": {
+        "COL@PHI": 1,
+        "SJS@TOR": 2,
+        "PIT@UTA": 1
+      }
     },
     "h13alq00mo319aqw": {
       "eligible": 4,
@@ -69,79 +88,166 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 2
+      "gp": 2,
+      "games": {
+        "PIT@UTA": 3
+      }
     }
   },
   "players": {
     "04zo0": {
       "team": "djdo03kcmo319aqw",
       "name": "Pavel Dorofeyev",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "ANA@NYR"
     },
     "04amg": {
       "team": "smc5vz9tmo319aqw",
       "name": "Alexis Lafrenière",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 0,
+      "a2": 2,
+      "pp": 1,
+      "en": 0,
+      "game": "ANA@NYR"
     },
     "06axe": {
       "team": "djdo03kcmo319aqw",
       "name": "Gabe Perreault",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "ANA@NYR"
     },
     "05gvo": {
       "team": "smc5vz9tmo319aqw",
       "name": "Matvei Michkov",
-      "pts": 2
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "COL@PHI"
     },
     "049k7": {
       "team": "lo1c2zefmo319aqw",
       "name": "Martin Necas",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "COL@PHI"
     },
     "03wor": {
       "team": "lo1c2zefmo319aqw",
       "name": "Mason Marchment",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "SJS@TOR"
     },
     "03jxy": {
       "team": "mo75fhhjmo319aqw",
       "name": "Auston Matthews",
-      "pts": 3
+      "pts": 3,
+      "g": 1,
+      "a1": 2,
+      "a2": 0,
+      "pp": 2,
+      "en": 1,
+      "game": "SJS@TOR"
     },
     "04qy5": {
       "team": "lo1c2zefmo319aqw",
       "name": "Kirill Marchenko",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "SJS@TOR"
     },
     "062h5": {
       "team": "djdo03kcmo319aqw",
       "name": "Gavin McKenna",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "SJS@TOR"
     },
     "02yjj": {
       "team": "mo75fhhjmo319aqw",
       "name": "William Nylander",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "SJS@TOR"
     },
     "03mn8": {
       "team": "h13alq00mo319aqw",
       "name": "Clayton Keller",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "PIT@UTA"
     },
     "02unz": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Nick Schmaltz",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "PIT@UTA"
     },
     "05ui2": {
       "team": "lo1c2zefmo319aqw",
       "name": "Logan Cooley",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "PIT@UTA"
     },
     "051xf": {
       "team": "h13alq00mo319aqw",
       "name": "Egor Chinakhov",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "PIT@UTA"
     }
   },
   "bench": {

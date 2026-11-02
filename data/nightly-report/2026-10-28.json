@@ -14,7 +14,11 @@
       "a2": 2,
       "pp": 1,
       "en": 0,
-      "gp": 4
+      "gp": 4,
+      "games": {
+        "CGY@EDM": 1,
+        "TOR@SEA": 2
+      }
     },
     "djdo03kcmo319aqw": {
       "eligible": 5,
@@ -25,7 +29,10 @@
       "a2": 1,
       "pp": 2,
       "en": 0,
-      "gp": 2
+      "gp": 2,
+      "games": {
+        "TOR@SEA": 3
+      }
     },
     "mo75fhhjmo319aqw": {
       "eligible": 7,
@@ -36,7 +43,12 @@
       "a2": 1,
       "pp": 3,
       "en": 0,
-      "gp": 5
+      "gp": 5,
+      "games": {
+        "CGY@EDM": 2,
+        "NJD@COL": 1,
+        "TOR@SEA": 4
+      }
     },
     "smc5vz9tmo319aqw": {
       "eligible": 6,
@@ -47,7 +59,11 @@
       "a2": 0,
       "pp": 3,
       "en": 0,
-      "gp": 5
+      "gp": 5,
+      "games": {
+        "PHI@WSH": 4,
+        "CGY@EDM": 2
+      }
     },
     "lo1c2zefmo319aqw": {
       "eligible": 3,
@@ -58,7 +74,11 @@
       "a2": 1,
       "pp": 1,
       "en": 0,
-      "gp": 5
+      "gp": 5,
+      "games": {
+        "PHI@WSH": 1,
+        "NJD@COL": 1
+      }
     },
     "h13alq00mo319aqw": {
       "eligible": 0,
@@ -69,69 +89,142 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 3
+      "gp": 3,
+      "games": {}
     }
   },
   "players": {
     "03as9": {
       "team": "smc5vz9tmo319aqw",
       "name": "Dylan Strome",
-      "pts": 3
+      "pts": 3,
+      "g": 0,
+      "a1": 3,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "PHI@WSH"
     },
     "05gvo": {
       "team": "smc5vz9tmo319aqw",
       "name": "Matvei Michkov",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "PHI@WSH"
     },
     "04y8g": {
       "team": "lo1c2zefmo319aqw",
       "name": "Trevor Zegras",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "PHI@WSH"
     },
     "02un4": {
       "team": "smc5vz9tmo319aqw",
       "name": "Connor McDavid",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 2,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "CGY@EDM"
     },
     "04lc0": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Evan Bouchard",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "CGY@EDM"
     },
     "02422": {
       "team": "mo75fhhjmo319aqw",
       "name": "Ryan Nugent-Hopkins",
-      "pts": 2
+      "pts": 2,
+      "g": 0,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "CGY@EDM"
     },
     "02f9l": {
       "team": "lo1c2zefmo319aqw",
       "name": "Nathan MacKinnon",
-      "pts": 1
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NJD@COL"
     },
     "02ybk": {
       "team": "mo75fhhjmo319aqw",
       "name": "Artturi Lehkonen",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NJD@COL"
     },
     "062h5": {
       "team": "djdo03kcmo319aqw",
       "name": "Gavin McKenna",
-      "pts": 3
+      "pts": 3,
+      "g": 2,
+      "a1": 0,
+      "a2": 1,
+      "pp": 2,
+      "en": 0,
+      "game": "TOR@SEA"
     },
     "03jxy": {
       "team": "mo75fhhjmo319aqw",
       "name": "Auston Matthews",
-      "pts": 3
+      "pts": 3,
+      "g": 1,
+      "a1": 2,
+      "a2": 0,
+      "pp": 2,
+      "en": 0,
+      "game": "TOR@SEA"
     },
     "03rag": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Jack Roslovic",
-      "pts": 2
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "TOR@SEA"
     },
     "06bap": {
       "team": "mo75fhhjmo319aqw",
       "name": "Easton Cowan",
-      "pts": 1
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "TOR@SEA"
     }
   },
   "bench": {
