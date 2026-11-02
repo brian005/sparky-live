@@ -1,0 +1,88 @@
+{
+  "date": "2026-11-02",
+  "period": 3,
+  "games": 4,
+  "goals": 0,
+  "notFinal": [
+    "VGK@BOS (FUT)",
+    "DET@FLA (FUT)",
+    "COL@CHI (FUT)",
+    "CGY@SJS (FUT)"
+  ],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {}
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {}
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {}
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {}
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {}
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {}
+    }
+  },
+  "players": {},
+  "bench": {}
+}
