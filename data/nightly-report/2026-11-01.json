@@ -1,0 +1,217 @@
+{
+  "date": "2026-11-01",
+  "period": 3,
+  "games": 5,
+  "goals": 36,
+  "notFinal": [],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 15,
+      "scored": 13,
+      "g": 2,
+      "a": 11,
+      "a1": 10,
+      "a2": 1,
+      "pp": 5,
+      "en": 2,
+      "gp": 6
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 5,
+      "scored": 3,
+      "g": 1,
+      "a": 2,
+      "a1": 2,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "gp": 5
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 3,
+      "scored": 3,
+      "g": 1,
+      "a": 2,
+      "a1": 0,
+      "a2": 2,
+      "pp": 1,
+      "en": 0,
+      "gp": 3
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 9,
+      "scored": 5,
+      "g": 4,
+      "a": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 2,
+      "en": 0,
+      "gp": 8
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 7,
+      "scored": 2,
+      "g": 0,
+      "a": 2,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 1,
+      "gp": 5
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 4,
+      "scored": 3,
+      "g": 1,
+      "a": 2,
+      "a1": 0,
+      "a2": 2,
+      "pp": 2,
+      "en": 1,
+      "gp": 4
+    }
+  },
+  "players": {
+    "05gvq": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Seth Jarvis",
+      "pts": 2
+    },
+    "03rmx": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Sebastian Aho",
+      "pts": 2
+    },
+    "05rf2": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Logan Stankoven",
+      "pts": 3
+    },
+    "048vf": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Andrei Svechnikov",
+      "pts": 1
+    },
+    "05tv0": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Jackson Blake",
+      "pts": 1
+    },
+    "04lbz": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Quinn Hughes",
+      "pts": 1
+    },
+    "06imq": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Maxim Shabanov",
+      "pts": 1
+    },
+    "03rae": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Joel Eriksson Ek",
+      "pts": 2
+    },
+    "03rh3": {
+      "team": "h13alq00mo319aqw",
+      "name": "Kirill Kaprizov",
+      "pts": 1
+    },
+    "04xec": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Matt Boldy",
+      "pts": 1
+    },
+    "05gvo": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Matvei Michkov",
+      "pts": 1
+    },
+    "02unz": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Nick Schmaltz",
+      "pts": 2
+    },
+    "03mn8": {
+      "team": "h13alq00mo319aqw",
+      "name": "Clayton Keller",
+      "pts": 2
+    },
+    "02un4": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Connor McDavid",
+      "pts": 2
+    },
+    "04lc0": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Evan Bouchard",
+      "pts": 3
+    },
+    "02yjl": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Leon Draisaitl",
+      "pts": 2
+    },
+    "04zo0": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Pavel Dorofeyev",
+      "pts": 1
+    },
+    "04f2d": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Drake Batherson",
+      "pts": 1
+    }
+  },
+  "bench": {
+    "06fzv": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Cole Hutson",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05rjg": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Danila Yurov",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "06hj9": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Porter Martone",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "05ui2": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Logan Cooley",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "038vb": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Travis Konecny",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "05rjd": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Cutter Gauthier",
+      "status": "RESERVE",
+      "pts": 3
+    },
+    "05y3a": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Leo Carlsson",
+      "status": "RESERVE",
+      "pts": 3
+    },
+    "06imm": {
+      "team": "h13alq00mo319aqw",
+      "name": "Roger McQueen",
+      "status": "MINORS",
+      "pts": 1
+    }
+  }
+}
