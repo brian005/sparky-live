@@ -58,6 +58,24 @@ function codeFromName(name) {
   return CODES[o] || null;
 }
 
+// the NHL answers 429 when it's asked too fast: wait and ask again, longer each time (its Retry-After when it
+// gives one), and the same for a passing 5xx or network error. A 404 is "nothing that day" when ifMissing is given.
+async function nhlJson(url, what, ifMissing) {
+  const waits = [5, 15, 30, 60, 90, 120];
+  for (let i = 0; ; i++) {
+    let r = null, err = null;
+    try { r = await fetch(url); } catch (e) { err = e.message; }
+    if (r && r.ok) return r.json();
+    if (r && r.status === 404 && ifMissing !== undefined) return ifMissing;
+    const retry = !r || r.status === 429 || r.status >= 500;
+    if (!retry || i >= waits.length) throw new Error(`${what}: ${r ? `HTTP ${r.status}` : err}`);
+    const after = r && Number(r.headers.get("retry-after"));
+    const s = after > 0 ? Math.min(after, 180) : waits[i];
+    log(`  ${what}: ${r ? `HTTP ${r.status}` : err}, trying again in ${s}s`);
+    await sleep(s * 1000);
+  }
+}
+
 // one date's goals: [{ game, scorer, a1, a2, pp, en }] for regular-season games played that date
 async function scores(ymd) {
   let j = null;
@@ -66,17 +84,7 @@ async function scores(ymd) {
     if (!fs.existsSync(f)) throw new Error(`no fixture for ${ymd}`);
     j = JSON.parse(fs.readFileSync(f, "utf8"));
   } else {
-    for (let attempt = 1; attempt <= 4 && !j; attempt++) {
-      try {
-        const r = await fetch(`${NHL}/score/${ymd}`);
-        if (r.ok) j = await r.json();
-        else if (r.status === 404) j = { games: [] };
-        else throw new Error(`HTTP ${r.status}`);
-      } catch (e) {
-        if (attempt === 4) throw new Error(`NHL score ${ymd}: ${e.message}`);
-        await sleep(1500 * attempt);
-      }
-    }
+    j = await nhlJson(`${NHL}/score/${ymd}`, `NHL score ${ymd}`, { games: [] });
   }
   const games = (j.games || []).filter((g) => g.gameDate === ymd && Number(g.gameType) === 2);
   const goals = [];
@@ -127,15 +135,8 @@ async function seasonSkaters(season) {
     if (!fs.existsSync(f)) return null;
     j = JSON.parse(fs.readFileSync(f, "utf8"));
   } else {
-    for (let attempt = 1; attempt <= 4 && !j; attempt++) {
-      try {
-        const r = await fetch(`${NHL_STATS}/skater/summary?limit=-1&cayenneExp=${encodeURIComponent(`seasonId=${id} and gameTypeId=2`)}`);
-        if (r.ok) j = await r.json(); else throw new Error(`HTTP ${r.status}`);
-      } catch (e) {
-        if (attempt === 4) { log(`  ${season}: NHL skater list unavailable (${e.message}); ids not checked`); return null; }
-        await sleep(1500 * attempt);
-      }
-    }
+    try { j = await nhlJson(`${NHL_STATS}/skater/summary?limit=-1&cayenneExp=${encodeURIComponent(`seasonId=${id} and gameTypeId=2`)}`, `NHL skaters ${season}`); }
+    catch (e) { log(`  ${season}: NHL skater list unavailable (${e.message}); ids not checked`); return null; }
   }
   const byId = {}, byName = {};
   for (const p of j.data || []) {
@@ -187,7 +188,7 @@ async function buildSeason(season, st, players) {
   for (const d of days) {
     const period = periodOf(d.date);
     const sc = await scores(d.date);
-    if (!FIXTURES) await sleep(120);
+    if (!FIXTURES) await sleep(400);                          // ~2 a second: the NHL rate-limits faster backfills
     const map = own[String(period)] || {};
     const teams = {};
     for (const code of Object.keys(d.teams)) teams[code] = Object.assign(blank(), { gp: d.teams[code].gp });

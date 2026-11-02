@@ -17,7 +17,7 @@ name: Records (Screech, set or tied)
 #
 # Night records (src/night-records.js) run at four levels each: pool, pool in a Period N night, the franchise's
 # own, its own in a Period N night. The first run builds data/player-nights/ (every night since 2013-14 from the
-# NHL's scores, about 15 minutes) for the goals / primary / PP / EN / one-game records; until then those are off.
+# NHL's scores, about 25 minutes) for the goals / primary / PP / EN / one-game records; until then those are off.
 #
 # data/records/state.json remembers what's been checked, so nothing is announced twice.
 
@@ -99,7 +99,7 @@ jobs:
         continue-on-error: true
         run: node src/prospect-nights-backfill.js
 
-      # one time: every night since 2013-14, per franchise and Active player, from the NHL's scores (about 15 minutes;
+      # one time: every night since 2013-14, per franchise and Active player, from the NHL's scores (about 25 minutes;
       # skipped once the last season's file exists; a season that fails is simply built on the next run)
       - name: Player nights backfill
         if: hashFiles('data/player-nights/2025-26.json') == ''

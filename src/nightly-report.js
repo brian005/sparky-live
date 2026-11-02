@@ -131,10 +131,25 @@ async function ownership(league, period, ids) {
 }
 
 // ---- NHL ------------------------------------------------------------------------------------
+// the NHL answers 429 when it's asked too fast (a --backfill makes a few hundred calls): wait and ask again,
+// longer each time (its Retry-After when it gives one), and the same for a passing 5xx or network error
+async function nhlJson(url, what) {
+  const waits = [5, 15, 30, 60, 90];
+  for (let i = 0; ; i++) {
+    let r = null, err = null;
+    try { r = await fetch(url); } catch (e) { err = e.message; }
+    if (r && r.ok) return r.json();
+    const retry = !r || r.status === 429 || r.status >= 500;
+    if (!retry || i >= waits.length) throw new Error(`${what}: ${r ? `HTTP ${r.status}` : err}`);
+    const after = r && Number(r.headers.get("retry-after"));
+    const s = after > 0 ? Math.min(after, 120) : waits[i];
+    log(`  ${what}: ${r ? `HTTP ${r.status}` : err}, trying again in ${s}s`);
+    await sleep(s * 1000);
+  }
+}
+
 async function nightGoals(ymd) {
-  const r = await fetch(`${NHL}/score/${ymd}`);
-  if (!r.ok) throw new Error(`NHL score ${ymd}: HTTP ${r.status}`);
-  const j = await r.json();
+  const j = await nhlJson(`${NHL}/score/${ymd}`, `NHL score ${ymd}`);
   const games = (j.games || []).filter((g) => g.gameDate === ymd);
   const notFinal = games.filter((g) => !["OFF", "FINAL"].includes(g.gameState));
   const goals = [];
@@ -159,13 +174,11 @@ async function nightGoals(ymd) {
 async function nightSkaters(ids) {
   const played = new Set();
   for (const id of ids) {
-    const r = await fetch(`${NHL}/gamecenter/${id}/boxscore`);
-    if (!r.ok) throw new Error(`NHL boxscore ${id}: HTTP ${r.status}`);
-    const b = (await r.json()).playerByGameStats || {};
+    const b = (await nhlJson(`${NHL}/gamecenter/${id}/boxscore`, `NHL boxscore ${id}`)).playerByGameStats || {};
     for (const side of [b.awayTeam || {}, b.homeTeam || {}]) {
       for (const p of [...(side.forwards || []), ...(side.defense || [])]) played.add(p.playerId);
     }
-    await sleep(100);
+    await sleep(BACKFILL ? 300 : 100);
   }
   return played;
 }

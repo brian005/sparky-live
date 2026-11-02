@@ -119,6 +119,8 @@ Dispatch (from Brian's PowerShell):
 - **Delivering files:** right above the file cards, a destination map - one
   repo-relative path per line, each in inline code (backticks), never a fenced block,
   never inside a paragraph, nothing else on the line.
+- Claude's file bridge can't write into `.github/workflows`: a workflow change lands as `incoming/<name>.yml`
+  and Brian's PowerShell moves it into `.github/workflows/` before committing.
 - **Always `git pull --rebase` before pushing** - workflows commit reports nightly,
   so local copies are always behind.
 - `src/config.js` still carries the 2025-26 Fantrax `PERIODS` table; check whether
@@ -154,6 +156,8 @@ Dispatch (from Brian's PowerShell):
   2020-21, 2022-23, 2025-26): every franchise-night matched the daily files once Pettersson's id was fixed
   (PWN's 26 on Nov 19, 2022 reproduced exactly). Replay of 2026-27 so far (before player-nights): about one line
   every other night.
+  Same day: the nightly `--backfill` died on an NHL 429 (rate limit) after ~300 calls. Both NHL fetchers now wait
+  and retry on 429 / 5xx (Retry-After, else 5s..90s); the player-nights backfill paces itself at ~2 calls a second.
 
 - **2026-11-01** - Moved every active bot (Belding, Screech, Lisa Turtle nightly + Sunday,
   Zack Morris) from Slack to Sparky chat via a new `src/chat.js` and the `CHAT_WEBHOOK_URL`
