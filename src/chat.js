@@ -7,6 +7,9 @@
 // Sparky chat: an incoming webhook (Slack-style JSON: text, username, icon_url / icon_emoji, channel).
 //   The webhook posts to #sparkybots. CHAT_CHANNEL, when set, asks for another channel or a DM
 //   ("town-square", "@brian"); the server only honours it if the webhook isn't locked to its channel.
+//   Cards: post(text, { attachments }) sends Slack-style message attachments (color, author_name/icon, title,
+//   text, fields, thumb_url, pretext, fallback); Sparky chat draws them as cards, and so does Slack. Their text
+//   is converted the same way as the message's.
 //   The bots write Slack-style text (*bold*, <url|label>), so it's converted to Markdown first:
 //   *bold* -> **bold** (single stars are italic there), <url|label> -> [label](url). Code blocks and
 //   inline code are left alone.
@@ -38,10 +41,19 @@ function toMarkdown(text) {
 
 const iconFields = (icon) => (!icon ? {} : String(icon).startsWith("http") ? { icon_url: icon } : { icon_emoji: icon });
 
-// post(text, { username, icon }) -> true when sent, false when nowhere is configured; throws on a failed send
-async function post(text, { username, icon } = {}) {
+// a card's text, converted for Sparky chat
+const mdCard = (a) => ({
+  ...a,
+  ...(a.pretext ? { pretext: toMarkdown(a.pretext) } : {}),
+  ...(a.text ? { text: toMarkdown(a.text) } : {}),
+  ...(a.fields ? { fields: a.fields.map((f) => ({ ...f, value: toMarkdown(f.value) })) } : {}),
+});
+
+// post(text, { username, icon, attachments }) -> true when sent, false when nowhere is configured; throws on a failed send
+async function post(text, { username, icon, attachments } = {}) {
+  const cards = Array.isArray(attachments) && attachments.length ? attachments : null;
   if (WEBHOOK) {
-    const body = { text: toMarkdown(text), ...(username ? { username } : {}), ...iconFields(icon), ...(CHAT_CHANNEL ? { channel: CHAT_CHANNEL } : {}) };
+    const body = { text: toMarkdown(text), ...(cards ? { attachments: cards.map(mdCard) } : {}), ...(username ? { username } : {}), ...iconFields(icon), ...(CHAT_CHANNEL ? { channel: CHAT_CHANNEL } : {}) };
     const r = await fetch(WEBHOOK, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (!r.ok) throw new Error(`Sparky chat: HTTP ${r.status} ${(await r.text()).slice(0, 200)}`);
     return true;
@@ -50,7 +62,7 @@ async function post(text, { username, icon } = {}) {
     const r = await fetch("https://slack.com/api/chat.postMessage", {
       method: "POST",
       headers: { "Content-Type": "application/json; charset=utf-8", Authorization: `Bearer ${SLACK_TOKEN}` },
-      body: JSON.stringify({ channel: SLACK_CHANNEL, text, unfurl_links: false, ...(username ? { username } : {}), ...iconFields(icon) }),
+      body: JSON.stringify({ channel: SLACK_CHANNEL, text, unfurl_links: false, ...(cards ? { attachments: cards } : {}), ...(username ? { username } : {}), ...iconFields(icon) }),
     });
     const o = await r.json();
     if (!o.ok) throw new Error(`Slack: ${o.error}`);

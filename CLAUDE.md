@@ -144,12 +144,21 @@ Dispatch (from Brian's PowerShell):
   The goals / primary / PP / EN / one-game stats stay off until every season's player-nights file exists.
 - This season: `data/nightly-report/*.json` now keep each Active scorer's g/a1/a2/pp/en/game and each team's
   points per NHL game (`teams[id].games`).
+- Screech posts as cards (message attachments; `src/chat.js` sends `attachments`, Sparky chat is Mattermost 11.7
+  and draws them): a header line, then one card a record. Colour by level (gold pool, orange pool Period N, green
+  own, blue own Period N, red DOMINATION, purple the whole pool), the franchise and its logo, a one-line title
+  ("⭐ FRANCHISE RECORD", "🤝 TIED POOL RECORD"), what it is ("Most goals in a Period 2 night"), the number big,
+  and the old mark / who it's shared with. Period, milestone, player and prospect lines go in plain cards. Every
+  card carries its sentence as `fallback`. Designed at phone width (no thumbnails: they drop below the text there).
 - `--replay-from YYYY-MM-DD` (workflow input `replay`) prints what the night records would have said; with a
   channel it test-posts. `data/records/lens.json` is the record book + the last 14 nights' records for Lens;
   posted to Lens's Drive web app when `RECORDS_DRIVE_URL` / `RECORDS_TOKEN` are set (not yet).
 
 ## Change log
 
+- **2026-11-02 (later)** - Screech's posts are cards now (see "Night records"). Previewed in the real Sparky chat
+  web app at phone width before shipping. Backfill built: 2,222 nights, 2 franchise-nights off by a point, no id
+  fixes needed; replay since Sep 29: 29 lines over 34 nights (16 ties, 8 records, 5 DOMINATIONs).
 - **2026-11-02** - Night records rebuilt (see "Night records" above): four levels per stat, eleven stats,
   records and ties, DOMINATION. Prospect night records moved into the new module (now four levels with ties for
   points). Player-nights backfill + active-stints export added; verified on five real nights (2013-14, 2017-18,

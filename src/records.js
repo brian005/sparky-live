@@ -637,12 +637,27 @@ function printBook(periods, nights) {
 }
 
 // ---- Slack -------------------------------------------------------------------------------------------
-async function slack(text) {
+async function slack(text, attachments) {
   // Sparky chat when CHAT_WEBHOOK_URL is set, else Slack (src/chat.js)
   if (NO_SLACK || !chat.configured()) { log("(not posting)"); return false; }
-  await chat.post(text, { username: SLACK_USERNAME, icon: SLACK_ICON });
+  await chat.post(text, { username: SLACK_USERNAME, icon: SLACK_ICON, attachments });
   log(`Posted to ${chat.where()}.`);
   return true;
+}
+
+// ---- the post as cards --------------------------------------------------------------------------------------
+// Screech posts one message: a header line, then a card a record (message attachments, which Sparky chat and
+// Slack both draw as cards with a coloured edge). Night records come as cards from src/night-records.js; every
+// other line (period records, milestones, players, prospects) gets a plain card. A section's first card carries
+// its heading. The plain text of every line rides along as each card's fallback (notifications, old clients).
+const PLAIN = "#5B6B8C";
+const lineCard = (l) => ({ fallback: l, color: PLAIN, text: l });
+function cardPost(sections, title) {
+  const used = sections.filter((x) => x.cards.length);
+  const only = used.length === 1 && used[0].night ? used[0] : null;
+  const attachments = [];
+  for (const sec of used) sec.cards.forEach((c, i) => attachments.push(i === 0 && sec.head && sec !== only ? { ...c, pretext: sec.head } : c));
+  return { text: only ? `🏆 *${title} · ${only.night.replace(/^Night of /, "")}*` : `🏆 *${title}*`, attachments };
 }
 
 // ---- Sparky Lens ---------------------------------------------------------------------------------------
@@ -671,6 +686,9 @@ async function toLens(lens) {
   const season = seasonOf(firstRcp.start_date);
   const teamCode = Object.fromEntries((league.teams || []).map((t) => [t.id, CODES[t.franchise] || codeFromName(t.name)]));
   for (const t of league.teams || []) { const c = teamCode[t.id]; if (c && t.name && !process.env.FRANCHISE_NAMES) FULL[c] = String(t.name).trim(); }
+  const LOGO = {};                                                     // franchise logos for the cards (absolute URLs)
+  for (const t of league.teams || []) { const c = teamCode[t.id], u = String(t.logo_url || ""); if (c && u) LOGO[c] = /^https?:\/\//.test(u) ? u : `${F2_BASE}${u.startsWith("/") ? "" : "/"}${u}`; }
+  const logo = (c) => LOGO[c] || "";
 
   // never let an old copy of this season in the history files double up with F2's
   const histPeriods = hist.periods.filter((p) => p.season !== season);
@@ -700,21 +718,23 @@ async function toLens(lens) {
     (nhist.detailComplete ? "player detail for every season" : `goals / primary / PP / EN / one-game records off until data/player-nights has ${nhist.missing.join(", ")} (src/player-nights-backfill.js)`));
 
   if (REPLAY_FROM) {
-    const r = NR.run({ hist: nhist, cur: ncur, want: (d) => d >= REPLAY_FROM, fname, prettyDate });
-    const paras = [];
+    const r = NR.run({ hist: nhist, cur: ncur, want: (d) => d >= REPLAY_FROM, fname, prettyDate, logo });
+    const paras = [], sections = [];
     for (const d of r.checked) {
       log(`${d}: ${r.lines[d].length} line${r.lines[d].length === 1 ? "" : "s"}`);
       if (r.lines[d].length) paras.push(`*Night of ${prettyDate(d)}*`, ...r.lines[d]);
+      sections.push({ head: `*Night of ${prettyDate(d)}*`, night: prettyDate(d), cards: r.cards[d] || [] });
     }
     const text = paras.length ? `_Replay: what the night records would have said since ${prettyDate(REPLAY_FROM)}._\n\n${paras.join("\n\n")}` : "No night records.";
     log("\n" + text + "\n");
-    if (TEST) await slack(text);
+    if (ARGS.includes("--cards-json")) log(JSON.stringify(cardPost(sections, "Records (replay)")));
+    if (TEST && paras.length) { const p = cardPost(sections, `Records replay since ${prettyDate(REPLAY_FROM)}`); await slack(p.text, p.attachments); }
     return;
   }
 
   // the record book and the last two weeks' night records, for Sparky Lens
   const recent = new Set([...new Set(ncur.map((e) => e.date))].sort().slice(-14));
-  const lensRun = NR.run({ hist: nhist, cur: ncur, want: (d) => recent.has(d), fname, prettyDate });
+  const lensRun = NR.run({ hist: nhist, cur: ncur, want: (d) => recent.has(d), fname, prettyDate, logo });
   const lens = { built: new Date().toISOString(), season, minGp: NR.MIN_GP, poolMinGp: NR.POOL_MIN_GP, names: { ...FULL }, book: NR.book(lensRun.marks), nights: lensRun.records };
   if (!TEST) {
     fs.mkdirSync(OUT_DIR, { recursive: true });
@@ -741,7 +761,7 @@ async function toLens(lens) {
 
   const newDates = [...new Set(nights.filter((x) => !doneNights.has(x.date)).map((x) => x.date))].sort();
   const newNightSet = new Set(newDates);
-  const nr = NR.run({ hist: nhist, cur: ncur, want: (d) => newNightSet.has(d), fname, prettyDate });
+  const nr = NR.run({ hist: nhist, cur: ncur, want: (d) => newNightSet.has(d), fname, prettyDate, logo });
   for (const d of newDates) {
     if ((nr.lines[d] || []).length) lines.nights[d] = nr.lines[d];
     doneNights.add(d);
@@ -809,11 +829,17 @@ async function toLens(lens) {
   log(`Checked: ${newPeriodNums.map((n) => `Period ${n}`).concat(newDates).join(", ")}`);
   if (playerOut.newDates.length) log(`Player checks: ${playerOut.newDates.join(", ")}`);
 
+  const sections = [];
+  for (const n of periodNums) sections.push({ head: `*Period ${n} is final.*`, cards: [...(lines.periods[n] || []), ...(prosOut.periodLines[n] || [])].map(lineCard) });
+  for (const d of Object.keys(lines.nights).sort()) sections.push({ head: `*Night of ${prettyDate(d)}*`, night: prettyDate(d), cards: nr.cards[d] || lines.nights[d].map(lineCard) });
+  sections.push({ head: null, cards: [...Object.keys(milestones).sort().flatMap((d) => milestones[d]), ...playerOut.lines, ...Object.keys(prosOut.nightLines).sort().flatMap((d) => prosOut.nightLines[d])].map(lineCard) });
+
   let posted = false;
   if (paras.length) {
     const text = paras.join("\n\n");
     log("\n" + text + "\n");
-    if (!SEED) posted = await slack(text);
+    const p = cardPost(sections, "Records");
+    if (!SEED) posted = await slack(p.text, p.attachments);
   } else log("No records.");
 
   // state moves on only when the post went out (or there was nothing to post, or it's a seed)
