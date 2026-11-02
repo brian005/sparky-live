@@ -2,8 +2,10 @@
 // NIGHTLY REPORT: who scored, who left points on the bench
 // ============================================================
 // For one night's NHL games (default: yesterday, Pacific), per franchise:
-// Each night's file also lists every Active player who scored (players: { fantraxId: { team, name, pts } }),
-// which records.js uses for player records and milestones, and every non-Active rostered player who scored
+// Each night's file also lists every Active player who scored (players: { fantraxId: { team, name, pts, g, a1,
+// a2, pp, en, game } }), which records.js uses for player records, milestones and the night records, and each
+// franchise's Active points per NHL game (teams[id].games: { "AWY@HOM": pts }, for "most points from one
+// game"); and every non-Active rostered player who scored
 // (bench), which the projection report (Lisa's Sunday F2 stats department post) uses for the optimal lineup.
 //
 //   TR         points by EVERY rostered player (Active + Reserve + Minors; prospects sit in Minors)
@@ -170,10 +172,10 @@ async function nightSkaters(ids) {
 
 // ---- tally ------------------------------------------------------------------------------------
 // gp: games played by Active skaters (the GP in F2's standings)
-const blank = () => ({ eligible: 0, scored: 0, g: 0, a: 0, a1: 0, a2: 0, pp: 0, en: 0, gp: 0 });
+const blank = () => ({ eligible: 0, scored: 0, g: 0, a: 0, a1: 0, a2: 0, pp: 0, en: 0, gp: 0, games: {} });
 
-// players: { fantraxId: { team, name, pts } } for every Active player who scored tonight (used by records.js
-// for franchise scoring leaders and drafted-player milestones); bench: the same for rostered players who
+// players: { fantraxId: { team, name, pts, g, a1, a2, pp, en, game } } for every Active player who scored tonight
+// (used by records.js for franchise scoring leaders, drafted-player milestones and night records); bench: the same for rostered players who
 // scored outside the Active lineup (with their status), for the projection report's optimal lineup
 function tally(goals, own, teams, players = {}, bench = {}) {
   const out = Object.fromEntries(teams.map((t) => [t.id, blank()]));
@@ -188,12 +190,13 @@ function tally(goals, own, teams, players = {}, bench = {}) {
       return;
     }
     t.scored += 1;
-    const pl = (players[o.fantraxId] = players[o.fantraxId] || { team: o.team, name: o.name, pts: 0 });
+    const pl = (players[o.fantraxId] = players[o.fantraxId] || { team: o.team, name: o.name, pts: 0, g: 0, a1: 0, a2: 0, pp: 0, en: 0, game: goal.game });
     pl.pts += 1;
-    if (kind === "G") t.g += 1;
-    else { t.a += 1; if (kind === "A1") t.a1 += 1; else t.a2 += 1; }
-    if (goal.pp) t.pp += 1;
-    if (goal.en) t.en += 1;
+    if (kind === "G") { t.g += 1; pl.g += 1; }
+    else { t.a += 1; if (kind === "A1") { t.a1 += 1; pl.a1 += 1; } else { t.a2 += 1; pl.a2 += 1; } }
+    if (goal.pp) { t.pp += 1; pl.pp += 1; }
+    if (goal.en) { t.en += 1; pl.en += 1; }
+    t.games[goal.game] = (t.games[goal.game] || 0) + 1;
   };
   for (const goal of goals) {
     credit(goal.scorer, "G", goal);
@@ -203,7 +206,7 @@ function tally(goals, own, teams, players = {}, bench = {}) {
   return out;
 }
 
-function add(into, from) { for (const k of Object.keys(into)) into[k] += from[k] || 0; return into; }
+function add(into, from) { for (const k of Object.keys(into)) if (typeof into[k] === "number") into[k] += from[k] || 0; return into; }
 
 // ---- one night ---------------------------------------------------------------------------------
 async function runNight(league, ymd, ids) {

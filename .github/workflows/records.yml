@@ -15,6 +15,10 @@ name: Records (Screech, set or tied)
 # Mornings, right after the Nightly report: catches up anything the night run couldn't finish (a game
 # that went long, or a night that didn't line up with F2 yet).
 #
+# Night records (src/night-records.js) run at four levels each: pool, pool in a Period N night, the franchise's
+# own, its own in a Period N night. The first run builds data/player-nights/ (every night since 2013-14 from the
+# NHL's scores, about 15 minutes) for the goals / primary / PP / EN / one-game records; until then those are off.
+#
 # data/records/state.json remembers what's been checked, so nothing is announced twice.
 
 on:
@@ -38,6 +42,10 @@ on:
         description: "Just print the record book in the log"
         type: boolean
         default: false
+      replay:
+        description: "Replay the night records from this date (YYYY-MM-DD): printed in the log, posted only with a channel; state untouched"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -49,7 +57,7 @@ concurrency:
 jobs:
   records:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -70,6 +78,7 @@ jobs:
           [ "${{ github.event.inputs.slack }}" = "false" ] && A="$A --no-slack"
           [ "${{ github.event.inputs.book }}" = "true" ] && A="$A --book"
           [ -n "${{ github.event.inputs.channel }}" ] && A="$A --test"
+          [ -n "${{ github.event.inputs.replay }}" ] && A="$A --replay-from ${{ github.event.inputs.replay }}"
           echo "args=$A" >> "$GITHUB_OUTPUT"
 
       # tonight's games, tallied the same way the morning nightly report does (it overwrites this file
@@ -90,6 +99,13 @@ jobs:
         continue-on-error: true
         run: node src/prospect-nights-backfill.js
 
+      # one time: every night since 2013-14, per franchise and Active player, from the NHL's scores (about 15 minutes;
+      # skipped once the last season's file exists; a season that fails is simply built on the next run)
+      - name: Player nights backfill
+        if: hashFiles('data/player-nights/2025-26.json') == ''
+        continue-on-error: true
+        run: node src/player-nights-backfill.js
+
       # no npm install needed: the script uses only Node built-ins
       - name: Records
         env:
@@ -103,6 +119,9 @@ jobs:
           SLACK_CHANNEL: ${{ github.event.inputs.channel || vars.RECORDS_SLACK_CHANNEL || vars.F1_MIRROR_SLACK_CHANNEL }}
           SLACK_USERNAME: ${{ vars.RECORDS_SLACK_USERNAME || 'Screech' }}
           SLACK_ICON: ${{ vars.RECORDS_SLACK_ICON || ':trophy:' }}
+          # Sparky Lens's copy of the night record book (its Drive web app); skipped while unset
+          RECORDS_DRIVE_URL: ${{ secrets.RECORDS_DRIVE_URL }}
+          RECORDS_TOKEN: ${{ secrets.RECORDS_TOKEN }}
         run: node src/records.js ${{ steps.args.outputs.args }}
 
       - name: Commit state
@@ -111,7 +130,7 @@ jobs:
         run: |
           git config user.name "sparkybot"
           git config user.email "sparkybot@users.noreply.github.com"
-          git add data/records/ data/nightly-report/ data/nhl-ids.json data/prospect-nights.json 2>/dev/null || true
+          git add data/records/ data/nightly-report/ data/nhl-ids.json data/prospect-nights.json data/player-nights/ 2>/dev/null || true
           if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
           git commit -m "Records $(date -u +%Y-%m-%d)"
           for i in 1 2 3; do git pull --rebase --quiet && git push --quiet && break; sleep 5; done

@@ -9,8 +9,13 @@
 //   PERIODS (when a period is final), each pool-wide AND per franchise:
 //     most points / fewest points / best ppg / worst ppg   in ANY period
 //     most points / fewest points / best ppg / worst ppg   in PERIOD N (e.g. best Period 1 ever)
-//   NIGHTS (every night, once every game is final): most points in a night, pool-wide and per franchise.
-//     No night lows: zero-point nights happen all the time.
+//   NIGHTS (every night, once every game is final; src/night-records.js), at four levels each: the pool
+//     record, the pool record for a Period N night, the franchise's own record, its own for a Period N night:
+//     most points, best ppg (5+ playing), most points from one NHL game, most goals, most primary points,
+//     most power-play points, most empty-net points, most prospect points, most different prospects scoring,
+//     and DOMINATION (outscoring everyone else combined: every one noted, the margin has records). Plus the
+//     whole pool's night: most points, best ppg (20+ playing), for any night and for a Period N night.
+//     Records and ties are both announced. No night lows: zero-point nights happen all the time.
 //   MILESTONES (every night): a franchise passing a round 1,000 all-time points (every season since
 //     2013-14 plus this one so far).
 //   PLAYERS (every night), counting only a player's Active points while on that franchise:
@@ -23,7 +28,8 @@
 //   PROSPECTS (F2's prospect-race rule: taken in a prospect draft in the last five years, under 20 career
 //     Active points when the season began; his Active points count for whoever had him Active), each
 //     pool-wide AND per franchise, "most" only:
-//       prospect points / different prospects scoring   in a night, in any period, in Period N, in a season
+//       prospect points / different prospects scoring   in any period, in Period N, in a season
+//       (in a night: with the night records above)
 //       (season records post the night they're passed, "and counting"; ties aren't announced)
 //     plus every round 100 all-time prospect points per franchise.
 //     History: data/prospect-history.json (periods and seasons, exported once from F2) and
@@ -59,6 +65,8 @@
 //   node src/records.js --test               # post, but don't save state (test posts to another channel)
 //   node src/records.js --today 2026-10-12   # pretend it's this date (testing)
 //   node src/records.js --book               # print the current record book and exit
+//   node src/records.js --replay-from 2026-10-07   # what the night records would have said for every night
+//                                            # from then on (prints; with --test, posts); state untouched
 //
 // Env:
 //   F2_BASE, F2_USER, F2_PASSWORD     sparkypool.ca sign-in (same as the janitor)
@@ -67,10 +75,15 @@
 //   SLACK_ICON                        emoji or image URL; default ":trophy:"
 //   RECORDS_DIR                       default data/records
 //   PLAYER_MILESTONES                 default "100,250,500,750,1000"
+//   NIGHT_PPG_MIN_GP, POOL_PPG_MIN_GP  see src/night-records.js (defaults 5 and 20)
+//
+// Also writes data/records/lens.json (the night record book and the last two weeks' night records) for Sparky
+// Lens, and hands it to Lens's Drive web app when RECORDS_DRIVE_URL and RECORDS_TOKEN are set.
 //   FRANCHISE_CODES                   optional JSON override of franchise -> initialism
 // ============================================================
 
 const chat = require("./chat");
+const NR = require("./night-records");
 const fs = require("fs");
 const path = require("path");
 
@@ -80,6 +93,7 @@ const NO_SLACK = ARGS.includes("--no-slack");
 const SEED = ARGS.includes("--seed");
 const BOOK = ARGS.includes("--book");
 const TEST = ARGS.includes("--test");
+const REPLAY_FROM = arg("--replay-from");
 const TZ = "America/Vancouver";
 
 const need = (k) => { const v = process.env[k]; if (!v) { console.error(`Missing env ${k}`); process.exit(2); } return v; };
@@ -349,8 +363,7 @@ function prospectChecks(pros, pnightsHist, pnights, season, periodsFinal, state)
   if (!cur) { log(`Prospect list is for ${pros.current && pros.current.season}, not ${season}: prospect checks skipped (re-export data/prospect-history.json).`); return out; }
   const names = pros.names || {};
 
-  // history
-  const hNights = pnightsHist ? pnightsHist.nights.map((n) => ({ season: n.season, date: n.date, code: n.code, pts: n.pts, n: n.scorers.length })) : null;
+  // history (prospect nights live in src/night-records.js now)
   const hPeriods = pros.periods.map((p) => ({ season: p.season, period: p.period, code: p.code, pts: p.pts, n: p.scorers.length, scorers: p.scorers }));
   const seasonAgg = (rows) => {
     const m = {};
@@ -381,30 +394,13 @@ function prospectChecks(pros, pnightsHist, pnights, season, periodsFinal, state)
 
   const doneNights = new Set(state.prospectNights || []);
   const donePeriods = new Set(state.prospectPeriods || []);
-  const nightLevels = () => [{ id: "pool-any", filter: () => true }];
   const allTime = {};                                                        // code -> all-time prospect points
   for (const p of hPeriods) allTime[p.code] = (allTime[p.code] || 0) + p.pts;
   const seasonRun = {};                                                      // code -> { pts, set }
-  const bookNights = hNights ? [...hNights] : null;
 
   for (const night of cNights) {
     const isNew = !doneNights.has(night.date);
     const lines = [];
-    // night records (need night history)
-    if (isNew && bookNights) {
-      for (const e of night.teams) {
-        for (const stat of PROSPECT_STATS) {
-          const levels = [{ id: "pool-any", filter: () => true }, { id: "fr-any", filter: (p) => p.code === e.code }];
-          const hit = prospectHit(e, bookNights, stat, levels, night.teams);
-          if (!hit) continue;
-          const what = hit.level.id === "pool-any" ? `the pool record for ${stat.label} in a night` : `their own record for ${stat.label} in a night`;
-          const ref = (o) => `${stat.val(o)}, ${hit.level.id === "pool-any" ? `${fname(o.code)}, ` : ""}${prettyDate(o.date)}`;
-          const old = hit.tie ? ` Shared with ${hit.ties.map(ref).join("; ")}.` : ` Old mark: ${ref(hit.old)}.`;
-          lines.push(`*${fname(e.code)}* ${hit.tie ? "tied" : "set"} ${what}: ${stat.val(e)} on ${prettyDate(e.date)} (${e.who.join(", ")}).${old}`);
-        }
-      }
-    }
-    if (bookNights) bookNights.push(...night.teams);
 
     // season records, the night they're passed; all-time milestones
     for (const e of night.teams) {
@@ -471,7 +467,6 @@ function prospectChecks(pros, pnightsHist, pnights, season, periodsFinal, state)
     }
     bookPeriods.push(...batch);
   }
-  if (!bookNights) log("No data/prospect-nights.json yet: prospect night records skipped (run src/prospect-nights-backfill.js).");
   return out;
 }
 
@@ -560,7 +555,7 @@ const PERIOD_STATS = [
   { key: "ppg-hi", label: "best ppg", val: ppg, dir: 1 },
   { key: "ppg-lo", label: "worst ppg", val: ppg, dir: -1 },
 ];
-const NIGHT_STATS = [{ key: "night-hi", label: "most points", val: (e) => e.pts, dir: 1 }];
+const NIGHT_STATS = [{ key: "night-hi", label: "most points", val: (e) => e.pts, dir: 1 }];   // --book only
 const EPS = 1e-9;
 
 // the strongest level at which e sets or ties a record for one stat, or null
@@ -584,12 +579,6 @@ function periodLevels(e) {
     { id: "pool-n", filter: (p) => p.period === e.period },
     { id: "fr-any", filter: (p) => p.code === e.code },
     { id: "fr-n", filter: (p) => p.code === e.code && p.period === e.period },
-  ];
-}
-function nightLevels(e) {
-  return [
-    { id: "pool-any", filter: () => true },
-    { id: "fr-any", filter: (p) => p.code === e.code },
   ];
 }
 
@@ -630,12 +619,6 @@ function milestoneLine(code, mark, date, already, sameNight) {
   return `*${fname(code)}* passed ${mark.toLocaleString("en-US")} all-time points on ${prettyDate(date)}. ${nth} franchise to get there${after}.${tied}`;
 }
 
-function nightLine(e, stat, hit) {
-  const what = hit.level.id === "pool-any" ? "the pool record for most points in a night" : "their own record for most points in a night";
-  const ref = (o) => `${o.pts}, ${hit.level.id === "pool-any" ? `${fname(o.code)}, ` : ""}${prettyDate(o.date)}`;
-  const old = hit.tie ? ` Shared with ${hit.ties.map(ref).join("; ")}.` : ` Old mark: ${ref(hit.old)}.`;
-  return `*${fname(e.code)}* ${hit.tie ? "tied" : "set"} ${what}: ${e.pts} points on ${prettyDate(e.date)}.${old}`;
-}
 
 // ---- record book (for --book) ------------------------------------------------------------------------
 function printBook(periods, nights) {
@@ -660,6 +643,20 @@ async function slack(text) {
   await chat.post(text, { username: SLACK_USERNAME, icon: SLACK_ICON });
   log(`Posted to ${chat.where()}.`);
   return true;
+}
+
+// ---- Sparky Lens ---------------------------------------------------------------------------------------
+// Lens (Brian's Chrome extension) reads the night record book from its Drive web app (sparky-lens
+// recap/drive/Code.gs); posting it there is best-effort and never fails the run.
+async function toLens(lens) {
+  const url = process.env.RECORDS_DRIVE_URL || "", token = process.env.RECORDS_TOKEN || "";
+  if (!url || !token) { log("RECORDS_DRIVE_URL / RECORDS_TOKEN not set: Lens copy skipped."); return; }
+  try {
+    const r = await fetch(url, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ token, kind: "records", json: lens }), redirect: "follow" });
+    const t = await r.text();
+    let j = null; try { j = JSON.parse(t); } catch (e) {}
+    log(j && j.ok ? "Lens copy saved to Drive." : `Lens copy not saved: HTTP ${r.status} ${t.slice(0, 160)}`);
+  } catch (e) { log(`Lens copy not saved: ${e.message}`); }
 }
 
 // ---- main ---------------------------------------------------------------------------------------------
@@ -694,6 +691,37 @@ async function slack(text) {
     return;
   }
 
+  // night records (src/night-records.js): this season's full nights against every night before them
+  const prosHist = loadJson("prospect-history.json");
+  const prosSet = prosHist && prosHist.current && prosHist.current.season === season ? new Set(prosHist.current.prospects) : null;
+  const nhist = NR.history(histNights);
+  const ncur = NR.current(season, teamCode, today, prosSet, (prosHist && prosHist.names) || {});
+  log(`Night history: ${nhist.entries.length} entries; prospects ${nhist.prospects ? "yes" : "no"}; ` +
+    (nhist.detailComplete ? "player detail for every season" : `goals / primary / PP / EN / one-game records off until data/player-nights has ${nhist.missing.join(", ")} (src/player-nights-backfill.js)`));
+
+  if (REPLAY_FROM) {
+    const r = NR.run({ hist: nhist, cur: ncur, want: (d) => d >= REPLAY_FROM, fname, prettyDate });
+    const paras = [];
+    for (const d of r.checked) {
+      log(`${d}: ${r.lines[d].length} line${r.lines[d].length === 1 ? "" : "s"}`);
+      if (r.lines[d].length) paras.push(`*Night of ${prettyDate(d)}*`, ...r.lines[d]);
+    }
+    const text = paras.length ? `_Replay: what the night records would have said since ${prettyDate(REPLAY_FROM)}._\n\n${paras.join("\n\n")}` : "No night records.";
+    log("\n" + text + "\n");
+    if (TEST) await slack(text);
+    return;
+  }
+
+  // the record book and the last two weeks' night records, for Sparky Lens
+  const recent = new Set([...new Set(ncur.map((e) => e.date))].sort().slice(-14));
+  const lensRun = NR.run({ hist: nhist, cur: ncur, want: (d) => recent.has(d), fname, prettyDate });
+  const lens = { built: new Date().toISOString(), season, minGp: NR.MIN_GP, poolMinGp: NR.POOL_MIN_GP, names: { ...FULL }, book: NR.book(lensRun.marks), nights: lensRun.records };
+  if (!TEST) {
+    fs.mkdirSync(OUT_DIR, { recursive: true });
+    fs.writeFileSync(path.join(OUT_DIR, "lens.json"), JSON.stringify(lens));
+    await toLens(lens);
+  }
+
   const state = fs.existsSync(STATE_FILE) ? JSON.parse(fs.readFileSync(STATE_FILE, "utf8")) : { periods: [], nights: [], playerNights: [] };
   const donePeriods = new Set(state.periods || []);
   const doneNights = new Set(state.nights || []);
@@ -702,7 +730,6 @@ async function slack(text) {
   // check in time order; each checked item joins the book before the next one is checked
   const lines = { periods: {}, nights: {} };
   const bookPeriods = [...histPeriods, ...periods.filter((p) => donePeriods.has(pKey(p)))];
-  const bookNights = [...histNights, ...nights.filter((n) => doneNights.has(n.date))];
 
   const newPeriodNums = [...new Set(periods.filter((p) => !donePeriods.has(pKey(p))).map((p) => p.period))].sort((a, b) => a - b);
   for (const n of newPeriodNums) {
@@ -713,20 +740,10 @@ async function slack(text) {
   }
 
   const newDates = [...new Set(nights.filter((x) => !doneNights.has(x.date)).map((x) => x.date))].sort();
+  const newNightSet = new Set(newDates);
+  const nr = NR.run({ hist: nhist, cur: ncur, want: (d) => newNightSet.has(d), fname, prettyDate });
   for (const d of newDates) {
-    const batch = nights.filter((x) => x.date === d);
-    const prior = [...bookNights];
-    const out = [];
-    const bestTonight = Math.max(...batch.map((x) => x.pts));
-    for (const e of batch) {
-      for (const stat of NIGHT_STATS) {
-        let hit = bestLevel(e, prior, stat, nightLevels(e));
-        if (hit && hit.level.id === "pool-any" && e.pts < bestTonight) hit = bestLevel(e, prior, stat, nightLevels(e).slice(1));
-        if (hit) out.push(nightLine(e, stat, hit));
-      }
-    }
-    if (out.length) lines.nights[d] = out;
-    bookNights.push(...batch);
+    if ((nr.lines[d] || []).length) lines.nights[d] = nr.lines[d];
     doneNights.add(d);
   }
 
@@ -767,7 +784,7 @@ async function slack(text) {
   } else log("No data/player-history.json: player checks skipped.");
 
   // prospects
-  const pros = loadJson("prospect-history.json");
+  const pros = prosHist;
   let prosOut = { nightLines: {}, periodLines: {}, newNights: [], newPeriods: [] };
   if (pros) {
     const periodsFinal = [...donePeriods].filter((k) => k.startsWith(season + "|P")).map((k) => Number(k.split("|P")[1]));
@@ -782,7 +799,7 @@ async function slack(text) {
     const ls = [...(lines.periods[n] || []), ...(prosOut.periodLines[n] || [])];
     if (ls.length) paras.push(`*Period ${n} is final.*`, ...ls);
   }
-  for (const [d, ls] of Object.entries(lines.nights)) paras.push(...ls);
+  for (const d of Object.keys(lines.nights).sort()) paras.push(`*Night of ${prettyDate(d)}*`, ...lines.nights[d]);
   for (const d of Object.keys(milestones).sort()) paras.push(...milestones[d]);
   paras.push(...playerOut.lines);
   for (const d of Object.keys(prosOut.nightLines).sort()) paras.push(...prosOut.nightLines[d]);

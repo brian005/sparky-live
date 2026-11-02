@@ -1,0 +1,302 @@
+// ============================================================
+// NIGHT RECORDS: every finished night, each franchise and the whole pool against every night since 2013-14
+// ============================================================
+// Used by src/records.js. Four levels for every franchise stat, strongest first, one line per franchise per
+// stat at the strongest level it reaches:
+//   pool-any   the pool record for any night
+//   pool-n     the pool record for a night in Period N (Period 5 nights, every season)
+//   fr-any     the franchise's own record for any night
+//   fr-n       the franchise's own record for a night in Period N
+// Pool stats (the whole pool's night added up) have the two pool levels. A level needs at least one earlier
+// night to beat; a value has to be above zero to count; records and ties are both reported. On a night two
+// franchises both pass a pool mark, the pool record only goes to the better one (both, if they're even).
+//
+// Franchise stats, per night: points, ppg (with NIGHT_PPG_MIN_GP or more playing), points from one NHL game,
+// goals, primary points (goals + first assists), power-play points, empty-net points, prospect points,
+// different prospects scoring (as before: pool and own records for any night, new records only, no ties),
+// and DOMINATION (outscoring every other franchise combined; every one is
+// noted, and the margin over everyone else has records of its own).
+// Pool stats: points, and ppg (with POOL_PPG_MIN_GP or more playing).
+//
+// Data:
+//   history   data/daily-YYYY-YY/*.json and data/daily/*.json (points, GP; via records.js loadHistory),
+//             data/active-stints.json (each season's period dates), data/player-nights/YYYY-YY.json (goals,
+//             primary, PP, EN, per-game points; src/player-nights-backfill.js), data/prospect-nights.json
+//   this season   data/nightly-report/*.json (teams[id]: scored, gp, g, a1, pp, en, games; players)
+// The per-player stats (goals, primary, PP, EN, one NHL game) only run once data/player-nights has every
+// season: a record against part of the history would be a false one.
+//
+// Env:
+//   NIGHT_PPG_MIN_GP     default 5    franchise ppg counts with this many or more playing
+//   POOL_PPG_MIN_GP      default 20   pool ppg counts with this many or more playing
+// ============================================================
+
+const fs = require("fs");
+const path = require("path");
+
+const DATA = path.join(__dirname, "..", "data");
+const MIN_GP = Number(process.env.NIGHT_PPG_MIN_GP || 5);
+const POOL_MIN_GP = Number(process.env.POOL_PPG_MIN_GP || 20);
+const EPS = 1e-9;
+const two = (x) => x.toFixed(2);
+
+const FR_STATS = [
+  { key: "pts", label: "most points", val: (e) => e.pts, show: (e) => `${e.pts} points (${e.gp} GP)` },
+  { key: "ppg", label: "best ppg", val: (e) => (e.gp >= MIN_GP ? e.pts / e.gp : null), num: two, show: (e) => `${two(e.pts / e.gp)} ppg (${e.pts} in ${e.gp} GP)` },
+  { key: "game", detail: true, label: "most points from one NHL game", val: (e) => (e.game ? e.game.pts : null), show: (e) => `${e.game.pts} (${e.game.id})`, ref: (o) => ` (${o.game.id})` },
+  { key: "g", detail: true, label: "most goals", val: (e) => e.g, show: (e) => `${e.g}` },
+  { key: "prim", detail: true, label: "most primary points", val: (e) => e.prim, show: (e) => `${e.prim}` },
+  { key: "pp", detail: true, label: "most power-play points", val: (e) => e.pp, show: (e) => `${e.pp}` },
+  { key: "en", detail: true, label: "most empty-net points", val: (e) => e.en, show: (e) => `${e.en}` },
+  { key: "pros", label: "most prospect points", val: (e) => e.pros, show: (e) => `${e.pros}${e.prosWho && e.prosWho.length ? ` (${e.prosWho.join(", ")})` : ""}` },
+  { key: "prosN", levels: ["pool-any", "fr-any"], noTies: true, label: "most different prospects scoring", val: (e) => e.prosN, show: (e) => `${e.prosN}${e.prosWho && e.prosWho.length ? ` (${e.prosWho.join(", ")})` : ""}` },
+  { key: "dom", label: "biggest DOMINATION", val: (e) => e.margin, num: (v) => `+${v}`, show: (e) => `+${e.margin} (${e.pts} points to ${e.others} for everyone else combined)`, ref: (o) => ` (${o.pts} to ${o.others})` },
+];
+const POOL_STATS = [
+  { key: "lg-pts", label: "most points", val: (e) => e.pts, show: (e) => `${e.pts} points (${e.gp} GP)` },
+  { key: "lg-ppg", label: "best ppg", val: (e) => (e.gp >= POOL_MIN_GP ? e.pts / e.gp : null), num: two, show: (e) => `${two(e.pts / e.gp)} ppg (${e.pts} in ${e.gp} GP)` },
+];
+const STATS = [...FR_STATS, ...POOL_STATS];
+
+// ---- shared ------------------------------------------------------------------------------------------
+function seasonOf(ymd) {
+  const y = Number(ymd.slice(0, 4)), m = Number(ymd.slice(5, 7));
+  const start = m >= 7 ? y : y - 1;
+  return `${start}-${String(start + 1).slice(2)}`;
+}
+const readJson = (f) => (fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf8")) : null);
+
+// every season's period dates (data/active-stints.json): (season, date) -> period number
+function periodFinder() {
+  const st = readJson(path.join(DATA, "active-stints.json"));
+  const rcps = {};
+  for (const [s, v] of Object.entries((st && st.seasons) || {})) rcps[s] = v.rcps || [];
+  return (season, ymd) => ((rcps[season] || []).find((r) => r.start <= ymd && ymd <= r.end) || {}).n || null;
+}
+
+// a night's franchise entries gain the pool-wide numbers: DOMINATION margin, and the pool's own entry
+function finishNight(list) {
+  const total = list.reduce((s, e) => s + e.pts, 0), gp = list.reduce((s, e) => s + (e.gp || 0), 0);
+  for (const e of list) {
+    e.others = total - e.pts;
+    e.margin = list.length > 1 && e.pts > e.others ? e.pts - e.others : null;
+  }
+  const f = list[0];
+  return { season: f.season, date: f.date, period: f.period, code: "ALL", pts: total, gp, pool: true };
+}
+
+// ---- history -----------------------------------------------------------------------------------------
+// nights: [{ season, date, code, pts, gp }] from records.js loadHistory (daily files, every season before this)
+function history(nights) {
+  const periodOf = periodFinder();
+  const detail = {};                                           // "date|code" -> { g, prim, pp, en, game }
+  const pnDir = path.join(DATA, "player-nights");
+  const built = new Set();
+  for (const f of fs.existsSync(pnDir) ? fs.readdirSync(pnDir).filter((x) => /^\d{4}-\d{2}\.json$/.test(x)) : []) {
+    const j = readJson(path.join(pnDir, f));
+    built.add(j.season);
+    for (const [date, n] of Object.entries(j.nights || {})) {
+      for (const [code, t] of Object.entries(n.t || {})) {
+        const best = Object.entries(t.games || {}).sort((a, b) => b[1] - a[1])[0];
+        detail[`${date}|${code}`] = { g: t.g, prim: t.g + t.a1, pp: t.pp, en: t.en, game: best ? { id: best[0], pts: best[1] } : null };
+      }
+    }
+  }
+  const pros = readJson(path.join(DATA, "prospect-nights.json"));
+  const pnights = {};
+  for (const n of (pros && pros.nights) || []) pnights[`${n.date}|${n.code}`] = n;
+
+  const byDate = {};
+  for (const n of nights) (byDate[n.date] = byDate[n.date] || []).push(n);
+  const out = [];
+  for (const date of Object.keys(byDate).sort()) {
+    const list = byDate[date].map((n) => {
+      const d = detail[`${date}|${n.code}`];
+      const has = built.has(n.season);
+      const p = pnights[`${date}|${n.code}`];
+      return {
+        season: n.season, date, period: periodOf(n.season, date), code: n.code, pts: n.pts, gp: n.gp,
+        g: d ? d.g : has ? 0 : null, prim: d ? d.prim : has ? 0 : null, pp: d ? d.pp : has ? 0 : null, en: d ? d.en : has ? 0 : null,
+        game: d ? d.game : null,
+        pros: pros ? (p ? p.pts : 0) : null, prosN: pros ? (p ? p.scorers.length : 0) : null,
+      };
+    });
+    out.push(...list, finishNight(list));
+  }
+  const seasons = [...new Set(nights.map((n) => n.season))];
+  const detailComplete = seasons.length > 0 && seasons.every((s) => built.has(s));
+  return { entries: out, built: [...built].sort(), missing: seasons.filter((s) => !built.has(s)).sort(), detailComplete, prospects: !!pros };
+}
+
+// ---- this season ---------------------------------------------------------------------------------------
+// the nightly report files, full nights only (every game final) of a numbered period, up to today
+function current(season, teamCode, today, prospectSet, names) {
+  const dir = path.join(DATA, "nightly-report");
+  const out = [];
+  if (!fs.existsSync(dir)) return out;
+  for (const f of fs.readdirSync(dir).filter((x) => /^\d{4}-\d{2}-\d{2}\.json$/.test(x)).sort()) {
+    const r = readJson(path.join(dir, f));
+    if (!r.date || r.date > today || seasonOf(r.date) !== season) continue;
+    if (!(r.period >= 1) || !r.games || (r.notFinal || []).length) continue;
+    const pros = {};                                              // code -> { pts, who[] }
+    if (prospectSet) {
+      for (const [pid, p] of Object.entries(r.players || {})) {
+        const code = teamCode[p.team];
+        if (!code || !prospectSet.has(pid) || !p.pts) continue;
+        pros[code] = pros[code] || { pts: 0, who: [] };
+        pros[code].pts += p.pts;
+        pros[code].who.push(`${p.name || names[pid] || pid} ${p.pts}`);
+      }
+    }
+    const list = [];
+    for (const [tid, t] of Object.entries(r.teams || {})) {
+      const code = teamCode[tid];
+      if (!code) continue;
+      const best = t.games ? Object.entries(t.games).sort((a, b) => b[1] - a[1])[0] : null;
+      list.push({
+        season, date: r.date, period: r.period, code, pts: t.scored || 0, gp: t.gp != null ? t.gp : 0,
+        g: t.g || 0, prim: (t.g || 0) + (t.a1 || 0), pp: t.pp || 0, en: t.en || 0,
+        game: t.games ? (best ? { id: best[0], pts: best[1] } : null) : null,
+        pros: prospectSet ? (pros[code] || {}).pts || 0 : null, prosN: prospectSet ? ((pros[code] || {}).who || []).length : null,
+        prosWho: prospectSet ? (pros[code] || {}).who || [] : null,
+      });
+    }
+    if (list.length) out.push(...list, finishNight(list));
+  }
+  return out;
+}
+
+// ---- marks -----------------------------------------------------------------------------------------------
+// the best value at every level so far, with who holds it (first to reach it, then anyone who tied it)
+function levelsOf(e) {
+  if (e.pool) return [["pool-any", "L"], ["pool-n", e.period ? `L|${e.period}` : null]].filter((x) => x[1]);
+  return [
+    ["pool-any", "P"],
+    ["pool-n", e.period ? `P|${e.period}` : null],
+    ["fr-any", `F|${e.code}`],
+    ["fr-n", e.period ? `F|${e.code}|${e.period}` : null],
+  ].filter((x) => x[1]);
+}
+let DETAIL_ON = true;                                           // set by run(): off until player-nights is complete
+function statsOf(e) { return e.pool ? POOL_STATS : DETAIL_ON ? FR_STATS : FR_STATS.filter((s) => !s.detail); }
+const valOf = (stat, e) => { const v = stat.val(e); return v == null || !(v > EPS) ? null : v; };
+
+class Marks {
+  constructor() { this.m = new Map(); }
+  get(stat, k) { return this.m.get(`${stat.key}|${k}`) || null; }
+  add(e) {
+    for (const stat of statsOf(e)) {
+      const v = valOf(stat, e);
+      if (v == null) continue;
+      for (const [, k] of levelsOf(e)) {
+        const key = `${stat.key}|${k}`, x = this.m.get(key);
+        if (!x || v > x.v + EPS) this.m.set(key, { v, holders: [e] });
+        else if (Math.abs(v - x.v) <= EPS) x.holders.push(e);
+      }
+    }
+  }
+}
+
+// ---- checking a night ------------------------------------------------------------------------------------
+function checkNight(list, marks) {
+  const recs = [];
+  for (const e of list) {
+    for (const stat of statsOf(e)) {
+      const v = valOf(stat, e);
+      if (v == null) continue;
+      // a pool mark goes only to the night's best (all of them, if they're even)
+      const beaten = list.some((x) => x !== e && !!x.pool === !!e.pool && (valOf(stat, x) || 0) > v + EPS);
+      for (const [lv, k] of levelsOf(e)) {
+        if (beaten && lv.startsWith("pool")) continue;
+        if (stat.levels && !stat.levels.includes(lv)) continue;
+        const mark = marks.get(stat, k);
+        if (!mark) continue;
+        const old = { v: mark.v, holders: mark.holders.slice() };          // as it stood before tonight
+        if (v > mark.v + EPS) { recs.push({ e, stat, level: lv, tie: false, old }); break; }
+        if (Math.abs(v - mark.v) <= EPS) { if (!stat.noTies) recs.push({ e, stat, level: lv, tie: true, old }); break; }
+      }
+    }
+  }
+  for (const e of list) marks.add(e);
+  return recs;
+}
+
+// ---- wording -----------------------------------------------------------------------------------------------
+function wording(fname, prettyDate) {
+  const where = (r) => {
+    const n = r.e.period;
+    if (r.e.pool) return r.level === "pool-n" ? `the record for ${r.stat.label} in a Period ${n} night` : `the record for ${r.stat.label} in a night`;
+    return {
+      "pool-any": `the pool record for ${r.stat.label} in a night`,
+      "pool-n": `the pool record for ${r.stat.label} in a Period ${n} night`,
+      "fr-any": `their own record for ${r.stat.label} in a night`,
+      "fr-n": `their own record for ${r.stat.label} in a Period ${n} night`,
+    }[r.level];
+  };
+  const num = (stat, v) => (stat.num ? stat.num(v) : String(v));
+  const ref = (r, o) => `${num(r.stat, r.old.v)}${r.stat.ref ? r.stat.ref(o) : ""}, ${r.level.startsWith("pool") && !o.pool ? `${fname(o.code)}, ` : ""}${prettyDate(o.date)}`;
+  const line = (r) => {
+    const h = r.old.holders;
+    let old;
+    if (!r.tie) old = ` Old mark: ${ref(r, h[0])}${h.length > 1 ? `, tied ${h.length - 1} time${h.length === 2 ? "" : "s"} since` : ""}.`;
+    else if (h.length <= 3) old = ` Shared with ${h.map((o) => ref(r, o)).join("; ")}.`;
+    else old = ` Shared with ${h.length} other nights, first ${ref(r, h[0])}, most recently ${ref(r, h[h.length - 1])}.`;
+    const who = r.e.pool ? "The whole pool" : fname(r.e.code);
+    return `*${who}* ${r.tie ? "tied" : "set"} ${where(r)}: ${r.stat.show(r.e)}.${old}`;
+  };
+  const dom = (e) => `*${fname(e.code)}* DOMINATION: ${e.pts} points, more than everyone else combined (${e.others}).`;
+  return { line, dom };
+}
+
+// plain records for the record book and for Lens
+const plain = (r) => ({
+  stat: r.stat.key, label: r.stat.label, level: r.level, period: r.e.period, code: r.e.code, value: r.stat.val(r.e),
+  text: r.stat.show(r.e), tie: r.tie, old: { value: r.old.v, holders: r.old.holders.slice(0, 3).map((o) => ({ code: o.code, date: o.date })), count: r.old.holders.length },
+});
+
+// ---- run ------------------------------------------------------------------------------------------------
+// hist: history(nights); cur: current(...). Checks every night of `cur` whose date passes `want(date)`, in
+// order; nights before or not wanted still join the marks. Returns { lines: {date: []}, records: {date: []},
+// checked: [dates], marks }.
+function run({ hist, cur, want, fname, prettyDate }) {
+  DETAIL_ON = !!hist.detailComplete;
+  const marks = new Marks();
+  for (const e of hist.entries) marks.add(e);
+  const { line, dom } = wording(fname, prettyDate);
+  const byDate = {};
+  for (const e of cur) (byDate[e.date] = byDate[e.date] || []).push(e);
+  const out = { lines: {}, records: {}, checked: [], marks };
+  const rank = { "pool-any": 0, "pool-n": 1, "fr-any": 2, "fr-n": 3 };
+  for (const date of Object.keys(byDate).sort()) {
+    const list = byDate[date];
+    if (!want(date)) { for (const e of list) marks.add(e); continue; }
+    const recs = checkNight(list, marks);
+    recs.sort((a, b) => rank[a.level] - rank[b.level] || STATS.indexOf(a.stat) - STATS.indexOf(b.stat));
+    const lines = [
+      ...list.filter((e) => !e.pool && e.margin != null).map(dom),
+      ...recs.map(line),
+    ];
+    out.lines[date] = lines;
+    out.records[date] = { dominations: list.filter((e) => !e.pool && e.margin != null).map((e) => ({ code: e.code, pts: e.pts, others: e.others })), records: recs.map(plain) };
+    out.checked.push(date);
+  }
+  return out;
+}
+
+// the current marks, for Lens: { stat: { label, pool: { any, n: { N: mark } }, fr: { CODE: { any, n } } } }
+function book(marks) {
+  const out = {};
+  const mk = (x) => ({ value: x.v, holders: x.holders.slice(0, 3).map((o) => ({ code: o.pool ? null : o.code, date: o.date })), count: x.holders.length });
+  for (const [key, x] of marks.m) {
+    const [stat, kind, a, b] = key.split("|");
+    const s = (out[stat] = out[stat] || { label: (STATS.find((t) => t.key === stat) || {}).label, pool: { any: null, n: {} }, fr: {} });
+    if (kind === "P" || kind === "L") { if (a) s.pool.n[a] = mk(x); else s.pool.any = mk(x); }
+    else if (kind === "F") {
+      const f = (s.fr[a] = s.fr[a] || { any: null, n: {} });
+      if (b) f.n[b] = mk(x); else f.any = mk(x);
+    }
+  }
+  return out;
+}
+
+module.exports = { history, current, run, book, STATS, MIN_GP, POOL_MIN_GP };

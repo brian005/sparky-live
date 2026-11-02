@@ -20,7 +20,7 @@ secrets/variables. Committed reports in `data/` are visible to anyone.
 | Workflow | Script | When | Posts as |
 |---|---|---|---|
 | `f1-replicate.yml` - Fantrax janitor | `src/f1-replicate.js` | 23:00 PDT / 22:00 PST nightly, plus Mondays 14:00 PDT / 13:00 PST (pre-lock) | Belding (#sparkybots) |
-| `records.yml` - Records | `src/records.js` | 22:30 / 23:30 PDT | Screech |
+| `records.yml` - Records | `src/records.js` (+ `src/night-records.js`; first run also `src/player-nights-backfill.js`) | 22:30 / 23:30 PDT | Screech |
 | `nightly-report.yml` | `src/nightly-report.js` | 09:00 PDT | Lisa Turtle |
 | `sunday-report.yml` | `src/projection-report.js` | Sundays 09:30 PDT | Lisa Turtle ("F2 stats department") |
 | `bench-streaks.yml` | `src/bench-streaks.js` | 18:05, night before lock | Zack Morris |
@@ -126,7 +126,34 @@ Dispatch (from Brian's PowerShell):
 - Strings: "Projected" not "Proj"; "Won N straight periods"; a period win means
   finishing #1 in points.
 
+## Night records (Screech, and Sparky Lens)
+
+- `src/night-records.js`: every finished night, at four levels per stat (pool, pool in a Period N night, the
+  franchise's own, its own in a Period N night), records AND ties, a value must be above zero, a level needs one
+  earlier night. Stats: points, ppg (5+ GP), points from one NHL game, goals, primary points (G + A1), PP points,
+  EN points, prospect points, different prospects scoring (old rule: pool/own any-night only, no ties),
+  DOMINATION (outscoring everyone else combined: each one noted; the margin has records); the whole pool's points
+  and ppg (20+ GP) per night. Brian (2026-11-02): report everything first, judge the volume later.
+- History: `data/daily-*` (points, GP), `data/active-stints.json` (every Active player x period x franchise
+  2013-14..2025-26, exported once from the local F2 copy's `player_period_pts`; NHL ids for 100 old players
+  matched by name; Elias Pettersson fixed to 8480012), `data/player-nights/YYYY-YY.json` (built by
+  `src/player-nights-backfill.js` from `api-web.nhle.com/v1/score/{date}`; checks itself against the daily files
+  and F2's period points, and swaps any NHL id that isn't that season's skater of that name and position).
+  The goals / primary / PP / EN / one-game stats stay off until every season's player-nights file exists.
+- This season: `data/nightly-report/*.json` now keep each Active scorer's g/a1/a2/pp/en/game and each team's
+  points per NHL game (`teams[id].games`).
+- `--replay-from YYYY-MM-DD` (workflow input `replay`) prints what the night records would have said; with a
+  channel it test-posts. `data/records/lens.json` is the record book + the last 14 nights' records for Lens;
+  posted to Lens's Drive web app when `RECORDS_DRIVE_URL` / `RECORDS_TOKEN` are set (not yet).
+
 ## Change log
+
+- **2026-11-02** - Night records rebuilt (see "Night records" above): four levels per stat, eleven stats,
+  records and ties, DOMINATION. Prospect night records moved into the new module (now four levels with ties for
+  points). Player-nights backfill + active-stints export added; verified on five real nights (2013-14, 2017-18,
+  2020-21, 2022-23, 2025-26): every franchise-night matched the daily files once Pettersson's id was fixed
+  (PWN's 26 on Nov 19, 2022 reproduced exactly). Replay of 2026-27 so far (before player-nights): about one line
+  every other night.
 
 - **2026-11-01** - Moved every active bot (Belding, Screech, Lisa Turtle nightly + Sunday,
   Zack Morris) from Slack to Sparky chat via a new `src/chat.js` and the `CHAT_WEBHOOK_URL`
