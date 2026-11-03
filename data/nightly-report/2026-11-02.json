@@ -2,87 +2,290 @@
   "date": "2026-11-02",
   "period": 3,
   "games": 4,
-  "goals": 0,
-  "notFinal": [
-    "VGK@BOS (FUT)",
-    "DET@FLA (FUT)",
-    "COL@CHI (FUT)",
-    "CGY@SJS (FUT)"
-  ],
+  "goals": 22,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
+      "eligible": 5,
+      "scored": 3,
+      "g": 2,
+      "a": 1,
       "a1": 0,
-      "a2": 0,
+      "a2": 1,
       "pp": 0,
-      "en": 0,
-      "gp": 0,
-      "games": {}
+      "en": 1,
+      "gp": 6,
+      "games": {
+        "DET@FLA": 3
+      }
     },
     "djdo03kcmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
-      "a1": 0,
+      "eligible": 2,
+      "scored": 2,
+      "g": 1,
+      "a": 1,
+      "a1": 1,
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0,
-      "games": {}
+      "gp": 3,
+      "games": {
+        "VGK@BOS": 1,
+        "DET@FLA": 1
+      }
     },
     "mo75fhhjmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
+      "eligible": 5,
+      "scored": 4,
+      "g": 1,
+      "a": 3,
       "a1": 0,
-      "a2": 0,
-      "pp": 0,
+      "a2": 3,
+      "pp": 2,
       "en": 0,
-      "gp": 0,
-      "games": {}
+      "gp": 5,
+      "games": {
+        "VGK@BOS": 3,
+        "DET@FLA": 1
+      }
     },
     "smc5vz9tmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
+      "eligible": 3,
+      "scored": 1,
       "g": 0,
-      "a": 0,
+      "a": 1,
       "a1": 0,
-      "a2": 0,
-      "pp": 0,
+      "a2": 1,
+      "pp": 1,
       "en": 0,
-      "gp": 0,
-      "games": {}
+      "gp": 1,
+      "games": {
+        "VGK@BOS": 1
+      }
     },
     "lo1c2zefmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
+      "eligible": 3,
+      "scored": 3,
       "g": 0,
-      "a": 0,
-      "a1": 0,
-      "a2": 0,
-      "pp": 0,
+      "a": 3,
+      "a1": 2,
+      "a2": 1,
+      "pp": 2,
       "en": 0,
-      "gp": 0,
-      "games": {}
+      "gp": 4,
+      "games": {
+        "DET@FLA": 1,
+        "COL@CHI": 2
+      }
     },
     "h13alq00mo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
+      "eligible": 5,
+      "scored": 3,
+      "g": 1,
+      "a": 2,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "gp": 5,
+      "games": {
+        "DET@FLA": 2,
+        "COL@CHI": 1
+      }
+    }
+  },
+  "players": {
+    "06ag2": {
+      "team": "djdo03kcmo319aqw",
+      "name": "James Hagens",
+      "pts": 1,
+      "g": 1,
       "a1": 0,
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0,
-      "games": {}
+      "game": "VGK@BOS"
+    },
+    "03d12": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "David Pastrnak",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "VGK@BOS"
+    },
+    "01zvf": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Mark Stone",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "VGK@BOS"
+    },
+    "03jvu": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Mitch Marner",
+      "pts": 2,
+      "g": 0,
+      "a1": 0,
+      "a2": 2,
+      "pp": 1,
+      "en": 0,
+      "game": "VGK@BOS"
+    },
+    "03v70": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Alex DeBrincat",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "DET@FLA"
+    },
+    "005ho": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Lars Eller",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "DET@FLA"
+    },
+    "066on": {
+      "team": "h13alq00mo319aqw",
+      "name": "Michael Brandsegg-Nygård",
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "DET@FLA"
+    },
+    "04ymt": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Lucas Raymond",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "DET@FLA"
+    },
+    "03uzr": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Matthew Tkachuk",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "DET@FLA"
+    },
+    "04kyh": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Brady Tkachuk",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "DET@FLA"
+    },
+    "06cl1": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Emmitt Finnie",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "game": "DET@FLA"
+    },
+    "04y4m": {
+      "team": "h13alq00mo319aqw",
+      "name": "Connor Bedard",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "COL@CHI"
+    },
+    "04alw": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Cale Makar",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "COL@CHI"
+    },
+    "02f9l": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Nathan MacKinnon",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "COL@CHI"
     }
   },
-  "players": {},
-  "bench": {}
+  "bench": {
+    "04a9v": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Morgan Geekie",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "03l0t": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Pavel Zacha",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06h8h": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Trevor Connelly",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "02un5": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Sam Reinhart",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06bdr": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Roman Kantserov",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "067xd": {
+      "team": "h13alq00mo319aqw",
+      "name": "T.J. Hughes",
+      "status": "RESERVE",
+      "pts": 2
+    }
+  }
 }
