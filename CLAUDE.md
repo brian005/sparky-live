@@ -25,6 +25,7 @@ secrets/variables. Committed reports in `data/` are visible to anyone.
 | `sunday-report.yml` | `src/projection-report.js` | Sundays 09:30 PDT | Lisa Turtle ("F2 stats department") |
 | `bench-streaks.yml` | `src/bench-streaks.js` | 18:05, night before lock | Zack Morris |
 | `scorigami.yml` | `src/scorigami.js` | 08:00 PDT | - |
+| `lines.yml` - Daily Faceoff lines for Sparky Lens | `src/df-lines.js` | every 2 h at :17 | - (commits `data/lines/latest.json`) |
 | `game-night.yml` | `src/index.js` | recap | - |
 | `backfill.yml`, `test-post.yml` | manual only | - | - |
 
@@ -163,7 +164,28 @@ Dispatch (from Brian's PowerShell):
   channel it test-posts. `data/records/lens.json` is the record book + the last 14 nights' records for Lens;
   posted to Lens's Drive web app when `RECORDS_DRIVE_URL` / `RECORDS_TOKEN` are set (not yet).
 
+## Lines feed (for Sparky Lens)
+
+- `src/df-lines.js` reads Daily Faceoff's 32 line-combination pages once (1.5 s apart, honest User-Agent, waits and
+  retries on 429/5xx) and writes `data/lines/latest.json`: `{ v: 1, src, at, failed, rows }`, rows exactly as Lens
+  builds them (`summarizeTeam` is copied from Lens's `background.js`; keep the two identical). Only each skater's
+  slots: EV line, PP/PK units, linemates' names. No goalies, no IR list.
+- Every Sparky Lens reads that file (raw.githubusercontent.com, CORS open, cached ~5 min) hourly instead of scraping
+  Daily Faceoff itself; if it's missing or 8+ h old, Lens reads Daily Faceoff on its own as before. So a failed or
+  skipped run costs nothing. Brian (2026-11-03): the point is sharing Lens with the league ("fun is to be maximized")
+  without six browsers each hitting Daily Faceoff.
+- A failed team page keeps its rows from the last file and is listed in `failed`; more than 8 failures stops the
+  run without publishing (a 403 / challenge page means Daily Faceoff is turning GitHub's runners away: if that
+  sticks, disable `lines.yml` and Lens carries on reading Daily Faceoff itself). The file is rewritten only when a
+  row changed or the last read is 5+ h old, so quiet runs commit nothing.
+- Offline test: a stand-in Daily Faceoff (32 pages in the `__NEXT_DATA__` shape) via `DFO_BASE`, `DFO_PACE_MS=0`.
+
 ## Change log
+
+- **2026-11-03** - Lines feed for Sparky Lens (`src/df-lines.js`, `lines.yml`): see "Lines feed". Tested offline
+  against a stand-in Daily Faceoff (first read, nothing changed, a line swap, one page down, a 429, blocked, challenge
+  pages) and with Lens reading the file (fresh, unchanged, 9 h old, missing). Whether Daily Faceoff serves GitHub's
+  runners is only known after the first real run.
 
 - **2026-11-02 (later)** - Screech's posts are cards now (see "Night records"). Previewed in the real Sparky chat
   web app at phone width before shipping. Backfill built: 2,222 nights, 2 franchise-nights off by a point, no id
