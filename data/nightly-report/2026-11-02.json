@@ -20,7 +20,7 @@
       }
     },
     "djdo03kcmo319aqw": {
-      "eligible": 2,
+      "eligible": 3,
       "scored": 2,
       "g": 1,
       "a": 1,
@@ -286,6 +286,12 @@
       "name": "T.J. Hughes",
       "status": "RESERVE",
       "pts": 2
+    },
+    "061im": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Michael Misa",
+      "status": "MINORS",
+      "pts": 1
     }
   }
 }
