@@ -164,9 +164,9 @@ Dispatch (from Brian's PowerShell):
   A card says the record once ("Most points from one NHL game in a Period 1 night") then only the number and its
   unit ("7 points", "1 power-play point"). The franchise is the card's top line, so a franchise record doesn't
   repeat it under the title. An old mark names the franchise only on a pool record; a franchise's own record is
-  obviously its own ("Old mark: 7 · Nov 1, 2018"). A tie says how many other nights it ties ("Ties 1 other night:
-  Nov 11, 2023"; past three, the first and the latest), again with the franchise only on a pool record (Brian,
-  2026-11-04; period and prospect-period ties the same, "Ties 2 other periods: ..."). The DOMINATION margin stat
+  obviously its own ("Old mark: 7 · Nov 1, 2018"). A tie says how many other nights it ties, with the date (and on a
+  pool record the franchise) only when it's one: "Ties 1 other night: Nov 11, 2023", "Ties 4 other nights" (Brian,
+  2026-11-04; period and prospect-period ties the same, "Ties 1 other period: 2022-23", "Ties 3 other periods"). The DOMINATION margin stat
   is "biggest margin of victory".
 - Image cards (prototype, not wired in): one 500x300 image a record, designed in HTML and rendered with Playwright;
   F2 chat shows a post's images full width, at most 350px tall, and folds a post after ~3 of them ("Show more").
@@ -195,7 +195,8 @@ Dispatch (from Brian's PowerShell):
 - **2026-11-04** - Screech's cards fixed for F2's chat panel, where the league reads them (Brian: "That seems
   off"): the number is bold instead of a `### ` heading (the panel prints the #s); the franchise isn't repeated
   under the title (it's the card's top line; pool records still say "all-time"); old marks and ties on a
-  franchise's own record leave out the franchise; ties say how many other nights (or periods) they tie; "1
+  franchise's own record leave out the franchise; ties say how many other nights (or periods) they tie, with the
+  date only when it's one ("Ties 1 other night: Nov 11, 2023", "Ties 4 other nights"); "1
   power-play point", not "1 power-play points". Previewed with F2's own chat styles; replayed the Nov 3 night's
   two records and pool / own ties of 1, 2, 3 and 5+ other nights through the real wording.
 

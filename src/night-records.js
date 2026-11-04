@@ -224,7 +224,8 @@ function checkNight(list, marks) {
 
 // ---- wording -----------------------------------------------------------------------------------------------
 // An old mark (or a night it's tied with) names the franchise only on a pool record, where it could be anyone's; a
-// franchise's own record is obviously its own nights (Brian, 2026-11-04). A tie says how many other nights it ties.
+// franchise's own record is obviously its own nights. A tie says how many other nights it ties, and when, only if
+// it's one ("Ties 1 other night: Nov 11, 2023"; "Ties 4 other nights") (Brian, 2026-11-04).
 const namesHolder = (r, o) => r.level.startsWith("pool") && !o.pool;
 const otherNights = (n) => `${n} other night${n === 1 ? "" : "s"}`;
 function wording(fname, prettyDate) {
@@ -245,8 +246,7 @@ function wording(fname, prettyDate) {
     const h = r.old.holders;
     let old;
     if (!r.tie) old = ` Old mark: ${ref(r, h[0])}${h.length > 1 ? `, tied ${h.length - 1} time${h.length === 2 ? "" : "s"} since` : ""}.`;
-    else if (h.length <= 3) old = ` Ties ${otherNights(h.length)}: ${h.map((o) => when(r, o)).join("; ")}.`;
-    else old = ` Ties ${otherNights(h.length)}, first ${when(r, h[0])}, most recently ${when(r, h[h.length - 1])}.`;
+    else old = h.length === 1 ? ` Ties 1 other night: ${when(r, h[0])}.` : ` Ties ${otherNights(h.length)}.`;
     const who = r.e.pool ? "The whole pool" : fname(r.e.code);
     return `*${who}* ${r.tie ? "tied" : "set"} ${where(r)}: ${r.stat.show(r.e)}.${old}`;
   };
@@ -288,8 +288,7 @@ function cards(fname, prettyDate, logo) {
     const what = `${cap(r.stat.label)} in a${r.level.endsWith("-n") ? ` Period ${n}` : ""} night`;
     let oldTitle, oldVal;
     if (!r.tie) { oldTitle = "Old mark"; oldVal = `${ref(r, h[0])}${h.length > 1 ? ` (tied ${h.length - 1}× since)` : ""}`; }
-    else if (h.length <= 3) { oldTitle = `Ties ${otherNights(h.length)}`; oldVal = h.map((o) => when(r, o)).join("\n"); }
-    else { oldTitle = `Ties ${otherNights(h.length)}`; oldVal = `first ${when(r, h[0])}\nlatest ${when(r, h[h.length - 1])}`; }
+    else { oldTitle = `Ties ${otherNights(h.length)}`; oldVal = h.length === 1 ? when(r, h[0]) : ""; }   // the date only for one
     const sub = r.stat.sub ? r.stat.sub(r.e) : "";
     const who = r.e.pool ? "The whole pool" : fname(r.e.code), icon = r.e.pool ? "" : logo(r.e.code);
     return {

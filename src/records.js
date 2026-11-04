@@ -458,7 +458,7 @@ function prospectChecks(pros, pnightsHist, pnights, season, periodsFinal, state)
             "fr-n": `their own record for ${stat.label} in Period ${n}`,
           }[hit.level.id];
           const when = (o) => oldPeriodWhen(o, hit.level.id), ref = (o) => `${stat.val(o)}, ${when(o)}`;
-          const old = hit.tie ? ` Ties ${otherPeriods(hit.ties.length)}: ${hit.ties.map(when).join("; ")}.` : ` Old mark: ${ref(hit.old)}.`;
+          const old = hit.tie ? (hit.ties.length === 1 ? ` Ties 1 other period: ${when(hit.ties[0])}.` : ` Ties ${otherPeriods(hit.ties.length)}.`) : ` Old mark: ${ref(hit.old)}.`;
           lines.push(`*${fname(e.code)}* ${hit.tie ? "tied" : "set"} ${what}: ${stat.val(e)}.${old}`);
         }
       }
@@ -596,7 +596,7 @@ function oldPeriodRef(stat, o, levelId) {
   const v = stat.key.startsWith("ppg") ? `${fmtPpg(ppg(o))}` : `${o.pts}`;
   return `${v}, ${oldPeriodWhen(o, levelId)}`;
 }
-// a tie: how many other periods it ties, and which
+// a tie: how many other periods it ties, and which one when it's just one
 const otherPeriods = (n) => `${n} other period${n === 1 ? "" : "s"}`;
 
 function periodLine(e, stat, hit) {
@@ -608,7 +608,7 @@ function periodLine(e, stat, hit) {
   }[hit.level.id];
   const verb = hit.tie ? "tied" : "set";
   const old = hit.tie
-    ? ` Ties ${otherPeriods(hit.ties.length)}: ${hit.ties.map((t) => oldPeriodWhen(t, hit.level.id)).join("; ")}.`
+    ? (hit.ties.length === 1 ? ` Ties 1 other period: ${oldPeriodWhen(hit.ties[0], hit.level.id)}.` : ` Ties ${otherPeriods(hit.ties.length)}.`)
     : ` Old mark: ${oldPeriodRef(stat, hit.old, hit.level.id)}.`;
   return `*${fname(e.code)}* ${verb} ${what}: ${statValue(stat, e)}.${old}`;
 }
