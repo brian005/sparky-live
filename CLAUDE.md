@@ -145,19 +145,29 @@ Dispatch (from Brian's PowerShell):
   The goals / primary / PP / EN / one-game stats stay off until every season's player-nights file exists.
 - This season: `data/nightly-report/*.json` now keep each Active scorer's g/a1/a2/pp/en/game and each team's
   points per NHL game (`teams[id].games`).
-- Screech posts as cards (message attachments; `src/chat.js` sends `attachments`, Sparky chat is Mattermost 11.7
-  and draws them): a header line, then one card a record. Colour by level (gold pool, orange pool Period N, green
-  own, blue own Period N, red DOMINATION, purple the whole pool), the franchise and its logo, a one-line title
-  ("⭐ FRANCHISE RECORD", "🤝 TIED POOL RECORD"), what it is ("Most goals in a Period 2 night"), the number big,
-  and the old mark / who it's shared with. Period, milestone, player and prospect lines go in plain cards. Every
-  card carries its sentence as `fallback`. Designed at phone width (no thumbnails: they drop below the text there).
+- Screech posts as cards (message attachments; `src/chat.js` sends `attachments`): a header line, then one card a
+  record. Colour by level (gold pool, orange pool Period N, green own, blue own Period N, red DOMINATION, purple the
+  whole pool), the franchise and its logo (the card's top line), a one-line title ("⭐ P3 FRANCHISE RECORD", "🤝 TIED
+  · SPARKY RECORD"), "_all-time_" on pool records only, what it is ("Most goals in a Period 2 night"), the number in
+  bold ("*8 power-play points*"), then the old mark or the nights it ties. Period, milestone, player and prospect
+  lines go in plain cards. Every card carries its sentence as `fallback`. Designed at phone width (no thumbnails:
+  they drop below the text there).
+- **Where the league reads it: F2's own chat panel** (`sparkypool.ca/app/chatapp.js`, Chris's Slack-style client
+  opened by F2's chat button), not Mattermost's web app at `/chat`. Its cards (`attHtml` / `md()`) do bold, italic,
+  links, lists, quotes and line breaks, and **no headings**: a `### 8` prints the #s. Preview cards there (F2 page,
+  `.nc` classes), not in Mattermost's UI: the 2026-11-02 cards were previewed in Mattermost, where `###` is a big
+  number, and the league saw `### 8 power-play points`.
 - Names and wording (Brian, 2026-11-02), a name and a line under it: SPARKY RECORD / all-time (any franchise,
   any night, gold); P5 RECORD / all-time (any franchise, a Period 5 night, orange); FRANCHISE RECORD / Brian's
   Endless Winter (that franchise's own, any night, green); P5 FRANCHISE RECORD / Brian's Endless Winter (its own in
   a Period 5 night, blue); WHOLE-POOL RECORD and P5 WHOLE-POOL RECORD / all-time for the pool added up (purple).
-  A card says the record once ("Most points from one NHL game in a Period 1 night:") then only the number and its
-  unit ("7 points"). Every old mark and "shared with" names the franchise as well as the date. The DOMINATION
-  margin stat is "biggest margin of victory".
+  A card says the record once ("Most points from one NHL game in a Period 1 night") then only the number and its
+  unit ("7 points", "1 power-play point"). The franchise is the card's top line, so a franchise record doesn't
+  repeat it under the title. An old mark names the franchise only on a pool record; a franchise's own record is
+  obviously its own ("Old mark: 7 · Nov 1, 2018"). A tie says how many other nights it ties ("Ties 1 other night:
+  Nov 11, 2023"; past three, the first and the latest), again with the franchise only on a pool record (Brian,
+  2026-11-04; period and prospect-period ties the same, "Ties 2 other periods: ..."). The DOMINATION margin stat
+  is "biggest margin of victory".
 - Image cards (prototype, not wired in): one 500x300 image a record, designed in HTML and rendered with Playwright;
   F2 chat shows a post's images full width, at most 350px tall, and folds a post after ~3 of them ("Show more").
 - `--replay-from YYYY-MM-DD` (workflow input `replay`) prints what the night records would have said; with a
@@ -181,6 +191,13 @@ Dispatch (from Brian's PowerShell):
 - Offline test: a stand-in Daily Faceoff (32 pages in the `__NEXT_DATA__` shape) via `DFO_BASE`, `DFO_PACE_MS=0`.
 
 ## Change log
+
+- **2026-11-04** - Screech's cards fixed for F2's chat panel, where the league reads them (Brian: "That seems
+  off"): the number is bold instead of a `### ` heading (the panel prints the #s); the franchise isn't repeated
+  under the title (it's the card's top line; pool records still say "all-time"); old marks and ties on a
+  franchise's own record leave out the franchise; ties say how many other nights (or periods) they tie; "1
+  power-play point", not "1 power-play points". Previewed with F2's own chat styles; replayed the Nov 3 night's
+  two records and pool / own ties of 1, 2, 3 and 5+ other nights through the real wording.
 
 - **2026-11-03** - Lines feed for Sparky Lens (`src/df-lines.js`, `lines.yml`): see "Lines feed". Tested offline
   against a stand-in Daily Faceoff (first read, nothing changed, a line swap, one page down, a 429, blocked, challenge

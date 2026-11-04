@@ -457,8 +457,8 @@ function prospectChecks(pros, pnightsHist, pnights, season, periodsFinal, state)
             "fr-any": `their own record for ${stat.label} in a period`,
             "fr-n": `their own record for ${stat.label} in Period ${n}`,
           }[hit.level.id];
-          const ref = (o) => `${stat.val(o)}, ${hit.level.id.startsWith("pool") ? `${fname(o.code)}, ` : ""}${hit.level.id.endsWith("-n") ? o.season : `Period ${o.period} ${o.season}`}`;
-          const old = hit.tie ? ` Shared with ${hit.ties.map(ref).join("; ")}.` : ` Old mark: ${ref(hit.old)}.`;
+          const when = (o) => oldPeriodWhen(o, hit.level.id), ref = (o) => `${stat.val(o)}, ${when(o)}`;
+          const old = hit.tie ? ` Ties ${otherPeriods(hit.ties.length)}: ${hit.ties.map(when).join("; ")}.` : ` Old mark: ${ref(hit.old)}.`;
           lines.push(`*${fname(e.code)}* ${hit.tie ? "tied" : "set"} ${what}: ${stat.val(e)}.${old}`);
         }
       }
@@ -587,12 +587,17 @@ const fmtPpg = (x) => x.toFixed(2);
 function statValue(stat, e) {
   return stat.key.startsWith("ppg") ? `${fmtPpg(ppg(e))} ppg (${e.pts} in ${e.gp} GP)` : `${e.pts} points in ${e.gp} GP`;
 }
+// an old mark names the franchise only on a pool record; a franchise's own is obviously its own (Brian, 2026-11-04)
+function oldPeriodWhen(o, levelId) {
+  const who = levelId.startsWith("pool") ? `${fname(o.code)}, ` : "";
+  return `${who}${levelId.endsWith("-n") ? o.season : `Period ${o.period} ${o.season}`}`;
+}
 function oldPeriodRef(stat, o, levelId) {
   const v = stat.key.startsWith("ppg") ? `${fmtPpg(ppg(o))}` : `${o.pts}`;
-  const who = levelId.startsWith("pool") ? `${fname(o.code)}, ` : "";
-  const when = levelId.endsWith("-n") ? o.season : `Period ${o.period} ${o.season}`;
-  return `${v}, ${who}${when}`;
+  return `${v}, ${oldPeriodWhen(o, levelId)}`;
 }
+// a tie: how many other periods it ties, and which
+const otherPeriods = (n) => `${n} other period${n === 1 ? "" : "s"}`;
 
 function periodLine(e, stat, hit) {
   const what = {
@@ -603,7 +608,7 @@ function periodLine(e, stat, hit) {
   }[hit.level.id];
   const verb = hit.tie ? "tied" : "set";
   const old = hit.tie
-    ? ` Shared with ${hit.ties.map((t) => oldPeriodRef(stat, t, hit.level.id)).join("; ")}.`
+    ? ` Ties ${otherPeriods(hit.ties.length)}: ${hit.ties.map((t) => oldPeriodWhen(t, hit.level.id)).join("; ")}.`
     : ` Old mark: ${oldPeriodRef(stat, hit.old, hit.level.id)}.`;
   return `*${fname(e.code)}* ${verb} ${what}: ${statValue(stat, e)}.${old}`;
 }
