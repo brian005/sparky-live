@@ -147,7 +147,7 @@ Dispatch (from Brian's PowerShell):
   points per NHL game (`teams[id].games`).
 - Screech posts as cards (message attachments; `src/chat.js` sends `attachments`): a header line, then one card a
   record. Colour by level (gold pool, orange pool Period N, green own, blue own Period N, red DOMINATION, purple the
-  whole pool), the franchise and its logo (the card's top line), a one-line title ("⭐ P3 FRANCHISE RECORD", "🤝 TIED
+  whole pool), the franchise (the card's top line; its logo only with `CARD_LOGOS=1`, see below), a one-line title ("⭐ P3 FRANCHISE RECORD", "🤝 TIED
   · SPARKY RECORD"), "_all-time_" on pool records only, what it is ("Most goals in a Period 2 night"), the number in
   bold ("*8 power-play points*"), then the old mark or the nights it ties. Period, milestone, player and prospect
   lines go in plain cards. Every card carries its sentence as `fallback`. Designed at phone width (no thumbnails:
@@ -157,6 +157,14 @@ Dispatch (from Brian's PowerShell):
   links, lists, quotes and line breaks, and **no headings**: a `### 8` prints the #s. Preview cards there (F2 page,
   `.nc` classes), not in Mattermost's UI: the 2026-11-02 cards were previewed in Mattermost, where `###` is a big
   number, and the league saw `### 8 power-play points`.
+- **No logos on the cards for now (2026-11-05).** F2's chat panel (`picsHtml`) draws every picture in the post's
+  `metadata.images` full size under the post, and Mattermost puts each card's `author_icon` there whenever its server
+  can fetch it: the fantraximg.com logos (BEW, GDD, JGC, RMS) yes, F2's own `/logo/` ones (PWN, MPP) no. Nov 4's
+  DOMINATION card had RMS's logo 350 px tall under it. `records.js` sends no `author_icon` unless `CARD_LOGOS=1`; turn
+  it back on once the panel skips pictures its cards already show (Chris's side: in `picsHtml`, skip `md.images` URLs
+  that are an attachment's `author_icon` / `image_url` / `thumb_url` / `footer_icon`). Check a preview's
+  `metadata.images`, not just the cards: a post built by hand in the panel has none.
+- DOMINATION card: "*6 points*" then "The other five combined: 5" (it was "6 – 5", which read like a score).
 - Names and wording (Brian, 2026-11-02), a name and a line under it: SPARKY RECORD / all-time (any franchise,
   any night, gold); P5 RECORD / all-time (any franchise, a Period 5 night, orange); FRANCHISE RECORD / Brian's
   Endless Winter (that franchise's own, any night, green); P5 FRANCHISE RECORD / Brian's Endless Winter (its own in
@@ -191,6 +199,13 @@ Dispatch (from Brian's PowerShell):
 - Offline test: a stand-in Daily Faceoff (32 pages in the `__NEXT_DATA__` shape) via `DFO_BASE`, `DFO_PACE_MS=0`.
 
 ## Change log
+
+- **2026-11-05** - Screech's Nov 4 DOMINATION card (Brian: "This looks like waz"): RMS's logo printed full size
+  under the card, because F2's chat panel draws every picture Mattermost lists in `metadata.images`, which includes the
+  cards' `author_icon` when Mattermost can fetch it (fantraximg.com logos; F2's own `/logo/` ones it can't, which is
+  why Nov 3's MPP cards looked fine). Logos off behind `CARD_LOGOS` until the panel skips them. DOMINATION reads
+  "*6 points*" / "The other five combined: 5" instead of "6 – 5". Checked against the real Nov 4 post's metadata and
+  F2's `picsHtml` / `attHtml`.
 
 - **2026-11-04** - Screech's cards fixed for F2's chat panel, where the league reads them (Brian: "That seems
   off"): the number is bold instead of a `### ` heading (the panel prints the #s); the franchise isn't repeated

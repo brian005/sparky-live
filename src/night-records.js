@@ -302,7 +302,7 @@ function cards(fname, prettyDate, logo) {
   };
   const domination = (e, fallback) => ({
     fallback, color: DOM_COLOR, author_name: fname(e.code), ...(logo(e.code) ? { author_icon: logo(e.code) } : {}),
-    title: "💥 DOMINATION", text: `*${e.pts} – ${e.others}*\nmore than everyone else combined`,
+    title: "💥 DOMINATION", text: `*${e.pts} point${e.pts === 1 ? "" : "s"}*\nThe other five combined: ${e.others}`,
   });
   return { record, domination };
 }

@@ -693,7 +693,12 @@ async function toLens(lens) {
   for (const t of league.teams || []) { const c = teamCode[t.id]; if (c && t.name && !process.env.FRANCHISE_NAMES) FULL[c] = String(t.name).trim(); }
   const LOGO = {};                                                     // franchise logos for the cards (absolute URLs)
   for (const t of league.teams || []) { const c = teamCode[t.id], u = String(t.logo_url || ""); if (c && u) LOGO[c] = /^https?:\/\//.test(u) ? u : `${F2_BASE}${u.startsWith("/") ? "" : "/"}${u}`; }
-  const logo = (c) => LOGO[c] || "";
+  // Logos on the cards are off (2026-11-05). F2's chat panel draws every picture Mattermost lists for a post
+  // (post.metadata.images) full size under the post, and Mattermost lists a card's author_icon there whenever its
+  // server can fetch it: the fantraximg.com logos (BEW, GDD, JGC, RMS), not F2's own /logo/ ones (PWN, MPP). Nov 4's
+  // DOMINATION showed RMS's sausages 350 px tall under the card. CARD_LOGOS=1 brings them back once the panel skips
+  // pictures its cards already show.
+  const logo = (c) => (process.env.CARD_LOGOS === "1" && LOGO[c]) || "";
 
   // never let an old copy of this season in the history files double up with F2's
   const histPeriods = hist.periods.filter((p) => p.season !== season);
