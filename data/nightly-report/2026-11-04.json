@@ -1,0 +1,242 @@
+{
+  "date": "2026-11-04",
+  "period": 3,
+  "games": 4,
+  "goals": 21,
+  "notFinal": [
+    "SJS@LAK (LIVE)",
+    "CGY@SEA (CRIT)"
+  ],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1,
+      "games": {}
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 4,
+      "scored": 1,
+      "g": 0,
+      "a": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "gp": 1,
+      "games": {
+        "OTT@BUF": 1
+      }
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 2,
+      "scored": 2,
+      "g": 1,
+      "a": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 2,
+      "en": 0,
+      "gp": 2,
+      "games": {
+        "CHI@FLA": 1,
+        "SJS@LAK": 1
+      }
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 8,
+      "scored": 1,
+      "g": 0,
+      "a": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1,
+      "games": {
+        "OTT@BUF": 1
+      }
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 3,
+      "scored": 1,
+      "g": 0,
+      "a": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "gp": 2,
+      "games": {
+        "CHI@FLA": 1
+      }
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 6,
+      "scored": 6,
+      "g": 2,
+      "a": 4,
+      "a1": 1,
+      "a2": 3,
+      "pp": 0,
+      "en": 0,
+      "gp": 5,
+      "games": {
+        "OTT@BUF": 1,
+        "CHI@FLA": 4,
+        "CGY@SEA": 1
+      }
+    }
+  },
+  "players": {
+    "042t5": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Tage Thompson",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "OTT@BUF"
+    },
+    "05ylt": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Zach Benson",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "OTT@BUF"
+    },
+    "051z0": {
+      "team": "h13alq00mo319aqw",
+      "name": "Tim Stützle",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "OTT@BUF"
+    },
+    "04kyh": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Brady Tkachuk",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "CHI@FLA"
+    },
+    "03uzr": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Matthew Tkachuk",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "CHI@FLA"
+    },
+    "04y4m": {
+      "team": "h13alq00mo319aqw",
+      "name": "Connor Bedard",
+      "pts": 2,
+      "g": 0,
+      "a1": 0,
+      "a2": 2,
+      "pp": 0,
+      "en": 0,
+      "game": "CHI@FLA"
+    },
+    "05m17": {
+      "team": "h13alq00mo319aqw",
+      "name": "Frank Nazar",
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "CHI@FLA"
+    },
+    "05w9c": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Macklin Celebrini",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "SJS@LAK"
+    },
+    "04mto": {
+      "team": "h13alq00mo319aqw",
+      "name": "Kaapo Kakko",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "CGY@SEA"
+    }
+  },
+  "bench": {
+    "02un5": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Sam Reinhart",
+      "status": "RESERVE",
+      "pts": 3
+    },
+    "06bdr": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Roman Kantserov",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "03bfj": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Artemi Panarin",
+      "status": "RESERVE",
+      "pts": 3
+    },
+    "04lo0": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Quinton Byfield",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "061im": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Michael Misa",
+      "status": "MINORS",
+      "pts": 2
+    },
+    "06psl": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Ivar Stenberg",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "065nx": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Berkly Catton",
+      "status": "MINORS",
+      "pts": 1
+    }
+  }
+}
