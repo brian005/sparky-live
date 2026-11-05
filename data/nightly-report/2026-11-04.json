@@ -2,11 +2,8 @@
   "date": "2026-11-04",
   "period": 3,
   "games": 4,
-  "goals": 21,
-  "notFinal": [
-    "SJS@LAK (LIVE)",
-    "CGY@SEA (CRIT)"
-  ],
+  "goals": 23,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
       "eligible": 0,
@@ -17,11 +14,11 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1,
+      "gp": 2,
       "games": {}
     },
     "djdo03kcmo319aqw": {
-      "eligible": 4,
+      "eligible": 5,
       "scored": 1,
       "g": 0,
       "a": 1,
@@ -29,7 +26,7 @@
       "a2": 1,
       "pp": 0,
       "en": 0,
-      "gp": 1,
+      "gp": 2,
       "games": {
         "OTT@BUF": 1
       }
@@ -43,14 +40,14 @@
       "a2": 0,
       "pp": 2,
       "en": 0,
-      "gp": 2,
+      "gp": 3,
       "games": {
         "CHI@FLA": 1,
         "SJS@LAK": 1
       }
     },
     "smc5vz9tmo319aqw": {
-      "eligible": 8,
+      "eligible": 9,
       "scored": 1,
       "g": 0,
       "a": 1,
@@ -64,7 +61,7 @@
       }
     },
     "lo1c2zefmo319aqw": {
-      "eligible": 3,
+      "eligible": 4,
       "scored": 1,
       "g": 0,
       "a": 1,
@@ -86,7 +83,7 @@
       "a2": 3,
       "pp": 0,
       "en": 0,
-      "gp": 5,
+      "gp": 6,
       "games": {
         "OTT@BUF": 1,
         "CHI@FLA": 4,
@@ -212,13 +209,13 @@
       "team": "smc5vz9tmo319aqw",
       "name": "Artemi Panarin",
       "status": "RESERVE",
-      "pts": 3
+      "pts": 4
     },
     "04lo0": {
       "team": "lo1c2zefmo319aqw",
       "name": "Quinton Byfield",
       "status": "RESERVE",
-      "pts": 1
+      "pts": 2
     },
     "061im": {
       "team": "djdo03kcmo319aqw",
@@ -236,6 +233,12 @@
       "team": "lo1c2zefmo319aqw",
       "name": "Berkly Catton",
       "status": "MINORS",
+      "pts": 1
+    },
+    "05r1i": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Matty Beniers",
+      "status": "RESERVE",
       "pts": 1
     }
   }
