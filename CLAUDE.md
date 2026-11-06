@@ -137,6 +137,13 @@ Dispatch (from Brian's PowerShell):
   EN points, prospect points, different prospects scoring (old rule: pool/own any-night only, no ties),
   DOMINATION (outscoring everyone else combined: each one noted; the margin has records); the whole pool's points
   and ppg (20+ GP) per night. Brian (2026-11-02): report everything first, judge the volume later.
+- **Volume rules (Brian, 2026-11-06).** A franchise's own tie (FRANCHISE RECORD / P5 FRANCHISE RECORD) is announced
+  only when it ties at most 2 other nights (`OWN_TIE_MAX`); past that the next level down is tried, so a tie of its
+  any-night best can still come out as a Period N record. Pool ties always count. Same for period records
+  (`bestLevel` in `records.js`). DOMINATION (and its margin records) doesn't fire on a night two or more franchises
+  had nobody playing (GP 0; an unknown GP doesn't count), in history as tonight; any other night it fires, whatever
+  the score ("give it a go"). Replay Sep 29 - Nov 5: 54 lines to 37 (8 own ties of 5-9 other nights and 2
+  DOMINATIONs on two-idle nights gone; MPP's Oct 16 margin is now a tie of its own +4 instead of a P2 record).
 - History: `data/daily-*` (points, GP), `data/active-stints.json` (every Active player x period x franchise
   2013-14..2025-26, exported once from the local F2 copy's `player_period_pts`; NHL ids for 100 old players
   matched by name; Elias Pettersson fixed to 8480012), `data/player-nights/YYYY-YY.json` (built by
@@ -224,6 +231,8 @@ Dispatch (from Brian's PowerShell):
 
 ## Change log
 
+- **2026-11-06 (latest)** - Volume rules (see "Volume rules" under Night records): own ties of 3+ other nights /
+  periods skipped (`OWN_TIE_MAX`, next level tried instead), no DOMINATION when 2+ franchises had nobody playing.
 - **2026-11-06 (later)** - `lens.json` v 2: every night record and DOMINATION carries its picture layout (`pic`) for
   Sparky Lens's new RECORDS section (Brian: "Show night records in lens").
 - **2026-11-06** - Screech posts pictures (see "Pictures" under Night records): `src/record-pics.js`, `assets/fonts/`,

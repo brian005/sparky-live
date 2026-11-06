@@ -563,8 +563,10 @@ const PERIOD_STATS = [
 ];
 const NIGHT_STATS = [{ key: "night-hi", label: "most points", val: (e) => e.pts, dir: 1 }];   // --book only
 const EPS = 1e-9;
+const OWN_TIE_MAX = Number(process.env.OWN_TIE_MAX || 2);              // as in src/night-records.js (Brian, 2026-11-06)
 
-// the strongest level at which e sets or ties a record for one stat, or null
+// the strongest level at which e sets or ties a record for one stat, or null. A franchise's own tie is skipped when
+// it ties more than OWN_TIE_MAX other periods, and the next level down is tried; pool ties always count.
 function bestLevel(e, prior, stat, levels) {
   const v = stat.val(e);
   for (const lv of levels) {
@@ -574,7 +576,11 @@ function bestLevel(e, prior, stat, levels) {
     for (const p of pool) if (!rec || stat.dir * (stat.val(p) - stat.val(rec)) > EPS) rec = p;
     const diff = stat.dir * (v - stat.val(rec));
     if (diff > EPS) return { level: lv, old: rec, tie: false };
-    if (Math.abs(diff) <= EPS) return { level: lv, old: rec, tie: true, ties: pool.filter((p) => Math.abs(stat.val(p) - v) <= EPS) };
+    if (Math.abs(diff) <= EPS) {
+      const ties = pool.filter((p) => Math.abs(stat.val(p) - v) <= EPS);
+      if (lv.id.startsWith("fr") && ties.length > OWN_TIE_MAX) continue;   // a franchise's own tie of 3+ other periods: the next level
+      return { level: lv, old: rec, tie: true, ties };
+    }
   }
   return null;
 }

@@ -15,7 +15,10 @@
 // goals, primary points (goals + first assists), power-play points, empty-net points, prospect points,
 // different prospects scoring (as before: pool and own records for any night, new records only, no ties),
 // and DOMINATION (outscoring every other franchise combined; every one is
-// noted, and the margin over everyone else has records of its own).
+// noted, and the margin over everyone else has records of its own). No DOMINATION on a night two or more franchises
+// had nobody playing (Brian, 2026-11-06: otherwise "give it a go", whatever the score), in history as tonight.
+// A franchise's own tie is announced only when it ties at most OWN_TIE_MAX other nights; past that the next level
+// down is tried (a tie of its any-night best can still be a Period N record), and a pool tie always counts.
 // Pool stats: points, and ppg (with POOL_PPG_MIN_GP or more playing).
 //
 // Data:
@@ -29,6 +32,7 @@
 // Env:
 //   NIGHT_PPG_MIN_GP     default 5    franchise ppg counts with this many or more playing
 //   POOL_PPG_MIN_GP      default 20   pool ppg counts with this many or more playing
+//   OWN_TIE_MAX          default 2    a franchise's own tie of a mark held by more nights than this isn't announced
 // ============================================================
 
 const fs = require("fs");
@@ -37,6 +41,7 @@ const path = require("path");
 const DATA = path.join(__dirname, "..", "data");
 const MIN_GP = Number(process.env.NIGHT_PPG_MIN_GP || 5);
 const POOL_MIN_GP = Number(process.env.POOL_PPG_MIN_GP || 20);
+const OWN_TIE_MAX = Number(process.env.OWN_TIE_MAX || 2);              // Brian, 2026-11-06: skip own ties of 3+ other nights
 const EPS = 1e-9;
 const two = (x) => x.toFixed(2);
 const pl = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;                 // 1 power-play point, 8 power-play points
@@ -75,12 +80,14 @@ function periodFinder() {
   return (season, ymd) => ((rcps[season] || []).find((r) => r.start <= ymd && ymd <= r.end) || {}).n || null;
 }
 
-// a night's franchise entries gain the pool-wide numbers: DOMINATION margin, and the pool's own entry
+// a night's franchise entries gain the pool-wide numbers: DOMINATION margin, and the pool's own entry. No DOMINATION
+// (and no margin) on a night two or more franchises had nobody playing; an unknown GP doesn't count as nobody.
 function finishNight(list) {
   const total = list.reduce((s, e) => s + e.pts, 0), gp = list.reduce((s, e) => s + (e.gp || 0), 0);
+  const idle = list.filter((e) => e.gp === 0).length;
   for (const e of list) {
     e.others = total - e.pts;
-    e.margin = list.length > 1 && e.pts > e.others ? e.pts - e.others : null;
+    e.margin = list.length > 1 && idle < 2 && e.pts > e.others ? e.pts - e.others : null;
   }
   const f = list[0];
   return { season: f.season, date: f.date, period: f.period, code: "ALL", pts: total, gp, n: list.length, pool: true };
@@ -214,7 +221,11 @@ function checkNight(list, marks) {
         if (!mark) continue;
         const old = { v: mark.v, holders: mark.holders.slice() };          // as it stood before tonight
         if (v > mark.v + EPS) { recs.push({ e, stat, level: lv, tie: false, old }); break; }
-        if (Math.abs(v - mark.v) <= EPS) { if (!stat.noTies) recs.push({ e, stat, level: lv, tie: true, old }); break; }
+        if (Math.abs(v - mark.v) <= EPS) {
+          if (lv.startsWith("fr") && mark.holders.length > OWN_TIE_MAX) continue;   // a well-worn own mark: the next level
+          if (!stat.noTies) recs.push({ e, stat, level: lv, tie: true, old });
+          break;
+        }
       }
     }
   }
