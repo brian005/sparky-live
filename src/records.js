@@ -79,11 +79,17 @@
 //
 // Also writes data/records/lens.json (the night record book and the last two weeks' night records) for Sparky
 // Lens, and hands it to Lens's Drive web app when RECORDS_DRIVE_URL and RECORDS_TOKEN are set.
+//
+// In Sparky chat every night and period record is a picture (src/record-pics.js, since 2026-11-06): drawn by
+// headless Chrome, pushed to data/records/pics/, posted as Markdown images. Milestones, player and prospect
+// lines stay text cards, in a second post. If the pictures can't be made or published, the whole post goes out
+// as text cards (as before); RECORD_PICS=0 does that on purpose. Slack (the fallback) always gets text cards.
 //   FRANCHISE_CODES                   optional JSON override of franchise -> initialism
 // ============================================================
 
 const chat = require("./chat");
 const NR = require("./night-records");
+const RP = require("./record-pics");
 const fs = require("fs");
 const path = require("path");
 
@@ -599,6 +605,27 @@ function oldPeriodRef(stat, o, levelId) {
 // a tie: how many other periods it ties, and which one when it's just one
 const otherPeriods = (n) => `${n} other period${n === 1 ? "" : "s"}`;
 
+// a period record as a picture (src/record-pics.js): the same names and colours as the night records
+const PERIOD_KIND = {
+  "pool-any": ["#F5B301", () => "SPARKY RECORD"],
+  "pool-n": ["#FF7A45", (n) => `P${n} RECORD`],
+  "fr-any": ["#3DDC84", () => "FRANCHISE RECORD"],
+  "fr-n": ["#6FB7FF", (n) => `P${n} FRANCHISE RECORD`],
+};
+function periodPic(e, stat, hit) {
+  const id = hit.level.id, [color, name] = PERIOD_KIND[id], isPpg = stat.key.startsWith("ppg");
+  const label = stat.label.replace(/\bppg\b/, "PPG");
+  const when = (o) => `${id.startsWith("pool") ? `${o.code} · ` : ""}${id.endsWith("-n") ? o.season : `Period ${o.period} · ${o.season}`}`;   // initialism: room
+  const v = (o) => (isPpg ? fmtPpg(ppg(o)) : String(o.pts));
+  return {
+    code: e.code, team: fname(e.code), color, kind: `${hit.tie ? "TIED · " : ""}${name(e.period)}`, allTime: id.startsWith("pool"),
+    what: `${label.charAt(0).toUpperCase()}${label.slice(1)} in ${id.endsWith("-n") ? `Period ${e.period}` : "a period"}`,
+    n: v(e), unit: isPpg ? "PPG" : e.pts === 1 ? "point" : "points", sub: isPpg ? `${e.pts} points from ${e.gp} games played` : `from ${e.gp} games played`,
+    foot: hit.tie ? [`Ties ${otherPeriods(hit.ties.length)}`, hit.ties.length === 1 ? when(hit.ties[0]) : ""] : ["Old mark", `${v(hit.old)} · ${when(hit.old)}`],
+    when: `Period ${e.period}`, dom: null,
+  };
+}
+
 function periodLine(e, stat, hit) {
   const what = {
     "pool-any": `the pool record for ${stat.label} in a period`,
@@ -657,12 +684,67 @@ async function slack(text, attachments) {
 // its heading. The plain text of every line rides along as each card's fallback (notifications, old clients).
 const PLAIN = "#5B6B8C";
 const lineCard = (l) => ({ fallback: l, color: PLAIN, text: l });
+const textCard = ({ pic, ...card }) => card;                          // a card as sent: its picture layout left off
 function cardPost(sections, title) {
   const used = sections.filter((x) => x.cards.length);
   const only = used.length === 1 && used[0].night ? used[0] : null;
   const attachments = [];
-  for (const sec of used) sec.cards.forEach((c, i) => attachments.push(i === 0 && sec.head && sec !== only ? { ...c, pretext: sec.head } : c));
+  for (const sec of used) sec.cards.forEach((c, i) => attachments.push(textCard(i === 0 && sec.head && sec !== only ? { ...c, pretext: sec.head } : c)));
   return { text: only ? `🏆 *${title} · ${only.night.replace(/^Night of /, "")}*` : `🏆 *${title}*`, attachments };
+}
+
+// ---- the post as pictures (Sparky chat) ---------------------------------------------------------------------
+// Every card with a picture (night and period records) goes up as a picture, in order, PICS_PER_POST to a post
+// (F2's panel folds a post's pictures past three behind "Show more" anyway); the cards without one (milestones,
+// players, prospect lines) follow as text cards in a post of their own. The pictures are made and published
+// before anything is posted, so a failure there leaves the whole post to the text cards.
+const PICS_PER_POST = 4;
+let LOGO_URLS = {};                                                   // code -> logo URL (F2's teams), set in main
+async function logoData() {
+  const out = {};
+  for (const [c, u] of Object.entries(LOGO_URLS)) {
+    try {
+      const r = await fetch(u, { headers: u.startsWith(F2_BASE) ? { Cookie: cookie() } : {} });
+      const ct = (r.headers.get("content-type") || "").split(";")[0];
+      if (r.ok && /^image\//.test(ct)) { out[c] = `data:${ct};base64,${Buffer.from(await r.arrayBuffer()).toString("base64")}`; continue; }
+    } catch (e) {}
+    const f = path.join(DATA, "logos", `${c}.png`);                  // the repo's copy, if F2's won't come
+    if (fs.existsSync(f)) out[c] = `data:image/png;base64,${fs.readFileSync(f).toString("base64")}`;
+  }
+  return out;
+}
+function picHead(sections, title) {
+  const nights = sections.filter((s) => s.night), periods = sections.filter((s) => s.period);
+  if (nights.length === 1 && !periods.length) return `🏆 *${title} · ${nights[0].night.replace(/^Night of /, "")}*`;
+  if (periods.length === 1 && !nights.length) return `🏆 *${title} · Period ${periods[0].period} is final*`;
+  return `🏆 *${title}*`;
+}
+async function postRecords(sections, title) {
+  const used = sections.filter((x) => x.cards.length);
+  const withPic = used.flatMap((s) => s.cards.filter((c) => c.pic));
+  let urls = null;
+  if (withPic.length && process.env.RECORD_PICS !== "0" && !NO_SLACK && chat.where() === "Sparky chat") {
+    try {
+      const now = new Date(), stamp = `${pacificToday()}-${String(now.getUTCHours()).padStart(2, "0")}${String(now.getUTCMinutes()).padStart(2, "0")}${TEST ? "-test" : ""}`;
+      const files = RP.render(withPic.map((c) => c.pic), { logos: await logoData(), dir: path.join(OUT_DIR, "pics"), stamp });
+      urls = await RP.publish(files, `Screech pictures ${stamp}`);
+      log(`Pictures: ${urls.length} (${files.map((f) => f.rel).join(", ")})`);
+    } catch (e) { log(`Pictures not made (${e.message}): posting text cards instead.`); urls = null; }
+  }
+  if (!urls) { const p = cardPost(sections, title); return slack(p.text, p.attachments); }
+  const head = picHead(used.filter((s) => s.cards.some((c) => c.pic)), title), parts = Math.ceil(urls.length / PICS_PER_POST);
+  for (let i = 0; i < parts; i++) {
+    const chunk = urls.slice(i * PICS_PER_POST, (i + 1) * PICS_PER_POST);
+    // on the header's own line: F2's md() drops the ![](...) but not line breaks, which would leave a gap
+    await slack(`${head}${parts > 1 ? ` (${i + 1} of ${parts})` : ""} ${chunk.map((u) => `![](${u})`).join("")}`);
+  }
+  const rest = used.map((s) => ({ ...s, cards: s.cards.filter((c) => !c.pic) })).filter((s) => s.cards.length);
+  if (rest.length) {
+    const attachments = [];
+    for (const sec of rest) sec.cards.forEach((c, i) => attachments.push(textCard(i === 0 && sec.head ? { ...c, pretext: sec.head } : c)));
+    await slack("", attachments);
+  }
+  return true;
 }
 
 // ---- Sparky Lens ---------------------------------------------------------------------------------------
@@ -699,6 +781,7 @@ async function toLens(lens) {
   // DOMINATION showed RMS's sausages 350 px tall under the card. CARD_LOGOS=1 brings them back once the panel skips
   // pictures its cards already show.
   const logo = (c) => (process.env.CARD_LOGOS === "1" && LOGO[c]) || "";
+  LOGO_URLS = LOGO;                                                    // the pictures carry the logos themselves
 
   // never let an old copy of this season in the history files double up with F2's
   const histPeriods = hist.periods.filter((p) => p.season !== season);
@@ -738,14 +821,14 @@ async function toLens(lens) {
     const text = paras.length ? `_Replay: what the night records would have said since ${prettyDate(REPLAY_FROM)}._\n\n${paras.join("\n\n")}` : "No night records.";
     log("\n" + text + "\n");
     if (ARGS.includes("--cards-json")) log(JSON.stringify(cardPost(sections, "Records (replay)")));
-    if (TEST && paras.length) { const p = cardPost(sections, `Records replay since ${prettyDate(REPLAY_FROM)}`); await slack(p.text, p.attachments); }
+    if (TEST && paras.length) await postRecords(sections, "Records replay");
     return;
   }
 
   // the record book and the last two weeks' night records, for Sparky Lens
   const recent = new Set([...new Set(ncur.map((e) => e.date))].sort().slice(-14));
   const lensRun = NR.run({ hist: nhist, cur: ncur, want: (d) => recent.has(d), fname, prettyDate, logo });
-  const lens = { built: new Date().toISOString(), season, minGp: NR.MIN_GP, poolMinGp: NR.POOL_MIN_GP, names: { ...FULL }, book: NR.book(lensRun.marks), nights: lensRun.records };
+  const lens = { v: 2, built: new Date().toISOString(), season, minGp: NR.MIN_GP, poolMinGp: NR.POOL_MIN_GP, names: { ...FULL }, book: NR.book(lensRun.marks), nights: lensRun.records };
   if (!TEST) {
     fs.mkdirSync(OUT_DIR, { recursive: true });
     fs.writeFileSync(path.join(OUT_DIR, "lens.json"), JSON.stringify(lens));
@@ -759,12 +842,15 @@ async function toLens(lens) {
 
   // check in time order; each checked item joins the book before the next one is checked
   const lines = { periods: {}, nights: {} };
+  const periodCards = {};                                              // Period N -> its records as cards (with pictures)
   const bookPeriods = [...histPeriods, ...periods.filter((p) => donePeriods.has(pKey(p)))];
 
   const newPeriodNums = [...new Set(periods.filter((p) => !donePeriods.has(pKey(p))).map((p) => p.period))].sort((a, b) => a - b);
   for (const n of newPeriodNums) {
     const batch = periods.filter((p) => p.period === n);
-    lines.periods[n] = periodRecords(batch, [...bookPeriods]);
+    const recs = periodRecords(batch, [...bookPeriods]);
+    lines.periods[n] = recs.map((x) => x.line);
+    periodCards[n] = recs.map((x) => ({ ...lineCard(x.line), pic: x.pic }));
     bookPeriods.push(...batch);
     donePeriods.add(`${season}|P${n}`);
   }
@@ -840,7 +926,7 @@ async function toLens(lens) {
   if (playerOut.newDates.length) log(`Player checks: ${playerOut.newDates.join(", ")}`);
 
   const sections = [];
-  for (const n of periodNums) sections.push({ head: `*Period ${n} is final.*`, cards: [...(lines.periods[n] || []), ...(prosOut.periodLines[n] || [])].map(lineCard) });
+  for (const n of periodNums) sections.push({ head: `*Period ${n} is final.*`, period: n, cards: [...(periodCards[n] || []), ...(prosOut.periodLines[n] || []).map(lineCard)] });
   for (const d of Object.keys(lines.nights).sort()) sections.push({ head: `*Night of ${prettyDate(d)}*`, night: prettyDate(d), cards: nr.cards[d] || lines.nights[d].map(lineCard) });
   sections.push({ head: null, cards: [...Object.keys(milestones).sort().flatMap((d) => milestones[d]), ...playerOut.lines, ...Object.keys(prosOut.nightLines).sort().flatMap((d) => prosOut.nightLines[d])].map(lineCard) });
 
@@ -848,8 +934,7 @@ async function toLens(lens) {
   if (paras.length) {
     const text = paras.join("\n\n");
     log("\n" + text + "\n");
-    const p = cardPost(sections, "Records");
-    if (!SEED) posted = await slack(p.text, p.attachments);
+    if (!SEED) posted = await postRecords(sections, "Records");
   } else log("No records.");
 
   // state moves on only when the post went out (or there was nothing to post, or it's a seed)
@@ -871,7 +956,7 @@ function periodRecords(batch, prior) {
       const beaten = batch.some((x) => x !== e && stat.dir * (stat.val(x) - stat.val(e)) > EPS);
       const levels = periodLevels(e).filter((l) => !(beaten && l.id.startsWith("pool")));
       const hit = bestLevel(e, prior, stat, levels);
-      if (hit) out.push(periodLine(e, stat, hit));
+      if (hit) out.push({ line: periodLine(e, stat, hit), pic: periodPic(e, stat, hit) });
     }
   }
   return out;

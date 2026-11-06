@@ -255,6 +255,8 @@ function wording(fname, prettyDate) {
 }
 
 // ---- cards (Mattermost / Slack message attachments) ---------------------------------------------------------
+// Each card also carries `pic`: the same record laid out for a picture (src/record-pics.js), which is how Screech
+// posts in Sparky chat since 2026-11-06; the text card is the fallback.
 // One card a record: the level's colour down the side, the franchise and its logo, the kind of record, what it is,
 // the number in bold, and the old mark (or the nights it ties) underneath. Text is Slack-style (*bold*);
 // src/chat.js converts it. Drawn for F2's own chat panel (app/chatapp.js), which is where the league reads
@@ -278,6 +280,7 @@ const levelName = (r) => (r.e.pool ? (r.level === "pool-n" ? `P${r.e.period} WHO
 const allTime = (r) => r.e.pool || r.level.startsWith("pool");
 const POOL_COLOR = "#A78BFA", DOM_COLOR = "#E5484D";
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const split = (big) => { const m = String(big).match(/^(\S+)\s+(.*)$/); return m ? [m[1], m[2]] : [String(big), ""]; };   // "8 power-play points" -> 8, power-play points
 function cards(fname, prettyDate, logo) {
   const short = (d) => prettyDate(d).replace(/, \d{4}$/, (y) => (y.slice(2) === String(new Date().getFullYear()) ? "" : y));
   const num = (stat, v) => (stat.num ? stat.num(v) : String(v));
@@ -289,20 +292,29 @@ function cards(fname, prettyDate, logo) {
     let oldTitle, oldVal;
     if (!r.tie) { oldTitle = "Old mark"; oldVal = `${ref(r, h[0])}${h.length > 1 ? ` (tied ${h.length - 1}× since)` : ""}`; }
     else { oldTitle = `Ties ${otherNights(h.length)}`; oldVal = h.length === 1 ? when(r, h[0]) : ""; }   // the date only for one
+    // the picture names an old mark's franchise by its initialism ("7 · MPP · Nov 1, 2018"): the full name won't fit
+    const picWhen = (o) => `${namesHolder(r, o) ? `${o.code} · ` : ""}${short(o.date)}`;
+    const picOld = !r.tie ? `${num(r.stat, r.old.v)}${r.stat.ref ? r.stat.ref(h[0]) : ""} · ${picWhen(h[0])}${h.length > 1 ? ` (tied ${h.length - 1}× since)` : ""}`
+      : h.length === 1 ? picWhen(h[0]) : "";
     const sub = r.stat.sub ? r.stat.sub(r.e) : "";
     const who = r.e.pool ? "The whole pool" : fname(r.e.code), icon = r.e.pool ? "" : logo(r.e.code);
+    const color = r.e.pool ? POOL_COLOR : lv.color, [num0, unit] = split(r.stat.big(r.e));
     return {
-      fallback,
-      color: r.e.pool ? POOL_COLOR : lv.color,
+      fallback, color,
       author_name: who, ...(icon ? { author_icon: icon } : {}),
       title: r.tie ? `🤝 TIED · ${levelName(r)}` : `${lv.icon} ${levelName(r)}`,
       text: `${allTime(r) ? "_all-time_\n" : ""}${what}\n*${r.stat.big(r.e)}*${sub ? `\n${sub}` : ""}`,
       fields: [{ title: oldTitle, value: oldVal, short: false }],
+      // the same record as a picture (src/record-pics.js); records.js takes it off before sending a text card
+      pic: { code: r.e.pool ? null : r.e.code, team: who, color, kind: `${r.tie ? "TIED · " : ""}${levelName(r)}`, allTime: allTime(r),
+        what, n: num0, unit, sub, foot: [oldTitle, picOld], when: short(r.e.date), dom: null },
     };
   };
   const domination = (e, fallback) => ({
     fallback, color: DOM_COLOR, author_name: fname(e.code), ...(logo(e.code) ? { author_icon: logo(e.code) } : {}),
     title: "💥 DOMINATION", text: `*${e.pts} point${e.pts === 1 ? "" : "s"}*\nThe other five combined: ${e.others}`,
+    pic: { code: e.code, team: fname(e.code), color: DOM_COLOR, kind: "DOMINATION", allTime: false, what: "Outscored the other five franchises combined",
+      n: String(e.pts), unit: e.pts === 1 ? "point" : "points", sub: "", foot: null, when: short(e.date), dom: { me: e.pts, rest: e.others } },
   });
   return { record, domination };
 }
@@ -338,8 +350,10 @@ function run({ hist, cur, want, fname, prettyDate, logo = () => "" }) {
     ];
     out.lines[date] = lines;
     const doms = list.filter((e) => !e.pool && e.margin != null);
-    out.cards[date] = [...doms.map((e) => card.domination(e, dom(e))), ...recs.map((r) => card.record(r, line(r)))];
-    out.records[date] = { dominations: list.filter((e) => !e.pool && e.margin != null).map((e) => ({ code: e.code, pts: e.pts, others: e.others })), records: recs.map(plain) };
+    const dc = doms.map((e) => card.domination(e, dom(e))), rc = recs.map((r) => card.record(r, line(r)));
+    out.cards[date] = [...dc, ...rc];
+    // for Lens (data/records/lens.json): each one with its picture layout, which Lens draws as its own card
+    out.records[date] = { dominations: doms.map((e, i) => ({ code: e.code, pts: e.pts, others: e.others, pic: dc[i].pic })), records: recs.map((r, i) => ({ ...plain(r), pic: rc[i].pic })) };
     out.checked.push(date);
   }
   return out;

@@ -20,7 +20,7 @@ secrets/variables. Committed reports in `data/` are visible to anyone.
 | Workflow | Script | When | Posts as |
 |---|---|---|---|
 | `f1-replicate.yml` - Fantrax janitor | `src/f1-replicate.js` | 23:00 PDT / 22:00 PST nightly, plus Mondays 14:00 PDT / 13:00 PST (pre-lock) | Belding (#sparkybots) |
-| `records.yml` - Records | `src/records.js` (+ `src/night-records.js`; first run also `src/player-nights-backfill.js`) | 22:30 / 23:30 PDT | Screech |
+| `records.yml` - Records | `src/records.js` (+ `src/night-records.js`, `src/record-pics.js`; first run also `src/player-nights-backfill.js`) | 22:30 / 23:30 PDT | Screech |
 | `nightly-report.yml` | `src/nightly-report.js` | 09:00 PDT | Lisa Turtle |
 | `sunday-report.yml` | `src/projection-report.js` | Sundays 09:30 PDT | Lisa Turtle ("F2 stats department") |
 | `bench-streaks.yml` | `src/bench-streaks.js` | 18:05, night before lock | Zack Morris |
@@ -176,11 +176,35 @@ Dispatch (from Brian's PowerShell):
   pool record the franchise) only when it's one: "Ties 1 other night: Nov 11, 2023", "Ties 4 other nights" (Brian,
   2026-11-04; period and prospect-period ties the same, "Ties 1 other period: 2022-23", "Ties 3 other periods"). The DOMINATION margin stat
   is "biggest margin of victory".
-- Image cards (prototype, not wired in): one 500x300 image a record, designed in HTML and rendered with Playwright;
-  F2 chat shows a post's images full width, at most 350px tall, and folds a post after ~3 of them ("Show more").
+- **Pictures (since 2026-11-06, Brian: "Lets do it as pictures").** In Sparky chat every night and period record is
+  a picture, not a text card (`src/record-pics.js`): a 400x240 card (800x480 PNG) drawn from HTML by headless Chrome
+  on the command line (the runner's `google-chrome`; still no npm install), Barlow Condensed + Poppins from
+  `assets/fonts/` (OFL), the franchise logo from F2's teams (else `data/logos/`), the level's colour, the record's
+  name ("TIED · P3 FRANCHISE RECORD", "ALL-TIME" tag on pool levels), what it is, the number big, the old mark or the
+  nights it ties (an old holder by initialism: "1.14 · MPP · 2025-26"), the night or period top right. DOMINATION has
+  bars (the franchise against the other five). Each card in `night-records.js` / `records.js` carries a `pic` layout;
+  `records.js` strips it off for text cards.
+  - How they get into the chat: the PNGs are committed to `data/records/pics/` and pushed from inside the run
+    (`git pull --rebase --autostash`, 4 tries), then posted as `![](raw.githubusercontent.com/<repo>/<sha>/...)` on the
+    header's line (F2's `md()` drops the image text but keeps line breaks). Mattermost lists them in
+    `metadata.images` (sorted by URL, hence the -01, -02 names) and F2's `picsHtml` draws each 330 px wide. The run
+    waits until GitHub serves every picture before posting. 4 pictures a post ("(1 of 3)"); milestones, player and
+    prospect lines follow as text cards in a post of their own.
+  - Pictures older than 14 days leave the tree in the same commit (each is ~190 KB and every workflow checks out the
+    tree); old posts keep working because their URLs are pinned to a commit.
+  - Fallback: no Chrome, a push that won't go, or a picture GitHub won't serve, and the whole post goes out as text
+    cards (as before); `RECORD_PICS=0` does it on purpose; Slack always gets text cards. `--no-slack` makes none.
+  - `chat.js` sends a webhook post once more if the connection dropped (F2 and the chat share a host; a kept-alive
+    socket can go stale while the pictures draw).
+  - Offline test: a stand-in F2 + webhook server, `RECORD_PICS_URL_BASE=http://localhost:PORT/raw` (skips git),
+    `RECORDS_DIR=<temp>` for a fresh state; `--replay-from 2026-10-25 --test` gave 9 pictures in 3 posts, a fresh
+    state at `--today 2026-11-12` gave 43 (periods 1-3 and every night) in 11 posts plus the text-card post.
 - `--replay-from YYYY-MM-DD` (workflow input `replay`) prints what the night records would have said; with a
-  channel it test-posts. `data/records/lens.json` is the record book + the last 14 nights' records for Lens;
-  posted to Lens's Drive web app when `RECORDS_DRIVE_URL` / `RECORDS_TOKEN` are set (not yet).
+  channel it test-posts. `data/records/lens.json` (v 2) is the record book + the last 14 nights' records and
+  DOMINATIONs for Lens, each with its picture layout (`pic`), rewritten by every real run (not `--test`) and committed
+  with the state. Sparky Lens (1.49.0+) reads it straight from raw.githubusercontent.com for LAST NIGHT's RECORDS
+  section; keep `pic`'s fields as they are, or change Lens's `lnRecCard` with them. The Drive copy
+  (`RECORDS_DRIVE_URL` / `RECORDS_TOKEN`, never set) isn't needed.
 
 ## Lines feed (for Sparky Lens)
 
@@ -199,6 +223,13 @@ Dispatch (from Brian's PowerShell):
 - Offline test: a stand-in Daily Faceoff (32 pages in the `__NEXT_DATA__` shape) via `DFO_BASE`, `DFO_PACE_MS=0`.
 
 ## Change log
+
+- **2026-11-06 (later)** - `lens.json` v 2: every night record and DOMINATION carries its picture layout (`pic`) for
+  Sparky Lens's new RECORDS section (Brian: "Show night records in lens").
+- **2026-11-06** - Screech posts pictures (see "Pictures" under Night records): `src/record-pics.js`, `assets/fonts/`,
+  a `pic` layout on every night and period record card, `postRecords` in `records.js`, one retry for a dropped
+  webhook connection in `chat.js`. Tested offline end to end (render, post order, text fallback for the rest, the
+  commit/prune/autostash/push against a local remote).
 
 - **2026-11-05** - Screech's Nov 4 DOMINATION card (Brian: "This looks like waz"): RMS's logo printed full size
   under the card, because F2's chat panel draws every picture Mattermost lists in `metadata.images`, which includes the

@@ -54,7 +54,11 @@ async function post(text, { username, icon, attachments } = {}) {
   const cards = Array.isArray(attachments) && attachments.length ? attachments : null;
   if (WEBHOOK) {
     const body = { text: toMarkdown(text), ...(cards ? { attachments: cards.map(mdCard) } : {}), ...(username ? { username } : {}), ...iconFields(icon), ...(CHAT_CHANNEL ? { channel: CHAT_CHANNEL } : {}) };
-    const r = await fetch(WEBHOOK, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const send = () => fetch(WEBHOOK, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    let r;
+    // a dropped connection (Node reusing a kept-alive socket the server had just closed: F2 and the chat are the same
+    // host, and Screech's pictures can take a while to draw) never reached the server: send it once more
+    try { r = await send(); } catch (e) { await new Promise((f) => setTimeout(f, 2000)); r = await send(); }
     if (!r.ok) throw new Error(`Sparky chat: HTTP ${r.status} ${(await r.text()).slice(0, 200)}`);
     return true;
   }
