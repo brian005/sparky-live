@@ -2,86 +2,285 @@
   "date": "2026-11-06",
   "period": 3,
   "games": 3,
-  "goals": 0,
-  "notFinal": [
-    "CBJ@BUF (FUT)",
-    "SJS@MIN (FUT)",
-    "ANA@CGY (FUT)"
-  ],
+  "goals": 20,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
+      "eligible": 1,
+      "scored": 1,
       "g": 0,
-      "a": 0,
+      "a": 1,
       "a1": 0,
-      "a2": 0,
-      "pp": 0,
+      "a2": 1,
+      "pp": 1,
       "en": 0,
-      "gp": 0,
-      "games": {}
+      "gp": 2,
+      "games": {
+        "SJS@MIN": 1
+      }
     },
     "djdo03kcmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
+      "eligible": 3,
+      "scored": 3,
       "g": 0,
-      "a": 0,
-      "a1": 0,
-      "a2": 0,
-      "pp": 0,
+      "a": 3,
+      "a1": 2,
+      "a2": 1,
+      "pp": 1,
       "en": 0,
-      "gp": 0,
-      "games": {}
+      "gp": 3,
+      "games": {
+        "CBJ@BUF": 2,
+        "SJS@MIN": 1
+      }
     },
     "mo75fhhjmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
+      "eligible": 3,
+      "scored": 1,
+      "g": 1,
       "a": 0,
       "a1": 0,
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0,
-      "games": {}
+      "gp": 1,
+      "games": {
+        "SJS@MIN": 1
+      }
     },
     "smc5vz9tmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
-      "a1": 0,
-      "a2": 0,
-      "pp": 0,
+      "eligible": 8,
+      "scored": 7,
+      "g": 3,
+      "a": 4,
+      "a1": 1,
+      "a2": 3,
+      "pp": 4,
       "en": 0,
-      "gp": 0,
-      "games": {}
+      "gp": 4,
+      "games": {
+        "CBJ@BUF": 3,
+        "SJS@MIN": 4
+      }
     },
     "lo1c2zefmo319aqw": {
-      "eligible": 0,
-      "scored": 0,
-      "g": 0,
-      "a": 0,
-      "a1": 0,
-      "a2": 0,
-      "pp": 0,
+      "eligible": 9,
+      "scored": 5,
+      "g": 1,
+      "a": 4,
+      "a1": 2,
+      "a2": 2,
+      "pp": 1,
       "en": 0,
-      "gp": 0,
-      "games": {}
+      "gp": 3,
+      "games": {
+        "CBJ@BUF": 2,
+        "SJS@MIN": 1,
+        "ANA@CGY": 2
+      }
     },
     "h13alq00mo319aqw": {
-      "eligible": 0,
-      "scored": 0,
+      "eligible": 5,
+      "scored": 5,
+      "g": 1,
+      "a": 4,
+      "a1": 3,
+      "a2": 1,
+      "pp": 2,
+      "en": 0,
+      "gp": 2,
+      "games": {
+        "CBJ@BUF": 1,
+        "SJS@MIN": 4
+      }
+    }
+  },
+  "players": {
+    "05g42": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Jack Quinn",
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "CBJ@BUF"
+    },
+    "05gda": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Kent Johnson",
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "CBJ@BUF"
+    },
+    "05ylt": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Zach Benson",
+      "pts": 1,
       "g": 0,
-      "a": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "CBJ@BUF"
+    },
+    "042t5": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Tage Thompson",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "CBJ@BUF"
+    },
+    "05rjh": {
+      "team": "h13alq00mo319aqw",
+      "name": "Noah Ostlund",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "CBJ@BUF"
+    },
+    "05tur": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Matthew Knies",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "CBJ@BUF"
+    },
+    "03rh3": {
+      "team": "h13alq00mo319aqw",
+      "name": "Kirill Kaprizov",
+      "pts": 4,
+      "g": 1,
+      "a1": 2,
+      "a2": 1,
+      "pp": 2,
+      "en": 0,
+      "game": "SJS@MIN"
+    },
+    "04lbz": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Quinn Hughes",
+      "pts": 3,
+      "g": 1,
+      "a1": 1,
+      "a2": 1,
+      "pp": 2,
+      "en": 0,
+      "game": "SJS@MIN"
+    },
+    "04xec": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Matt Boldy",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "SJS@MIN"
+    },
+    "05w9c": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Macklin Celebrini",
+      "pts": 1,
+      "g": 1,
       "a1": 0,
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0,
-      "games": {}
+      "game": "SJS@MIN"
+    },
+    "0644b": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Will Smith",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "SJS@MIN"
+    },
+    "06imq": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Maxim Shabanov",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "SJS@MIN"
+    },
+    "03rae": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Joel Eriksson Ek",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "SJS@MIN"
+    },
+    "06hcw": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Beckett Sennecke",
+      "pts": 2,
+      "g": 0,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "ANA@CGY"
     }
   },
-  "players": {},
-  "bench": {}
+  "bench": {
+    "03ra7": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Zach Werenski",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06hco": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Zayne Parekh",
+      "status": "MINORS",
+      "pts": 2
+    },
+    "04lcf": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Joel Farabee",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05y3a": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Leo Carlsson",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "05rjd": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Cutter Gauthier",
+      "status": "RESERVE",
+      "pts": 1
+    }
+  }
 }
