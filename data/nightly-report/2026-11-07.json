@@ -2,48 +2,47 @@
   "date": "2026-11-07",
   "period": 3,
   "games": 12,
-  "goals": 79,
-  "notFinal": [
-    "VAN@EDM (CRIT)"
-  ],
+  "goals": 81,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
-      "eligible": 7,
-      "scored": 7,
-      "g": 2,
+      "eligible": 8,
+      "scored": 8,
+      "g": 3,
       "a": 5,
       "a1": 1,
       "a2": 4,
       "pp": 3,
-      "en": 0,
-      "gp": 10,
+      "en": 1,
+      "gp": 12,
       "games": {
         "CHI@CAR": 2,
         "TBL@MIN": 2,
-        "VAN@EDM": 3
+        "VAN@EDM": 4
       }
     },
     "djdo03kcmo319aqw": {
-      "eligible": 16,
-      "scored": 13,
+      "eligible": 17,
+      "scored": 14,
       "g": 10,
-      "a": 3,
+      "a": 4,
       "a1": 1,
-      "a2": 2,
+      "a2": 3,
       "pp": 5,
       "en": 0,
-      "gp": 10,
+      "gp": 12,
       "games": {
         "STL@NSH": 1,
         "NYR@SEA": 2,
         "MTL@TOR": 2,
         "CHI@CAR": 3,
         "SJS@DAL": 2,
-        "TBL@MIN": 3
+        "TBL@MIN": 3,
+        "VAN@EDM": 1
       }
     },
     "mo75fhhjmo319aqw": {
-      "eligible": 18,
+      "eligible": 19,
       "scored": 13,
       "g": 6,
       "a": 7,
@@ -51,7 +50,7 @@
       "a2": 3,
       "pp": 6,
       "en": 0,
-      "gp": 11,
+      "gp": 13,
       "games": {
         "FLA@WSH": 2,
         "MTL@TOR": 3,
@@ -61,22 +60,22 @@
       }
     },
     "smc5vz9tmo319aqw": {
-      "eligible": 22,
-      "scored": 17,
+      "eligible": 23,
+      "scored": 18,
       "g": 4,
-      "a": 13,
-      "a1": 7,
+      "a": 14,
+      "a1": 8,
       "a2": 6,
       "pp": 10,
-      "en": 0,
-      "gp": 10,
+      "en": 1,
+      "gp": 11,
       "games": {
         "FLA@WSH": 1,
         "NYR@SEA": 3,
         "NJD@NYI": 2,
         "SJS@DAL": 4,
         "TBL@MIN": 5,
-        "VAN@EDM": 2
+        "VAN@EDM": 3
       }
     },
     "lo1c2zefmo319aqw": {
@@ -106,7 +105,7 @@
       "a2": 2,
       "pp": 2,
       "en": 1,
-      "gp": 11,
+      "gp": 12,
       "games": {
         "NYR@SEA": 1,
         "UTA@OTT": 3,
@@ -593,23 +592,23 @@
     "02un4": {
       "team": "smc5vz9tmo319aqw",
       "name": "Connor McDavid",
-      "pts": 2,
+      "pts": 3,
       "g": 0,
-      "a1": 2,
+      "a1": 3,
       "a2": 0,
       "pp": 1,
-      "en": 0,
+      "en": 1,
       "game": "VAN@EDM"
     },
     "02yjl": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Leon Draisaitl",
-      "pts": 2,
-      "g": 1,
+      "pts": 3,
+      "g": 2,
       "a1": 0,
       "a2": 1,
       "pp": 1,
-      "en": 0,
+      "en": 1,
       "game": "VAN@EDM"
     },
     "04lc0": {
@@ -620,6 +619,17 @@
       "a1": 0,
       "a2": 1,
       "pp": 1,
+      "en": 0,
+      "game": "VAN@EDM"
+    },
+    "048x9": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Elias Pettersson",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
       "en": 0,
       "game": "VAN@EDM"
     }
@@ -720,6 +730,12 @@
       "name": "Sidney Crosby",
       "status": "RESERVE",
       "pts": 2
+    },
+    "01ztp": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Zach Hyman",
+      "status": "RESERVE",
+      "pts": 1
     }
   }
 }
