@@ -628,7 +628,7 @@ function periodPic(e, stat, hit) {
     what: `${label.charAt(0).toUpperCase()}${label.slice(1)} in ${id.endsWith("-n") ? `Period ${e.period}` : "a period"}`,
     n: v(e), unit: isPpg ? "PPG" : e.pts === 1 ? "point" : "points", sub: isPpg ? `${e.pts} points from ${e.gp} games played` : `from ${e.gp} games played`,
     foot: hit.tie ? [`Ties ${otherPeriods(hit.ties.length)}`, hit.ties.length === 1 ? when(hit.ties[0]) : ""] : ["Old mark", `${v(hit.old)} · ${when(hit.old)}`],
-    when: `Period ${e.period}`, dom: null,
+    when: `Period ${e.period}`, dom: null, wm: id.startsWith("pool") ? "SPARKY" : e.code,
   };
 }
 

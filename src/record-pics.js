@@ -16,7 +16,9 @@
 // A picture (records.js and night-records.js make them):
 //   { code, team, color, kind, allTime, what, n, unit, sub, foot: [label, value] | null, when,
 //     dom: { me, rest } | null }
-//   code      the franchise ("BEW"), or null for the whole pool (no logo, a POOL badge)
+//   code      the franchise ("BEW"), or null for the whole league's own records ("Sparky record", the Sparky logo)
+//   wm        the watermark, a big faded logo cut off by the bottom-right corner: a franchise's code (its own records,
+//             a DOMINATION) or "SPARKY" (every all-time record) (Brian, 2026-11-08)
 //   kind      the record's name ("P3 FRANCHISE RECORD", "TIED · SPARKY RECORD", "DOMINATION")
 //   what      what it's a record for ("Most power-play points in a Period 3 night")
 //   n, unit   the number and its unit ("8", "power-play points"); sub: a line under the unit
@@ -37,6 +39,9 @@ const { execFileSync } = require("child_process");
 const ROOT = path.join(__dirname, "..");
 const FONTS = path.join(ROOT, "assets", "fonts");
 const W = 400, H = 240, SCALE = 2;
+const SPARKY = path.join(ROOT, "assets", "sparky-logo.png");   // the league's S, see-through (cut from Brian's art, 2026-11-08)
+let sparkyUri = null;
+const sparky = () => sparkyUri || (sparkyUri = fs.existsSync(SPARKY) ? `data:image/png;base64,${fs.readFileSync(SPARKY).toString("base64")}` : "");
 const KEEP_DAYS = 14;
 
 // ---- Chrome ----------------------------------------------------------------------------------------------
@@ -70,8 +75,10 @@ function fonts() {
 
 function cardHtml(p, logos = {}) {
   const c = /^#[0-9a-f]{6}$/i.test(p.color || "") ? p.color : "#5B6B8C";
-  const logo = p.code && logos[p.code];
-  const badge = logo ? `<img src="${esc(logo)}">` : `<span class="badge">${esc(p.code || "POOL")}</span>`;
+  const logo = p.code ? logos[p.code] : sparky();
+  const badge = logo ? `<img${p.code ? "" : ' class="sp"'} src="${esc(logo)}">` : `<span class="badge">${esc(p.code || "S")}</span>`;
+  const wmSrc = p.wm === "SPARKY" ? sparky() : p.wm ? logos[p.wm] : "";
+  const wm = wmSrc ? `<img class="wm${p.wm === "SPARKY" ? " sp" : ""}" src="${esc(wmSrc)}">` : "";
   const small = (s, n) => (String(s || "").length > n ? " sm" : "");
   const dom = p.dom ? (() => {
     const m = Math.max(p.dom.me, p.dom.rest, 1);
@@ -90,6 +97,10 @@ html,body{width:${W}px;height:${H}px;overflow:hidden;background:#0B1222}
 .top{position:absolute;left:22px;right:16px;top:15px;display:flex;align-items:center;gap:10px}
 .top img,.top .badge{width:40px;height:40px;border-radius:10px;object-fit:cover;flex:none;box-shadow:0 0 0 2px ${c}88}
 .top .badge{display:flex;align-items:center;justify-content:center;background:#1C2A45;font:800 14px/1 'Barlow Condensed';letter-spacing:.5px;color:${c}}
+.top img.sp{object-fit:contain;background:#0B1222;padding:4px}
+.wm{position:absolute;right:-58px;bottom:-74px;width:260px;height:260px;object-fit:cover;opacity:.15;
+  -webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);mask-image:radial-gradient(closest-side,#000 62%,transparent 100%)}
+.wm.sp{object-fit:contain;opacity:.13;-webkit-mask-image:none;mask-image:none;transform:rotate(-8deg)}
 .top .nm{font-weight:600;font-size:15px;line-height:1.15;flex:1;min-width:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .top .dt{font-size:12.5px;color:#9AABC8;white-space:nowrap;align-self:flex-start;margin-top:2px}
 .kind{position:absolute;left:22px;right:16px;top:66px;display:flex;align-items:center;gap:8px;white-space:nowrap}
@@ -117,7 +128,7 @@ html,body{width:${W}px;height:${H}px;overflow:hidden;background:#0B1222}
 .dom .row .t i{display:block;height:100%;border-radius:7px}
 .dom .row b{width:18px;text-align:right;font-weight:700}
 </style></head><body><div class="card${p.dom ? " d" : ""}"><div class="bar"></div>
-<div class="top">${badge}<div class="nm">${esc(p.team)}</div>${p.when ? `<div class="dt">${esc(p.when)}</div>` : ""}</div>
+${wm}<div class="top">${badge}<div class="nm">${esc(p.team)}</div>${p.when ? `<div class="dt">${esc(p.when)}</div>` : ""}</div>
 <div class="kind"><b class="${small(p.kind, 24).trim()}">${esc(p.kind)}</b>${p.allTime ? "<i>ALL-TIME</i>" : ""}</div>
 <div class="what${small(p.what, 46)}">${esc(p.what)}</div>
 <div class="num"><b>${esc(p.n)}</b><div class="u"><span>${esc(p.unit)}</span>${p.sub ? `<small>${esc(p.sub)}</small>` : ""}</div></div>

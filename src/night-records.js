@@ -258,7 +258,7 @@ function wording(fname, prettyDate) {
     let old;
     if (!r.tie) old = ` Old mark: ${ref(r, h[0])}${h.length > 1 ? `, tied ${h.length - 1} time${h.length === 2 ? "" : "s"} since` : ""}.`;
     else old = h.length === 1 ? ` Ties 1 other night: ${when(r, h[0])}.` : ` Ties ${otherNights(h.length)}.`;
-    const who = r.e.pool ? "The whole pool" : fname(r.e.code);
+    const who = r.e.pool ? "The Sparky League" : fname(r.e.code);
     return `*${who}* ${r.tie ? "tied" : "set"} ${where(r)}: ${r.stat.show(r.e)}.${old}`;
   };
   const dom = (e) => `*${fname(e.code)}* DOMINATION: ${e.pts} points, more than everyone else combined (${e.others}).`;
@@ -279,15 +279,18 @@ function wording(fname, prettyDate) {
 //   P5 RECORD               all-time                  any franchise, a Period 5 night         orange
 //   FRANCHISE RECORD        Brian's Endless Winter    that franchise's own, any night        green
 //   P5 FRANCHISE RECORD     Brian's Endless Winter    that franchise's own, a Period 5 night  blue
-// (the whole pool added up: WHOLE-POOL RECORD / P5 WHOLE-POOL RECORD, all-time, purple). The franchise's line is
-// the card's top line (its name and logo), so only "all-time" is written out.
+// The whole league added up is "Sparky record" on the top line (the Sparky logo where a franchise's would be), named
+// SPARKY RECORD / P5 RECORD, all-time, purple (Brian, 2026-11-08: SPARKY and ALL-TIME, never "pool" or "whole-pool").
+// The franchise's line is the card's top line (its name and logo), so only "all-time" is written out.
+// The picture's watermark (pic.wm, a big faded logo in its bottom-right corner): the franchise's own logo on its own
+// records (and a DOMINATION), the Sparky logo on every all-time one, a franchise's or the whole league's.
 const LEVEL = {
   "pool-any": { color: "#F5B301", icon: "🏆", name: () => "SPARKY RECORD" },
   "pool-n": { color: "#FF7A45", icon: "🏆", name: (e) => `P${e.period} RECORD` },
   "fr-any": { color: "#3DDC84", icon: "⭐", name: () => "FRANCHISE RECORD" },
   "fr-n": { color: "#6FB7FF", icon: "⭐", name: (e) => `P${e.period} FRANCHISE RECORD` },
 };
-const levelName = (r) => (r.e.pool ? (r.level === "pool-n" ? `P${r.e.period} WHOLE-POOL RECORD` : "WHOLE-POOL RECORD") : LEVEL[r.level].name(r.e));
+const levelName = (r) => (r.e.pool ? (r.level === "pool-n" ? `P${r.e.period} RECORD` : "SPARKY RECORD") : LEVEL[r.level].name(r.e));
 const allTime = (r) => r.e.pool || r.level.startsWith("pool");
 const POOL_COLOR = "#A78BFA", DOM_COLOR = "#E5484D";
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -308,7 +311,7 @@ function cards(fname, prettyDate, logo) {
     const picOld = !r.tie ? `${num(r.stat, r.old.v)}${r.stat.ref ? r.stat.ref(h[0]) : ""} · ${picWhen(h[0])}${h.length > 1 ? ` (tied ${h.length - 1}× since)` : ""}`
       : h.length === 1 ? picWhen(h[0]) : "";
     const sub = r.stat.sub ? r.stat.sub(r.e) : "";
-    const who = r.e.pool ? "The whole pool" : fname(r.e.code), icon = r.e.pool ? "" : logo(r.e.code);
+    const who = r.e.pool ? "Sparky record" : fname(r.e.code), icon = r.e.pool ? "" : logo(r.e.code);
     const color = r.e.pool ? POOL_COLOR : lv.color, [num0, unit] = split(r.stat.big(r.e));
     return {
       fallback, color,
@@ -318,14 +321,14 @@ function cards(fname, prettyDate, logo) {
       fields: [{ title: oldTitle, value: oldVal, short: false }],
       // the same record as a picture (src/record-pics.js); records.js takes it off before sending a text card
       pic: { code: r.e.pool ? null : r.e.code, team: who, color, kind: `${r.tie ? "TIED · " : ""}${levelName(r)}`, allTime: allTime(r),
-        what, n: num0, unit, sub, foot: [oldTitle, picOld], when: short(r.e.date), dom: null },
+        what, n: num0, unit, sub, foot: [oldTitle, picOld], when: short(r.e.date), dom: null, wm: allTime(r) ? "SPARKY" : r.e.code },
     };
   };
   const domination = (e, fallback) => ({
     fallback, color: DOM_COLOR, author_name: fname(e.code), ...(logo(e.code) ? { author_icon: logo(e.code) } : {}),
     title: "💥 DOMINATION", text: `*${e.pts} point${e.pts === 1 ? "" : "s"}*\nThe other five combined: ${e.others}`,
     pic: { code: e.code, team: fname(e.code), color: DOM_COLOR, kind: "DOMINATION", allTime: false, what: "Outscored the other five franchises combined",
-      n: String(e.pts), unit: e.pts === 1 ? "point" : "points", sub: "", foot: null, when: short(e.date), dom: { me: e.pts, rest: e.others } },
+      n: String(e.pts), unit: e.pts === 1 ? "point" : "points", sub: "", foot: null, when: short(e.date), dom: { me: e.pts, rest: e.others }, wm: e.code },
   });
   return { record, domination };
 }

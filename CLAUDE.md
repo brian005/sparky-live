@@ -175,7 +175,9 @@ Dispatch (from Brian's PowerShell):
 - Names and wording (Brian, 2026-11-02), a name and a line under it: SPARKY RECORD / all-time (any franchise,
   any night, gold); P5 RECORD / all-time (any franchise, a Period 5 night, orange); FRANCHISE RECORD / Brian's
   Endless Winter (that franchise's own, any night, green); P5 FRANCHISE RECORD / Brian's Endless Winter (its own in
-  a Period 5 night, blue); WHOLE-POOL RECORD and P5 WHOLE-POOL RECORD / all-time for the pool added up (purple).
+  a Period 5 night, blue). The whole league added up (Brian, 2026-11-08: "SPARKY" and "ALL-TIME" records, never
+  "pool" or "whole-pool"): SPARKY RECORD / P5 RECORD, all-time, purple, with "Sparky record" and the Sparky logo where
+  a franchise's name and logo go (its sentence: "The Sparky League set the record for ...").
   A card says the record once ("Most points from one NHL game in a Period 1 night") then only the number and its
   unit ("7 points", "1 power-play point"). The franchise is the card's top line, so a franchise record doesn't
   repeat it under the title. An old mark names the franchise only on a pool record; a franchise's own record is
@@ -191,6 +193,10 @@ Dispatch (from Brian's PowerShell):
   nights it ties (an old holder by initialism: "1.14 · MPP · 2025-26"), the night or period top right. DOMINATION has
   bars (the franchise against the other five). Each card in `night-records.js` / `records.js` carries a `pic` layout;
   `records.js` strips it off for text cards.
+  - Whose record it is (Brian, 2026-11-08): a big faded logo cut off by the bottom-right corner (`pic.wm`): the
+    franchise's own logo on its FRANCHISE / P5 FRANCHISE records and a DOMINATION; the Sparky logo on every all-time one
+    (SPARKY / P5 RECORD, a franchise's or the whole league's). The Sparky S is `assets/sparky-logo.png` (see-through,
+    cut from Brian's art; Sparky Lens loads the same file from raw.githubusercontent.com).
   - How they get into the chat: the PNGs are committed to `data/records/pics/` and pushed from inside the run
     (`git pull --rebase --autostash`, 4 tries), then posted as `![](raw.githubusercontent.com/<repo>/<sha>/...)` on the
     header's line (F2's `md()` drops the image text but keeps line breaks). Mattermost lists them in
@@ -231,6 +237,10 @@ Dispatch (from Brian's PowerShell):
 
 ## Change log
 
+- **2026-11-08** - Screech's pictures say whose record it is (Brian): a faded franchise logo in the corner of a
+  franchise's own records, the Sparky S on all-time ones; the whole league's records are "Sparky record" with the Sparky
+  logo, named SPARKY RECORD / P5 RECORD (no more WHOLE-POOL). `assets/sparky-logo.png`, `pic.wm`. Replayed Oct 15 -
+  Nov 7 offline (20 pictures) and checked them; Lens's RECORDS cards match (Lens 1.49.3).
 - **2026-11-06 (latest)** - Volume rules (see "Volume rules" under Night records): own ties of 3+ other nights /
   periods skipped (`OWN_TIE_MAX`, next level tried instead), no DOMINATION when 2+ franchises had nobody playing.
 - **2026-11-06 (later)** - `lens.json` v 2: every night record and DOMINATION carries its picture layout (`pic`) for
