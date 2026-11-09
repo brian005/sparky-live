@@ -80,9 +80,10 @@
 // Also writes data/records/lens.json (the night record book and the last two weeks' night records) for Sparky
 // Lens, and hands it to Lens's Drive web app when RECORDS_DRIVE_URL and RECORDS_TOKEN are set.
 //
-// In Sparky chat every night and period record is a picture (src/record-pics.js, since 2026-11-06): drawn by
-// headless Chrome, pushed to data/records/pics/, posted as Markdown images. Milestones, player and prospect
-// lines stay text cards, in a second post. If the pictures can't be made or published, the whole post goes out
+// In Sparky chat every night and period record is a picture (src/record-pics.js, since 2026-11-06), prospect
+// period and season records too (2026-11-09): drawn by headless Chrome, pushed to data/records/pics/, posted as
+// Markdown images. Milestones (all-time points and prospect points) and player lines stay text cards, in a second
+// post. If the pictures can't be made or published, the whole post goes out
 // as text cards (as before); RECORD_PICS=0 does that on purpose. Slack (the fallback) always gets text cards.
 //   FRANCHISE_CODES                   optional JSON override of franchise -> initialism
 // ============================================================
@@ -363,11 +364,21 @@ function prospectHit(e, prior, stat, levels, batch) {
   return null;
 }
 
+// Prospect records come back as { line, pic } (the sentence, and its picture for Sparky chat): period records by
+// period (periodRecs), season records by the night they're passed (nightRecs). The all-time 100s are milestones,
+// plain lines (nightLines).
 function prospectChecks(pros, pnightsHist, pnights, season, periodsFinal, state) {
-  const out = { nightLines: {}, periodLines: {}, otherLines: [], newNights: [], newPeriods: [] };
+  const out = { nightRecs: {}, nightLines: {}, periodRecs: {}, newNights: [], newPeriods: [] };
   const cur = pros.current && pros.current.season === season ? new Set(pros.current.prospects) : null;
   if (!cur) { log(`Prospect list is for ${pros.current && pros.current.season}, not ${season}: prospect checks skipped (re-export data/prospect-history.json).`); return out; }
   const names = pros.names || {};
+  const unit = (stat, v) => (stat.key === "pts" ? (v === 1 ? "prospect point" : "prospect points") : (v === 1 ? "prospect scoring" : "prospects scoring"));
+  // who scored, most first: "Beckett Sennecke 4 · Ivan Demidov 2", last names when that won't fit on the picture
+  const whoList = (by) => {
+    const rows = Object.entries(by || {}).sort((a, b) => b[1] - a[1]).map(([pid, v]) => [String(names[pid] || pid), v]);
+    const full = rows.map(([nm, v]) => `${nm} ${v}`).join(" · ");
+    return full.length <= 56 ? full : rows.map(([nm, v]) => `${nm.split(/\s+/).slice(1).join(" ") || nm} ${v}`).join(" · ");
+  };
 
   // history (prospect nights live in src/night-records.js now)
   const hPeriods = pros.periods.map((p) => ({ season: p.season, period: p.period, code: p.code, pts: p.pts, n: p.scorers.length, scorers: p.scorers }));
@@ -389,9 +400,10 @@ function prospectChecks(pros, pnightsHist, pnights, season, periodsFinal, state)
     const by = {};
     for (const r of night.rows) {
       if (!cur.has(r.pid)) continue;
-      by[r.code] = by[r.code] || { season, date: night.date, period: night.period, code: r.code, pts: 0, scorers: [], who: [] };
+      by[r.code] = by[r.code] || { season, date: night.date, period: night.period, code: r.code, pts: 0, scorers: [], who: [], by: {} };
       by[r.code].pts += r.pts;
       by[r.code].scorers.push(r.pid);
+      by[r.code].by[r.pid] = (by[r.code].by[r.pid] || 0) + r.pts;
       by[r.code].who.push(`${r.name || names[r.pid] || r.pid} ${r.pts}`);
       if (r.name) names[r.pid] = r.name;
     }
@@ -406,7 +418,7 @@ function prospectChecks(pros, pnightsHist, pnights, season, periodsFinal, state)
 
   for (const night of cNights) {
     const isNew = !doneNights.has(night.date);
-    const lines = [];
+    const recs = [], lines = [];
 
     // season records, the night they're passed; all-time milestones
     for (const e of night.teams) {
@@ -422,21 +434,37 @@ function prospectChecks(pros, pnightsHist, pnights, season, periodsFinal, state)
         const k = stat.key;
         const poolBest = Math.max(0, ...hSeasons.map((x) => x[k]));
         const frBest = Math.max(0, ...hSeasons.filter((x) => x.code === e.code).map((x) => x[k]));
-        const rivalsNow = Object.entries(seasonRun).filter(([c]) => c !== e.code).map(([, v]) => (k === "pts" ? v.pts : v.set.size));
-        const poolNow = Math.max(poolBest, ...rivalsNow);
+        const rivals = Object.entries(seasonRun).filter(([c]) => c !== e.code).map(([c, v]) => ({ code: c, v: k === "pts" ? v.pts : v.set.size }));
+        const poolNow = Math.max(poolBest, ...rivals.map((r) => r.v));
+        let pool = null, old = null;                          // old: { v, code, season } (code only on a pool record)
         if (before[k] <= poolNow && after[k] > poolNow) {
+          pool = true;
+          const rival = poolNow > poolBest ? rivals.find((r) => r.v === poolNow) : null;   // someone this season had it
           const holder = hSeasons.find((x) => x[k] === poolBest);
-          const old = after[k] > poolBest && poolNow === poolBest && holder ? ` Old mark: ${poolBest}, ${fname(holder.code)}, ${holder.season}.` : "";
-          lines.push(`*${fname(e.code)}* now holds the pool record for ${stat.label} in a season: ${after[k]} and counting.${old}`);
+          if (rival) old = { v: poolNow, code: rival.code, season };
+          else if (holder && poolBest > 0) old = { v: poolBest, code: holder.code, season: holder.season };
         } else if (frBest > 0 && before[k] <= frBest && after[k] > frBest) {
+          pool = false;
           const holder = hSeasons.find((x) => x.code === e.code && x[k] === frBest);
-          lines.push(`*${fname(e.code)}* now holds their own record for ${stat.label} in a season: ${after[k]} and counting. Old mark: ${frBest}, ${holder.season}.`);
+          old = { v: frBest, season: holder.season };
         }
+        if (pool === null) continue;
+        const oldText = old ? ` Old mark: ${old.v}, ${pool ? `${fname(old.code)}, ` : ""}${old.season}.` : "";
+        recs.push({
+          line: `*${fname(e.code)}* now holds ${pool ? "the pool" : "their own"} record for ${stat.label} in a season: ${after[k]} and counting.${oldText}`,
+          pic: {
+            code: e.code, team: fname(e.code), color: pool ? PERIOD_KIND["pool-any"][0] : PERIOD_KIND["fr-any"][0],
+            kind: pool ? "SPARKY RECORD" : "FRANCHISE RECORD", allTime: pool, what: `${cap(stat.label)} in a season`,
+            n: String(after[k]), unit: unit(stat, after[k]), sub: "and counting",
+            foot: old ? ["Old mark", `${old.v} · ${pool ? `${old.code} · ` : ""}${old.season}`] : null,
+            when: shortDate(night.date), dom: null, wm: pool ? "SPARKY" : e.code,
+          },
+        });
       }
       const from = Math.floor(prevAll / 100), to = Math.floor(allTime[e.code] / 100);
       for (let m = from + 1; m <= to; m++) lines.push(`*${fname(e.code)}* passed ${fmtN(m * 100)} all-time prospect points on ${prettyDate(e.date)}.`);
     }
-    if (isNew) { out.nightLines[night.date] = lines; out.newNights.push(night.date); }
+    if (isNew) { out.nightRecs[night.date] = recs; out.nightLines[night.date] = lines; out.newNights.push(night.date); }
   }
 
   // periods: final periods of this season not yet checked
@@ -445,30 +473,43 @@ function prospectChecks(pros, pnightsHist, pnights, season, periodsFinal, state)
     const teams = {};
     for (const night of cNights.filter((x) => x.period === n)) {
       for (const t of night.teams) {
-        teams[t.code] = teams[t.code] || { season, period: n, code: t.code, pts: 0, set: new Set() };
-        teams[t.code].pts += t.pts;
-        for (const s of t.scorers) teams[t.code].set.add(s);
+        const T = (teams[t.code] = teams[t.code] || { season, period: n, code: t.code, pts: 0, set: new Set(), by: {} });
+        T.pts += t.pts;
+        for (const s of t.scorers) T.set.add(s);
+        for (const [pid, v] of Object.entries(t.by)) T.by[pid] = (T.by[pid] || 0) + v;
       }
     }
-    const batch = Object.values(teams).map((t) => ({ season, period: n, code: t.code, pts: t.pts, n: t.set.size }));
+    const batch = Object.values(teams).map((t) => ({ season, period: n, code: t.code, pts: t.pts, n: t.set.size, by: t.by }));
     if (!donePeriods.has(`${season}|P${n}`)) {
-      const lines = [];
+      const recs = [];
       for (const e of batch) {
         for (const stat of PROSPECT_STATS) {
           const hit = prospectHit(e, bookPeriods, stat, periodLevels(e), batch);
           if (!hit) continue;
+          const id = hit.level.id, [color, name] = PERIOD_KIND[id], v = stat.val(e);
           const what = {
             "pool-any": `the pool record for ${stat.label} in a period`,
             "pool-n": `the pool record for ${stat.label} in Period ${n}`,
             "fr-any": `their own record for ${stat.label} in a period`,
             "fr-n": `their own record for ${stat.label} in Period ${n}`,
-          }[hit.level.id];
-          const when = (o) => oldPeriodWhen(o, hit.level.id), ref = (o) => `${stat.val(o)}, ${when(o)}`;
+          }[id];
+          const when = (o) => oldPeriodWhen(o, id), ref = (o) => `${stat.val(o)}, ${when(o)}`;
           const old = hit.tie ? (hit.ties.length === 1 ? ` Ties 1 other period: ${when(hit.ties[0])}.` : ` Ties ${otherPeriods(hit.ties.length)}.`) : ` Old mark: ${ref(hit.old)}.`;
-          lines.push(`*${fname(e.code)}* ${hit.tie ? "tied" : "set"} ${what}: ${stat.val(e)}.${old}`);
+          recs.push({
+            line: `*${fname(e.code)}* ${hit.tie ? "tied" : "set"} ${what}: ${v}.${old}`,
+            pic: {
+              code: e.code, team: fname(e.code), color, kind: `${hit.tie ? "TIED · " : ""}${name(n)}`, allTime: id.startsWith("pool"),
+              what: `${cap(stat.label)} in ${id.endsWith("-n") ? `Period ${n}` : "a period"}`,
+              n: String(v), unit: unit(stat, v), sub: whoList(e.by),
+              foot: hit.tie
+                ? [`Ties ${otherPeriods(hit.ties.length)}`, hit.ties.length === 1 ? picPeriodWhen(hit.ties[0], id) : ""]
+                : ["Old mark", `${stat.val(hit.old)} · ${picPeriodWhen(hit.old, id)}`],
+              when: `Period ${n}`, dom: null, wm: id.startsWith("pool") ? "SPARKY" : e.code,
+            },
+          });
         }
       }
-      out.periodLines[n] = lines;
+      out.periodRecs[n] = recs;
       out.newPeriods.push(`${season}|P${n}`);
     }
     bookPeriods.push(...batch);
@@ -618,14 +659,18 @@ const PERIOD_KIND = {
   "fr-any": ["#3DDC84", () => "FRANCHISE RECORD"],
   "fr-n": ["#6FB7FF", (n) => `P${n} FRANCHISE RECORD`],
 };
+const cap = (s) => `${s.charAt(0).toUpperCase()}${s.slice(1)}`;
+// an old period on a picture: the holder by initialism on a pool record (room), then the period and season
+const picPeriodWhen = (o, id) => `${id.startsWith("pool") ? `${o.code} · ` : ""}${id.endsWith("-n") ? o.season : `Period ${o.period} · ${o.season}`}`;
+const shortDate = (ymd) => new Date(ymd + "T12:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 function periodPic(e, stat, hit) {
   const id = hit.level.id, [color, name] = PERIOD_KIND[id], isPpg = stat.key.startsWith("ppg");
   const label = stat.label.replace(/\bppg\b/, "PPG");
-  const when = (o) => `${id.startsWith("pool") ? `${o.code} · ` : ""}${id.endsWith("-n") ? o.season : `Period ${o.period} · ${o.season}`}`;   // initialism: room
+  const when = (o) => picPeriodWhen(o, id);
   const v = (o) => (isPpg ? fmtPpg(ppg(o)) : String(o.pts));
   return {
     code: e.code, team: fname(e.code), color, kind: `${hit.tie ? "TIED · " : ""}${name(e.period)}`, allTime: id.startsWith("pool"),
-    what: `${label.charAt(0).toUpperCase()}${label.slice(1)} in ${id.endsWith("-n") ? `Period ${e.period}` : "a period"}`,
+    what: `${cap(label)} in ${id.endsWith("-n") ? `Period ${e.period}` : "a period"}`,
     n: v(e), unit: isPpg ? "PPG" : e.pts === 1 ? "point" : "points", sub: isPpg ? `${e.pts} points from ${e.gp} games played` : `from ${e.gp} games played`,
     foot: hit.tie ? [`Ties ${otherPeriods(hit.ties.length)}`, hit.ties.length === 1 ? when(hit.ties[0]) : ""] : ["Old mark", `${v(hit.old)} · ${when(hit.old)}`],
     when: `Period ${e.period}`, dom: null, wm: id.startsWith("pool") ? "SPARKY" : e.code,
@@ -700,9 +745,9 @@ function cardPost(sections, title) {
 }
 
 // ---- the post as pictures (Sparky chat) ---------------------------------------------------------------------
-// Every card with a picture (night and period records) goes up as a picture, in order, PICS_PER_POST to a post
-// (F2's panel folds a post's pictures past three behind "Show more" anyway); the cards without one (milestones,
-// players, prospect lines) follow as text cards in a post of their own. The pictures are made and published
+// Every card with a picture (night and period records, prospect period and season records) goes up as a picture,
+// in order, PICS_PER_POST to a post (F2's panel folds a post's pictures past three behind "Show more" anyway); the
+// cards without one (milestones, players) follow as text cards in a post of their own. The pictures are made and published
 // before anything is posted, so a failure there leaves the whole post to the text cards.
 const PICS_PER_POST = 4;
 let LOGO_URLS = {};                                                   // code -> logo URL (F2's teams), set in main
@@ -907,7 +952,7 @@ async function toLens(lens) {
 
   // prospects
   const pros = prosHist;
-  let prosOut = { nightLines: {}, periodLines: {}, newNights: [], newPeriods: [] };
+  let prosOut = { nightRecs: {}, nightLines: {}, periodRecs: {}, newNights: [], newPeriods: [] };
   if (pros) {
     const periodsFinal = [...donePeriods].filter((k) => k.startsWith(season + "|P")).map((k) => Number(k.split("|P")[1]));
     prosOut = prospectChecks(pros, loadJson("prospect-nights.json"), currentPlayerNights(season, teamCode, today), season, periodsFinal, state);
@@ -915,13 +960,16 @@ async function toLens(lens) {
   const doneProsNights = new Set([...(state.prospectNights || []), ...prosOut.newNights]);
   const doneProsPeriods = new Set([...(state.prospectPeriods || []), ...prosOut.newPeriods]);
 
+  // prospect period records join their period, prospect season records the night they're passed
+  const prosPeriod = (n) => prosOut.periodRecs[n] || [], prosNight = (d) => prosOut.nightRecs[d] || [];
   const paras = [];
-  const periodNums = [...new Set([...Object.keys(lines.periods), ...Object.keys(prosOut.periodLines)].map(Number))].sort((a, b) => a - b);
+  const periodNums = [...new Set([...Object.keys(lines.periods), ...Object.keys(prosOut.periodRecs)].map(Number))].sort((a, b) => a - b);
   for (const n of periodNums) {
-    const ls = [...(lines.periods[n] || []), ...(prosOut.periodLines[n] || [])];
+    const ls = [...(lines.periods[n] || []), ...prosPeriod(n).map((x) => x.line)];
     if (ls.length) paras.push(`*Period ${n} is final.*`, ...ls);
   }
-  for (const d of Object.keys(lines.nights).sort()) paras.push(`*Night of ${prettyDate(d)}*`, ...lines.nights[d]);
+  const nightDates = [...new Set([...Object.keys(lines.nights), ...Object.keys(prosOut.nightRecs).filter((d) => prosNight(d).length)])].sort();
+  for (const d of nightDates) paras.push(`*Night of ${prettyDate(d)}*`, ...(lines.nights[d] || []), ...prosNight(d).map((x) => x.line));
   for (const d of Object.keys(milestones).sort()) paras.push(...milestones[d]);
   paras.push(...playerOut.lines);
   for (const d of Object.keys(prosOut.nightLines).sort()) paras.push(...prosOut.nightLines[d]);
@@ -931,9 +979,13 @@ async function toLens(lens) {
   log(`Checked: ${newPeriodNums.map((n) => `Period ${n}`).concat(newDates).join(", ")}`);
   if (playerOut.newDates.length) log(`Player checks: ${playerOut.newDates.join(", ")}`);
 
+  const recCard = (x) => ({ ...lineCard(x.line), pic: x.pic });
   const sections = [];
-  for (const n of periodNums) sections.push({ head: `*Period ${n} is final.*`, period: n, cards: [...(periodCards[n] || []), ...(prosOut.periodLines[n] || []).map(lineCard)] });
-  for (const d of Object.keys(lines.nights).sort()) sections.push({ head: `*Night of ${prettyDate(d)}*`, night: prettyDate(d), cards: nr.cards[d] || lines.nights[d].map(lineCard) });
+  for (const n of periodNums) sections.push({ head: `*Period ${n} is final.*`, period: n, cards: [...(periodCards[n] || []), ...prosPeriod(n).map(recCard)] });
+  for (const d of nightDates) {
+    const nightCards = (nr.cards[d] || []).length ? nr.cards[d] : (lines.nights[d] || []).map(lineCard);
+    sections.push({ head: `*Night of ${prettyDate(d)}*`, night: prettyDate(d), cards: [...nightCards, ...prosNight(d).map(recCard)] });
+  }
   sections.push({ head: null, cards: [...Object.keys(milestones).sort().flatMap((d) => milestones[d]), ...playerOut.lines, ...Object.keys(prosOut.nightLines).sort().flatMap((d) => prosOut.nightLines[d])].map(lineCard) });
 
   let posted = false;

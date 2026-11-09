@@ -201,8 +201,11 @@ Dispatch (from Brian's PowerShell):
     (`git pull --rebase --autostash`, 4 tries), then posted as `![](raw.githubusercontent.com/<repo>/<sha>/...)` on the
     header's line (F2's `md()` drops the image text but keeps line breaks). Mattermost lists them in
     `metadata.images` (sorted by URL, hence the -01, -02 names) and F2's `picsHtml` draws each 330 px wide. The run
-    waits until GitHub serves every picture before posting. 4 pictures a post ("(1 of 3)"); milestones, player and
-    prospect lines follow as text cards in a post of their own.
+    waits until GitHub serves every picture before posting. 4 pictures a post ("(1 of 3)"); milestones (all-time
+    points and prospect points) and player lines follow as text cards in a post of their own.
+  - Prospect period records are pictures in their period's section, with who scored under the number (last names
+    when the full list won't fit); prospect season records are pictures in the night they're passed ("and
+    counting", the night top right), in that night's section even when it has no night records (since 2026-11-09).
   - Pictures older than 14 days leave the tree in the same commit (each is ~190 KB and every workflow checks out the
     tree); old posts keep working because their URLs are pinned to a commit.
   - Fallback: no Chrome, a push that won't go, or a picture GitHub won't serve, and the whole post goes out as text
@@ -237,6 +240,11 @@ Dispatch (from Brian's PowerShell):
 
 ## Change log
 
+- **2026-11-09** - Prospect period and season records are pictures too (Brian, about Richie's Period 3 prospect
+  record arriving as a text card under the period's pictures). `prospectChecks` returns `{ line, pic }`
+  (`periodRecs`, `nightRecs`); the 100s stay text (`nightLines`). A season record passing a mark someone set earlier
+  this season now names it ("Old mark: 9, ..., 2026-27"). Replayed the Period 3 night offline (5 pictures, no text
+  post) and a shrunken prospect history (20 pictures: pool, P2 and own period records, own and pool season records).
 - **2026-11-08** - Screech's pictures say whose record it is (Brian): a faded franchise logo in the corner of a
   franchise's own records, the Sparky S on all-time ones; the whole league's records are "Sparky record" with the Sparky
   logo, named SPARKY RECORD / P5 RECORD (no more WHOLE-POOL). `assets/sparky-logo.png`, `pic.wm`. Replayed Oct 15 -
