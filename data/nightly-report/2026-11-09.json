@@ -1,0 +1,199 @@
+{
+  "date": "2026-11-09",
+  "period": 4,
+  "games": 3,
+  "goals": 12,
+  "notFinal": [
+    "NYI@SJS (CRIT)"
+  ],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 3,
+      "scored": 2,
+      "g": 2,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "gp": 2,
+      "games": {
+        "NYR@EDM": 2
+      }
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 3,
+      "scored": 3,
+      "g": 1,
+      "a": 2,
+      "a1": 1,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "gp": 3,
+      "games": {
+        "NYR@EDM": 1,
+        "PHI@VAN": 1,
+        "NYI@SJS": 1
+      }
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 3,
+      "scored": 2,
+      "g": 1,
+      "a": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 2,
+      "en": 0,
+      "gp": 2,
+      "games": {
+        "PHI@VAN": 1,
+        "NYI@SJS": 1
+      }
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 2,
+      "scored": 2,
+      "g": 1,
+      "a": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "gp": 2,
+      "games": {
+        "NYR@EDM": 1,
+        "PHI@VAN": 1
+      }
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1,
+      "games": {}
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1,
+      "games": {}
+    }
+  },
+  "players": {
+    "02un4": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Connor McDavid",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NYR@EDM"
+    },
+    "02yjl": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Leon Draisaitl",
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 1,
+      "game": "NYR@EDM"
+    },
+    "04uqa": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Vasily Podkolzin",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NYR@EDM"
+    },
+    "05gvo": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Matvei Michkov",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "PHI@VAN"
+    },
+    "05xcm": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Jonathan Lekkerimäki",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "PHI@VAN"
+    },
+    "048x9": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Elias Pettersson",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "PHI@VAN"
+    },
+    "06psl": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Ivar Stenberg",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NYI@SJS"
+    },
+    "06gk0": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Matthew Schaefer",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "NYI@SJS"
+    }
+  },
+  "bench": {
+    "038vb": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Travis Konecny",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06pyw": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Victor Eklund",
+      "status": "MINORS",
+      "pts": 1
+    }
+  }
+}
