@@ -1,0 +1,232 @@
+{
+  "at": "2026-11-10T06:19:18.393Z",
+  "mode": "apply",
+  "periods": [
+    {
+      "f2Period": 1,
+      "fxPeriod": 1,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 2,
+      "fxPeriod": 2,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 3,
+      "fxPeriod": 3,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 4,
+      "fxPeriod": 4,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [
+        "LINEUP Brian's Endless Winter: Nick Suzuki RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Jordan Kyrou RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Morgan Geekie RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Pavel Zacha RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Alex DeBrincat ACTIVE -> RESERVE",
+        "LINEUP Brian's Endless Winter: Matt Coronato ACTIVE -> RESERVE",
+        "LINEUP Brian's Endless Winter: Mason McTavish ACTIVE -> RESERVE",
+        "LINEUP Brian's Endless Winter: Seth Jarvis ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: Ivar Stenberg RESERVE -> ACTIVE",
+        "LINEUP Cmack's PWN: Matvei Gridin RESERVE -> ACTIVE",
+        "LINEUP Cmack's PWN: Gabe Perreault ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: Matthew Knies ACTIVE -> RESERVE",
+        "LINEUP Graeme's Downtown Demons: Joel Farabee RESERVE -> ACTIVE",
+        "LINEUP Graeme's Downtown Demons: Artturi Lehkonen ACTIVE -> RESERVE",
+        "LINEUP Jason's Gaucho Chudpumpers: Cutter Gauthier RESERVE -> ACTIVE",
+        "LINEUP Jason's Gaucho Chudpumpers: Roman Kantserov RESERVE -> ACTIVE",
+        "LINEUP Jason's Gaucho Chudpumpers: Alexis Lafrenière ACTIVE -> RESERVE",
+        "LINEUP Jason's Gaucho Chudpumpers: Adam Fox ACTIVE -> RESERVE"
+      ],
+      "results": [
+        {
+          "step": "lineup",
+          "team": "Brian's Endless Winter",
+          "ok": true,
+          "msg": "? changes"
+        },
+        {
+          "step": "lineup",
+          "team": "Cmack's PWN",
+          "ok": true,
+          "msg": "? changes"
+        },
+        {
+          "step": "lineup",
+          "team": "Graeme's Downtown Demons",
+          "ok": true,
+          "msg": "? changes"
+        },
+        {
+          "step": "lineup",
+          "team": "Jason's Gaucho Chudpumpers",
+          "ok": true,
+          "msg": "? changes"
+        }
+      ],
+      "remaining": []
+    },
+    {
+      "f2Period": 5,
+      "upcoming": true,
+      "locksAt": "2026-11-23T17:00:00",
+      "fxPeriod": 5,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    }
+  ],
+  "swept": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "lockTs": "2026-11-09T18:00:00",
+  "upcoming": 5,
+  "standings": [
+    {
+      "id": "smc5vz9tmo319aqw",
+      "team": "Jason's Gaucho Chudpumpers",
+      "f2": 286,
+      "fantrax": 288,
+      "fantraxPrevNight": 286,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "mo75fhhjmo319aqw",
+      "team": "Graeme's Downtown Demons",
+      "f2": 249,
+      "fantrax": 251,
+      "fantraxPrevNight": 249,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "5c6dwdhkmo319aqw",
+      "team": "Brian's Endless Winter",
+      "f2": 247,
+      "fantrax": 249,
+      "fantraxPrevNight": 247,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "lo1c2zefmo319aqw",
+      "team": "Matt's mid tier perpetual projects",
+      "f2": 231,
+      "fantrax": 231,
+      "fantraxPrevNight": 231,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "h13alq00mo319aqw",
+      "team": "Richie's Meatspinners",
+      "f2": 208,
+      "fantrax": 208,
+      "fantraxPrevNight": 208,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "djdo03kcmo319aqw",
+      "team": "Cmack's PWN",
+      "f2": 188,
+      "fantrax": 191,
+      "fantraxPrevNight": 188,
+      "compared": true,
+      "same": true
+    }
+  ]
+}
