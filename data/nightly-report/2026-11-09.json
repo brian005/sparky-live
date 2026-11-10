@@ -3,9 +3,7 @@
   "period": 4,
   "games": 3,
   "goals": 12,
-  "notFinal": [
-    "NYI@SJS (CRIT)"
-  ],
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
       "eligible": 3,
@@ -30,7 +28,7 @@
       "a2": 1,
       "pp": 1,
       "en": 0,
-      "gp": 3,
+      "gp": 5,
       "games": {
         "NYR@EDM": 1,
         "PHI@VAN": 1,
@@ -46,7 +44,7 @@
       "a2": 1,
       "pp": 2,
       "en": 0,
-      "gp": 2,
+      "gp": 4,
       "games": {
         "PHI@VAN": 1,
         "NYI@SJS": 1
