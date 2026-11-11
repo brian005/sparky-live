@@ -2,10 +2,8 @@
   "date": "2026-11-10",
   "period": 4,
   "games": 7,
-  "goals": 35,
-  "notFinal": [
-    "NSH@LAK (CRIT)"
-  ],
+  "goals": 36,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
       "eligible": 5,
@@ -79,7 +77,7 @@
       "a2": 4,
       "pp": 1,
       "en": 1,
-      "gp": 8,
+      "gp": 9,
       "games": {
         "COL@TOR": 3,
         "NJD@WPG": 2,
