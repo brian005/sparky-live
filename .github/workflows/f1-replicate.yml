@@ -85,7 +85,8 @@ jobs:
           # plus an optional name/avatar override on each post (needs chat:write.customize on whichever app posts)
           SLACK_BOT_TOKEN: ${{ secrets.JANITOR_SLACK_BOT_TOKEN || secrets.SLACK_BOT_TOKEN }}
           # Sparky chat (sparkypool.ca) wins when this secret is set; delete it to fall back to Slack (src/chat.js)
-          CHAT_WEBHOOK_URL: ${{ secrets.CHAT_WEBHOOK_URL }}
+          # The bot's own Sparky chat webhook (Nov 11 2026), locked to #sparkybots.
+          CHAT_WEBHOOK_URL: ${{ secrets.CHAT_HOOK_BELDING }}
           SLACK_USERNAME: ${{ vars.JANITOR_SLACK_NAME }}
           SLACK_ICON: ${{ vars.JANITOR_SLACK_ICON }}
           SLACK_CHANNEL: ${{ vars.F1_MIRROR_SLACK_CHANNEL || secrets.SLACK_CHANNEL_ID }}

@@ -34,10 +34,16 @@ The Saved by the Bell persona bots post to **#sparkybots**, not #sparky.
 ## Chat (Sparky chat on sparkypool.ca, formerly Slack)
 
 - Every active bot posts through `src/chat.js`: **Sparky chat** (Chris's Mattermost-based chat
-  in F2) when the `CHAT_WEBHOOK_URL` Actions secret is set, otherwise Slack the old way
-  (`SLACK_BOT_TOKEN` + `SLACK_CHANNEL`). Delete the secret to fall back to Slack.
-- The webhook posts to #sparkybots. `CHAT_CHANNEL` (the workflows' `channel` input) asks for
-  another channel or a DM (`@brian`); honoured only if the webhook isn't locked to its channel.
+  in F2) when the workflow passes a `CHAT_WEBHOOK_URL`, otherwise Slack the old way
+  (`SLACK_BOT_TOKEN` + `SLACK_CHANNEL`).
+- **One webhook per bot (since 2026-11-11, from Chris), each locked to its channel.** Actions
+  secrets: `CHAT_HOOK_LISA` (nightly-report, sunday-report), `CHAT_HOOK_ZACK` (bench-streaks),
+  `CHAT_HOOK_SCREECH` (records), `CHAT_HOOK_BELDING` (f1-replicate), all #sparkybots, and
+  `CHAT_HOOK_TEST` (#brian-test). Each workflow maps its bot's secret to `CHAT_WEBHOOK_URL`;
+  the `channel` input's only value now is `brian-test`, which swaps in the test webhook (a
+  locked webhook refuses any other channel, so `CHAT_CHANNEL` is always blank). The old shared
+  "Brian's bots" webhook (`CHAT_WEBHOOK_URL` secret) is retired. Sparky Lens's Zack recap uses
+  the Zack webhook as its `F2_CHAT_WEBHOOK` secret.
 - The bots still write Slack-style text; `chat.js` converts it: `*bold*` -> `**bold**` (single
   stars are italic in Sparky chat), `<url|label>` -> `[label](url)`. Code is left alone.
 - Not migrated (still Slack-only, all disabled): `scorigami.js`, `index.js` / `slack.js`
@@ -240,6 +246,10 @@ Dispatch (from Brian's PowerShell):
 
 ## Change log
 
+- **2026-11-11** - Per-bot webhooks. Chris issued one webhook per bot, each locked to its channel, plus one for
+  #brian-test; the shared webhook and the sparkybot token (Danny's relay, a 401 since about Nov 10) look retired. The
+  five posting workflows read their bot's `CHAT_HOOK_*` secret; test posts use `channel=brian-test`. Danny has no
+  webhook of his own yet. Workflow files shipped from `scratch/` (the file bridge can't write `.github/workflows`).
 - **2026-11-09** - Prospect period and season records are pictures too (Brian, about Richie's Period 3 prospect
   record arriving as a text card under the period's pictures). `prospectChecks` returns `{ line, pic }`
   (`periodRecs`, `nightRecs`); the 100s stay text (`nightLines`). A season record passing a mark someone set earlier

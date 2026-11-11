@@ -35,7 +35,7 @@ on:
         type: boolean
         default: true
       channel:
-        description: "Slack channel ID to post to instead (blank = #sparky). Test posts never save state."
+        description: "brian-test = post to #brian-test instead of #sparkybots (test posts). Blank = the bot's own channel. Test posts never save state."
         required: false
         default: ""
       book:
@@ -114,8 +114,10 @@ jobs:
           F2_PASSWORD: ${{ secrets.F2_PASSWORD }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           # Sparky chat (sparkypool.ca) wins when this secret is set; delete it to fall back to Slack (src/chat.js)
-          CHAT_WEBHOOK_URL: ${{ secrets.CHAT_WEBHOOK_URL }}
-          CHAT_CHANNEL: ${{ github.event.inputs.channel || '' }}
+          # Each bot has its own Sparky chat webhook (Nov 11 2026), locked to its channel; a test post goes
+          # through the #brian-test webhook instead, since a locked webhook refuses any other channel.
+          CHAT_WEBHOOK_URL: ${{ github.event.inputs.channel == 'brian-test' && secrets.CHAT_HOOK_TEST || secrets.CHAT_HOOK_SCREECH }}
+          CHAT_CHANNEL: ''
           SLACK_CHANNEL: ${{ github.event.inputs.channel || vars.RECORDS_SLACK_CHANNEL || vars.F1_MIRROR_SLACK_CHANNEL }}
           SLACK_USERNAME: ${{ vars.RECORDS_SLACK_USERNAME || 'Screech' }}
           SLACK_ICON: ${{ vars.RECORDS_SLACK_ICON || ':trophy:' }}
