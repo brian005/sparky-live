@@ -2,11 +2,8 @@
   "date": "2026-11-11",
   "period": 4,
   "games": 6,
-  "goals": 37,
-  "notFinal": [
-    "NSH@ANA (CRIT)",
-    "PIT@SJS (LIVE)"
-  ],
+  "goals": 38,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
       "eligible": 5,
@@ -32,7 +29,7 @@
       "a2": 3,
       "pp": 3,
       "en": 0,
-      "gp": 5,
+      "gp": 7,
       "games": {
         "TBL@BUF": 4,
         "NYR@CGY": 1,
@@ -40,18 +37,18 @@
       }
     },
     "mo75fhhjmo319aqw": {
-      "eligible": 10,
-      "scored": 5,
+      "eligible": 11,
+      "scored": 6,
       "g": 1,
-      "a": 4,
-      "a1": 1,
+      "a": 5,
+      "a1": 2,
       "a2": 3,
       "pp": 3,
       "en": 0,
-      "gp": 4,
+      "gp": 5,
       "games": {
         "UTA@VGK": 4,
-        "PIT@SJS": 1
+        "PIT@SJS": 2
       }
     },
     "smc5vz9tmo319aqw": {
@@ -63,7 +60,7 @@
       "a2": 1,
       "pp": 2,
       "en": 0,
-      "gp": 4,
+      "gp": 5,
       "games": {
         "TBL@BUF": 5,
         "PHI@EDM": 2,
@@ -79,7 +76,7 @@
       "a2": 1,
       "pp": 0,
       "en": 0,
-      "gp": 3,
+      "gp": 5,
       "games": {
         "TBL@BUF": 4,
         "NSH@ANA": 1
@@ -292,9 +289,9 @@
     "05w9c": {
       "team": "mo75fhhjmo319aqw",
       "name": "Macklin Celebrini",
-      "pts": 1,
+      "pts": 2,
       "g": 1,
-      "a1": 0,
+      "a1": 1,
       "a2": 0,
       "pp": 0,
       "en": 0,
