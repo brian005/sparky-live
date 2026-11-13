@@ -2,10 +2,8 @@
   "date": "2026-11-12",
   "period": 4,
   "games": 11,
-  "goals": 68,
-  "notFinal": [
-    "NYI@LAK (LIVE)"
-  ],
+  "goals": 69,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
       "eligible": 9,
@@ -49,7 +47,7 @@
       "a2": 0,
       "pp": 2,
       "en": 0,
-      "gp": 8,
+      "gp": 9,
       "games": {
         "CAR@SEA": 2,
         "MIN@TOR": 1,
