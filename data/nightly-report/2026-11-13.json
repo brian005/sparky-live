@@ -3,9 +3,7 @@
   "period": 4,
   "games": 2,
   "goals": 10,
-  "notFinal": [
-    "NSH@VGK (CRIT)"
-  ],
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
       "eligible": 0,
@@ -16,7 +14,7 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0,
+      "gp": 1,
       "games": {}
     },
     "djdo03kcmo319aqw": {
@@ -42,7 +40,7 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1,
+      "gp": 3,
       "games": {
         "NSH@VGK": 1
       }
@@ -68,7 +66,7 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 0,
+      "gp": 1,
       "games": {
         "NSH@VGK": 2
       }
