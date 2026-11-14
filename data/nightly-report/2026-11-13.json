@@ -1,0 +1,156 @@
+{
+  "date": "2026-11-13",
+  "period": 4,
+  "games": 2,
+  "goals": 10,
+  "notFinal": [
+    "NSH@VGK (CRIT)"
+  ],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {}
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 3,
+      "scored": 1,
+      "g": 1,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 2,
+      "games": {
+        "NYR@VAN": 1
+      }
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 1,
+      "scored": 1,
+      "g": 0,
+      "a": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1,
+      "games": {
+        "NSH@VGK": 1
+      }
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 4,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {}
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 2,
+      "scored": 2,
+      "g": 2,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {
+        "NSH@VGK": 2
+      }
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 1,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1,
+      "games": {}
+    }
+  },
+  "players": {
+    "048x9": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Elias Pettersson",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NYR@VAN"
+    },
+    "01f6d": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Ryan O'Reilly",
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NSH@VGK"
+    },
+    "03jvu": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Mitch Marner",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NSH@VGK"
+    }
+  },
+  "bench": {
+    "06bmb": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Zeev Buium",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "06axe": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Gabe Perreault",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "04amg": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Alexis Lafrenière",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "042w4": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Adam Fox",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "04zp9": {
+      "team": "h13alq00mo319aqw",
+      "name": "Mavrik Bourque",
+      "status": "RESERVE",
+      "pts": 1
+    }
+  }
+}
