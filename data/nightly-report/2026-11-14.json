@@ -1,0 +1,509 @@
+{
+  "date": "2026-11-14",
+  "period": 4,
+  "games": 14,
+  "goals": 41,
+  "notFinal": [
+    "MIN@BOS (LIVE)",
+    "EDM@TOR (LIVE)",
+    "COL@MTL (LIVE)",
+    "DET@TBL (LIVE)",
+    "OTT@PIT (LIVE)",
+    "NJD@WSH (LIVE)",
+    "PHI@CBJ (LIVE)",
+    "FLA@STL (LIVE)",
+    "BUF@DAL (LIVE)",
+    "SJS@UTA (PRE)",
+    "NYI@ANA (FUT)",
+    "CGY@LAK (FUT)"
+  ],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 8,
+      "scored": 5,
+      "g": 3,
+      "a": 2,
+      "a1": 0,
+      "a2": 2,
+      "pp": 2,
+      "en": 0,
+      "gp": 1,
+      "games": {
+        "MIN@BOS": 2,
+        "EDM@TOR": 2,
+        "COL@MTL": 1
+      }
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 10,
+      "scored": 5,
+      "g": 4,
+      "a": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 3,
+      "en": 0,
+      "gp": 2,
+      "games": {
+        "SEA@CAR": 3,
+        "COL@MTL": 1,
+        "DET@TBL": 1
+      }
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 7,
+      "scored": 3,
+      "g": 1,
+      "a": 2,
+      "a1": 2,
+      "a2": 0,
+      "pp": 2,
+      "en": 0,
+      "gp": 1,
+      "games": {
+        "SEA@CAR": 1,
+        "FLA@STL": 2
+      }
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 9,
+      "scored": 8,
+      "g": 3,
+      "a": 5,
+      "a1": 3,
+      "a2": 2,
+      "pp": 1,
+      "en": 0,
+      "gp": 1,
+      "games": {
+        "MIN@BOS": 3,
+        "EDM@TOR": 1,
+        "NJD@WSH": 2,
+        "PHI@CBJ": 2
+      }
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 10,
+      "scored": 6,
+      "g": 2,
+      "a": 4,
+      "a1": 2,
+      "a2": 2,
+      "pp": 2,
+      "en": 0,
+      "gp": 1,
+      "games": {
+        "WPG@CHI": 4,
+        "PHI@CBJ": 1,
+        "FLA@STL": 1
+      }
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 9,
+      "scored": 8,
+      "g": 4,
+      "a": 4,
+      "a1": 3,
+      "a2": 1,
+      "pp": 4,
+      "en": 0,
+      "gp": 5,
+      "games": {
+        "WPG@CHI": 5,
+        "MIN@BOS": 2,
+        "NJD@WSH": 1
+      }
+    }
+  },
+  "players": {
+    "05tv0": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Jackson Blake",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "SEA@CAR"
+    },
+    "03rmx": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Sebastian Aho",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "SEA@CAR"
+    },
+    "048vf": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Andrei Svechnikov",
+      "pts": 2,
+      "g": 2,
+      "a1": 0,
+      "a2": 0,
+      "pp": 2,
+      "en": 0,
+      "game": "SEA@CAR"
+    },
+    "04y4m": {
+      "team": "h13alq00mo319aqw",
+      "name": "Connor Bedard",
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "WPG@CHI"
+    },
+    "06jhd": {
+      "team": "h13alq00mo319aqw",
+      "name": "Anton Frondell",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "WPG@CHI"
+    },
+    "05m17": {
+      "team": "h13alq00mo319aqw",
+      "name": "Frank Nazar",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "WPG@CHI"
+    },
+    "02azb": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Mark Scheifele",
+      "pts": 4,
+      "g": 1,
+      "a1": 2,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "WPG@CHI"
+    },
+    "04uql": {
+      "team": "h13alq00mo319aqw",
+      "name": "Cole Perfetti",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "WPG@CHI"
+    },
+    "04lbz": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Quinn Hughes",
+      "pts": 2,
+      "g": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "MIN@BOS"
+    },
+    "03rh3": {
+      "team": "h13alq00mo319aqw",
+      "name": "Kirill Kaprizov",
+      "pts": 2,
+      "g": 0,
+      "a1": 2,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "MIN@BOS"
+    },
+    "05yn2": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Fraser Minten",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "MIN@BOS"
+    },
+    "03d12": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "David Pastrnak",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "MIN@BOS"
+    },
+    "04a9v": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Morgan Geekie",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "MIN@BOS"
+    },
+    "04lc0": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Evan Bouchard",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "EDM@TOR"
+    },
+    "02un4": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Connor McDavid",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "EDM@TOR"
+    },
+    "02yjl": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Leon Draisaitl",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "EDM@TOR"
+    },
+    "048xc": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Nick Suzuki",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "COL@MTL"
+    },
+    "04mv2": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Cole Caufield",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "COL@MTL"
+    },
+    "04ymt": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Lucas Raymond",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "DET@TBL"
+    },
+    "0644f": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Ryan Leonard",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NJD@WSH"
+    },
+    "03as9": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Dylan Strome",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "NJD@WSH"
+    },
+    "042ye": {
+      "team": "h13alq00mo319aqw",
+      "name": "Jesper Bratt",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "NJD@WSH"
+    },
+    "05gda": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Kent Johnson",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "PHI@CBJ"
+    },
+    "04y8g": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Trevor Zegras",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "PHI@CBJ"
+    },
+    "05gvo": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Matvei Michkov",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "PHI@CBJ"
+    },
+    "04kyh": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Brady Tkachuk",
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "FLA@STL"
+    },
+    "03uzr": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Matthew Tkachuk",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "FLA@STL"
+    }
+  },
+  "bench": {
+    "05r1i": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Matty Beniers",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05gvq": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Seth Jarvis",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "0644e": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Oliver Moore",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "03kra": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Kyle Connor",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "03w5m": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Gabriel Vilardi",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "02ybk": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Artturi Lehkonen",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05r1c": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Juraj Slafkovský",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "051xf": {
+      "team": "h13alq00mo319aqw",
+      "name": "Egor Chinakhov",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06snb": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Ben Kindel",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "06fzv": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Cole Hutson",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "05tur": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Matthew Knies",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "06hj9": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Porter Martone",
+      "status": "MINORS",
+      "pts": 1
+    },
+    "0579x": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Adam Fantilli",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "03ra7": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Zach Werenski",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "02un5": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Sam Reinhart",
+      "status": "RESERVE",
+      "pts": 1
+    }
+  }
+}
