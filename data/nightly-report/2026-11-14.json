@@ -2,11 +2,8 @@
   "date": "2026-11-14",
   "period": 4,
   "games": 14,
-  "goals": 80,
-  "notFinal": [
-    "NYI@ANA (CRIT)",
-    "CGY@LAK (LIVE)"
-  ],
+  "goals": 83,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
       "eligible": 10,
@@ -25,20 +22,21 @@
       }
     },
     "djdo03kcmo319aqw": {
-      "eligible": 14,
-      "scored": 7,
-      "g": 4,
+      "eligible": 15,
+      "scored": 8,
+      "g": 5,
       "a": 3,
       "a1": 1,
       "a2": 2,
       "pp": 4,
       "en": 1,
-      "gp": 11,
+      "gp": 12,
       "games": {
         "SEA@CAR": 3,
         "COL@MTL": 1,
         "DET@TBL": 2,
-        "SJS@UTA": 1
+        "SJS@UTA": 1,
+        "CGY@LAK": 1
       }
     },
     "mo75fhhjmo319aqw": {
@@ -50,7 +48,7 @@
       "a2": 1,
       "pp": 3,
       "en": 0,
-      "gp": 10,
+      "gp": 12,
       "games": {
         "SEA@CAR": 1,
         "FLA@STL": 2,
@@ -67,7 +65,7 @@
       "a2": 3,
       "pp": 4,
       "en": 0,
-      "gp": 14,
+      "gp": 15,
       "games": {
         "MIN@BOS": 4,
         "EDM@TOR": 1,
@@ -86,7 +84,7 @@
       "a2": 2,
       "pp": 3,
       "en": 0,
-      "gp": 9,
+      "gp": 10,
       "games": {
         "WPG@CHI": 4,
         "NJD@WSH": 1,
@@ -555,6 +553,17 @@
       "pp": 0,
       "en": 0,
       "game": "NYI@ANA"
+    },
+    "06mb0": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Matvei Gridin",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "CGY@LAK"
     }
   },
   "bench": {
