@@ -1,0 +1,135 @@
+{
+  "date": "2026-11-16",
+  "period": 4,
+  "games": 2,
+  "goals": 9,
+  "notFinal": [],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1,
+      "games": {}
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 2,
+      "games": {}
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 3,
+      "scored": 3,
+      "g": 0,
+      "a": 3,
+      "a1": 1,
+      "a2": 2,
+      "pp": 2,
+      "en": 0,
+      "gp": 2,
+      "games": {
+        "MTL@NYR": 1,
+        "VAN@UTA": 2
+      }
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 1,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {}
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 1,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {}
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 1,
+      "scored": 1,
+      "g": 0,
+      "a": 1,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "gp": 2,
+      "games": {
+        "VAN@UTA": 1
+      }
+    }
+  },
+  "players": {
+    "05wwg": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Lane Hutson",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "MTL@NYR"
+    },
+    "05xcm": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Jonathan Lekkerimäki",
+      "pts": 2,
+      "g": 0,
+      "a1": 0,
+      "a2": 2,
+      "pp": 2,
+      "en": 0,
+      "game": "VAN@UTA"
+    },
+    "03mn8": {
+      "team": "h13alq00mo319aqw",
+      "name": "Clayton Keller",
+      "pts": 1,
+      "g": 0,
+      "a1": 0,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "VAN@UTA"
+    }
+  },
+  "bench": {
+    "042w4": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Adam Fox",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05ui2": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Logan Cooley",
+      "status": "RESERVE",
+      "pts": 1
+    }
+  }
+}
