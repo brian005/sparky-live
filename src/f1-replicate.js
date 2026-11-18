@@ -534,31 +534,45 @@ function describe(d, names, teamName) {
 // A trade F2 has already approved but Fantrax refuses (e.g. "Sorry, but we cannot process that
 // request" for a trade into a period already underway) is retried ONCE with the commissioner override -
 // what a commissioner does by hand. The result says when the override was needed.
+//
+// Which period (2026-11-18): the request is the Commissioner Trade page's own, read from Fantrax's client
+// (chunk-BdZS2EqS, Nov 18): transactionSets: [{ transactions: [{ scorerId, sourceTeamId, destTeamId }] }]
+// plus period. Until then the janitor sent the page's OLD shape (transactions: { "0": "SC,pid,src,dst,0" }),
+// and on that shape Fantrax ignores `period` and puts the trade in the CURRENT period, as it did with a
+// bare `period` on claims (Oct 6). On Nov 18 the upcoming pass asked for Period 5 and Fantrax tried Period 4,
+// where Kaprizov was in RMS's active roster, so the trade was refused even with the override; Brian put it
+// through by hand with the period set to 5. A trade is always for the period after the one it was made in:
+// the upcoming pass sends it to the next period, and the locked sweep to the period it is mirroring. Fantrax
+// answers with the period it used (properties.rosterLimitPeriod); a trade that lands anywhere else is
+// reported as a failure, never as done.
 async function doTrades(fx, d, fxPeriod, results, carryForward = true) {
+  const want = Number(fxPeriod);
   const send = async (transactions, override) => {
-    // the Commissioner Trade page's own request (Fantrax client, chunk-NIZJ754D): adminMode + future + override + period
-    const r = await fx("createTrade", { adminMode: true, future: carryForward, override, transactions, msg: "F2 mirror", period: fxPeriod });
+    const r = await fx("createTrade", { adminMode: true, future: carryForward, override, transactionSets: [{ transactions }], msg: "F2 mirror", period: want });
     const bad = (r.txResponses || []).find((t) => ["WARNING", "DENIED", "ERROR"].includes(t.code));
     const tx = bad || (r.txResponses || [])[0];
-    return { ok: !bad && !!tx, msg: tx && (tx.message || tx.genericMessage || tx.genericMsg) };
+    const landed = tx && tx.properties && tx.properties.rosterLimitPeriod != null ? Number(tx.properties.rosterLimitPeriod) : null;
+    return { ok: !bad && !!tx, msg: tx && (tx.message || tx.genericMessage || tx.genericMsg), landed };
   };
+  const wrongPeriod = (res) => res.ok && res.landed != null && res.landed !== want;
   for (const legs of Object.values(d.trades)) {
-    const transactions = {};
-    legs.forEach((l, i) => { transactions[String(i)] = `SC,${l.pid},${l.src},${l.dst},${i}`; });
+    const transactions = legs.map((l) => ({ scorerId: l.pid, sourceTeamId: l.src, destTeamId: l.dst }));
     let first;
     try {
       first = await send(transactions, false);
-      if (first.ok) { results.push({ step: "trade", legs, ok: true, msg: first.msg }); continue; }
+      if (wrongPeriod(first)) { results.push({ step: "trade", legs, ok: false, period: first.landed, msg: `Fantrax put the trade in period ${first.landed}, not ${want}: fix it by hand` }); continue; }
+      if (first.ok) { results.push({ step: "trade", legs, ok: true, period: first.landed ?? want, msg: first.msg }); continue; }
     } catch (e) {
       // a write that may have landed: don't override blind, the next run re-reads and re-plans
       results.push({ step: "trade", legs, ok: false, msg: e.message });
       continue;
     }
     try {
-      log(`Trade refused (${first.msg || "no message"}); retrying once with the commissioner override`);
+      log(`Trade refused for period ${want} (${first.msg || "no message"}); retrying once with the commissioner override`);
       const forced = await send(transactions, true);
-      results.push({ step: "trade", legs, ok: forced.ok, override: true,
-        msg: forced.ok ? `applied with commissioner override (first refusal: ${first.msg || "no message"})` : `refused even with override: ${forced.msg || "no message"}` });
+      if (wrongPeriod(forced)) { results.push({ step: "trade", legs, ok: false, override: true, period: forced.landed, msg: `Fantrax put the trade in period ${forced.landed}, not ${want}: fix it by hand` }); continue; }
+      results.push({ step: "trade", legs, ok: forced.ok, override: true, period: want,
+        msg: forced.ok ? `applied with commissioner override (first refusal: ${first.msg || "no message"})` : `refused even with override for period ${want}: ${forced.msg || "no message"}` });
     } catch (e) { results.push({ step: "trade", legs, ok: false, override: true, msg: e.message }); }
   }
 }

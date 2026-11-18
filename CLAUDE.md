@@ -71,6 +71,13 @@ The Saved by the Bell persona bots post to **#sparkybots**, not #sparky.
 - The Monday 14:00 run exists because periods start and lock on Monday afternoons
   (F2 `lock_ts`, naive Pacific): it catches moves made between Sunday's 23:00 run and
   the lock. On off-week Mondays it's a no-op.
+- **Trades go in the period after the one they were made in** (Brian, 2026-11-18): the upcoming pass sends
+  them to the next period, the locked sweep to the period it mirrors. `createTrade` must use the Commissioner
+  Trade page's current shape, `transactionSets: [{ transactions: [{ scorerId, sourceTeamId, destTeamId }] }]`
+  plus `period`; on the old string shape (`"SC,pid,src,dst,i"`) Fantrax ignores `period` and uses the
+  CURRENT period. Fantrax's answer carries the period it used (`properties.rosterLimitPeriod`); a trade that
+  lands in any other period is reported as failed. When Fantrax changes the page again, read its request
+  from the client bundle (search the chunks for `createTrade`) before guessing.
 - **Trades Fantrax refuses** are retried ONCE with the commissioner override (F2
   already approved them). The result and the Slack post say "applied with
   commissioner override". Claims/drops are never forced (`PROMPT_FOR_OVERRIDE` is
@@ -246,6 +253,12 @@ Dispatch (from Brian's PowerShell):
 
 ## Change log
 
+- **2026-11-18** - Janitor trades land in the right period. The Nov 17 22:20 PST run's upcoming pass asked
+  Fantrax for the Kaprizov RMS -> BEW trade in Period 5, but the request still had the old string shape, on
+  which Fantrax ignores `period`: it tried Period 4, where Kaprizov was in RMS's active roster, and refused
+  even with the override. Brian put it through by hand for Period 5. `doTrades` now sends the shape Fantrax's
+  own client sends (read from chunk-BdZS2EqS) and checks the period Fantrax reports back. Tested on stubs
+  (period sent, a trade that lands in 4, refusal then override); the first real check is the next trade.
 - **2026-11-11** - Per-bot webhooks. Chris issued one webhook per bot, each locked to its channel, plus one for
   #brian-test; the shared webhook and the sparkybot token (Danny's relay, a 401 since about Nov 10) look retired. The
   five posting workflows read their bot's `CHAT_HOOK_*` secret; test posts use `channel=brian-test`. Danny has no
