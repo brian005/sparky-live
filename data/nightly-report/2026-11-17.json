@@ -2,11 +2,8 @@
   "date": "2026-11-17",
   "period": 4,
   "games": 11,
-  "goals": 77,
-  "notFinal": [
-    "DAL@VGK (LIVE)",
-    "CGY@SJS (CRIT)"
-  ],
+  "goals": 80,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
       "eligible": 13,
@@ -17,7 +14,7 @@
       "a2": 4,
       "pp": 3,
       "en": 1,
-      "gp": 10,
+      "gp": 11,
       "games": {
         "EDM@FLA": 4,
         "WSH@TBL": 1,
@@ -35,7 +32,7 @@
       "a2": 3,
       "pp": 2,
       "en": 0,
-      "gp": 5,
+      "gp": 8,
       "games": {
         "EDM@FLA": 3,
         "BUF@PHI": 1,
@@ -46,33 +43,34 @@
       }
     },
     "mo75fhhjmo319aqw": {
-      "eligible": 13,
-      "scored": 8,
+      "eligible": 15,
+      "scored": 10,
       "g": 5,
-      "a": 3,
-      "a1": 2,
-      "a2": 1,
+      "a": 5,
+      "a1": 3,
+      "a2": 2,
       "pp": 1,
       "en": 1,
-      "gp": 6,
+      "gp": 11,
       "games": {
         "EDM@FLA": 1,
         "CBJ@NYI": 3,
         "OTT@WPG": 1,
         "TOR@CHI": 2,
+        "DAL@VGK": 2,
         "CGY@SJS": 1
       }
     },
     "smc5vz9tmo319aqw": {
-      "eligible": 20,
-      "scored": 18,
-      "g": 7,
-      "a": 11,
-      "a1": 7,
-      "a2": 4,
+      "eligible": 24,
+      "scored": 22,
+      "g": 9,
+      "a": 13,
+      "a1": 8,
+      "a2": 5,
       "pp": 4,
       "en": 0,
-      "gp": 12,
+      "gp": 14,
       "games": {
         "EDM@FLA": 2,
         "CBJ@NYI": 1,
@@ -80,7 +78,7 @@
         "WSH@TBL": 3,
         "ANA@STL": 4,
         "NSH@MIN": 3,
-        "DAL@VGK": 1
+        "DAL@VGK": 5
       }
     },
     "lo1c2zefmo319aqw": {
@@ -484,10 +482,10 @@
     "03mn9": {
       "team": "smc5vz9tmo319aqw",
       "name": "Mikko Rantanen",
-      "pts": 1,
-      "g": 0,
-      "a1": 1,
-      "a2": 0,
+      "pts": 4,
+      "g": 1,
+      "a1": 2,
+      "a2": 1,
       "pp": 0,
       "en": 0,
       "game": "DAL@VGK"
@@ -499,6 +497,28 @@
       "g": 0,
       "a1": 1,
       "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "DAL@VGK"
+    },
+    "05tqt": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Wyatt Johnston",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "DAL@VGK"
+    },
+    "04dwj": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Jason Robertson",
+      "pts": 2,
+      "g": 0,
+      "a1": 1,
+      "a2": 1,
       "pp": 0,
       "en": 0,
       "game": "DAL@VGK"
