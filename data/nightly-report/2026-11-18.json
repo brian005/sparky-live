@@ -2,10 +2,8 @@
   "date": "2026-11-18",
   "period": 4,
   "games": 3,
-  "goals": 13,
-  "notFinal": [
-    "COL@UTA (LIVE)"
-  ],
+  "goals": 15,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
       "eligible": 5,
@@ -73,7 +71,7 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 1,
+      "gp": 2,
       "games": {}
     },
     "h13alq00mo319aqw": {
@@ -85,7 +83,7 @@
       "a2": 0,
       "pp": 1,
       "en": 0,
-      "gp": 4,
+      "gp": 5,
       "games": {
         "BOS@DET": 1,
         "MTL@NJD": 2,
