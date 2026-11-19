@@ -1,0 +1,222 @@
+{
+  "date": "2026-11-18",
+  "period": 4,
+  "games": 3,
+  "goals": 13,
+  "notFinal": [
+    "COL@UTA (LIVE)"
+  ],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 5,
+      "scored": 5,
+      "g": 2,
+      "a": 3,
+      "a1": 1,
+      "a2": 2,
+      "pp": 3,
+      "en": 1,
+      "gp": 5,
+      "games": {
+        "BOS@DET": 4,
+        "MTL@NJD": 1
+      }
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 1,
+      "scored": 1,
+      "g": 1,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 2,
+      "games": {
+        "BOS@DET": 1
+      }
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 4,
+      "scored": 3,
+      "g": 0,
+      "a": 3,
+      "a1": 2,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "gp": 1,
+      "games": {
+        "MTL@NJD": 3
+      }
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 2,
+      "scored": 2,
+      "g": 1,
+      "a": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "gp": 2,
+      "games": {
+        "BOS@DET": 2
+      }
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 1,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1,
+      "games": {}
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 4,
+      "scored": 4,
+      "g": 2,
+      "a": 2,
+      "a1": 2,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "gp": 4,
+      "games": {
+        "BOS@DET": 1,
+        "MTL@NJD": 2,
+        "COL@UTA": 1
+      }
+    }
+  },
+  "players": {
+    "04ymt": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Lucas Raymond",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "BOS@DET"
+    },
+    "04zj5": {
+      "team": "h13alq00mo319aqw",
+      "name": "JJ Peterka",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "BOS@DET"
+    },
+    "03l0t": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Pavel Zacha",
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 1,
+      "game": "BOS@DET"
+    },
+    "03d12": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "David Pastrnak",
+      "pts": 2,
+      "g": 1,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "BOS@DET"
+    },
+    "04a9v": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Morgan Geekie",
+      "pts": 2,
+      "g": 0,
+      "a1": 0,
+      "a2": 2,
+      "pp": 1,
+      "en": 0,
+      "game": "BOS@DET"
+    },
+    "05gdo": {
+      "team": "h13alq00mo319aqw",
+      "name": "Luke Evangelista",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "MTL@NJD"
+    },
+    "05wwg": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Lane Hutson",
+      "pts": 3,
+      "g": 0,
+      "a1": 2,
+      "a2": 1,
+      "pp": 1,
+      "en": 0,
+      "game": "MTL@NJD"
+    },
+    "042ye": {
+      "team": "h13alq00mo319aqw",
+      "name": "Jesper Bratt",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "MTL@NJD"
+    },
+    "048xc": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Nick Suzuki",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "MTL@NJD"
+    },
+    "03mn8": {
+      "team": "h13alq00mo319aqw",
+      "name": "Clayton Keller",
+      "pts": 1,
+      "g": 0,
+      "a1": 1,
+      "a2": 0,
+      "pp": 1,
+      "en": 0,
+      "game": "COL@UTA"
+    }
+  },
+  "bench": {
+    "05r1c": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Juraj Slafkovský",
+      "status": "RESERVE",
+      "pts": 1
+    },
+    "05ui2": {
+      "team": "lo1c2zefmo319aqw",
+      "name": "Logan Cooley",
+      "status": "RESERVE",
+      "pts": 1
+    }
+  }
+}
