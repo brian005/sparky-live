@@ -2,11 +2,8 @@
   "date": "2026-11-21",
   "period": 4,
   "games": 14,
-  "goals": 108,
-  "notFinal": [
-    "MIN@VAN (CRIT)",
-    "SEA@SJS (CRIT)"
-  ],
+  "goals": 110,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
       "eligible": 18,
@@ -17,7 +14,7 @@
       "a2": 5,
       "pp": 4,
       "en": 1,
-      "gp": 12,
+      "gp": 13,
       "games": {
         "EDM@CAR": 5,
         "WSH@BOS": 4,
@@ -36,7 +33,7 @@
       "a2": 1,
       "pp": 5,
       "en": 0,
-      "gp": 9,
+      "gp": 11,
       "games": {
         "EDM@CAR": 4,
         "CHI@CGY": 1,
@@ -54,7 +51,7 @@
       "a2": 6,
       "pp": 6,
       "en": 0,
-      "gp": 11,
+      "gp": 13,
       "games": {
         "EDM@CAR": 3,
         "CBJ@TOR": 2,
@@ -72,7 +69,7 @@
       "a2": 6,
       "pp": 6,
       "en": 0,
-      "gp": 10,
+      "gp": 11,
       "games": {
         "EDM@CAR": 2,
         "CHI@CGY": 2,
@@ -93,7 +90,7 @@
       "a2": 3,
       "pp": 1,
       "en": 0,
-      "gp": 7,
+      "gp": 8,
       "games": {
         "BUF@FLA": 1,
         "PIT@NSH": 1,
@@ -102,20 +99,20 @@
       }
     },
     "h13alq00mo319aqw": {
-      "eligible": 14,
-      "scored": 10,
-      "g": 4,
+      "eligible": 15,
+      "scored": 11,
+      "g": 5,
       "a": 6,
       "a1": 4,
       "a2": 2,
       "pp": 4,
       "en": 0,
-      "gp": 10,
+      "gp": 13,
       "games": {
         "CHI@CGY": 1,
         "LAK@OTT": 3,
         "NJD@STL": 1,
-        "MIN@VAN": 3,
+        "MIN@VAN": 4,
         "SEA@SJS": 2
       }
     }
@@ -553,8 +550,8 @@
     "04o0g": {
       "team": "h13alq00mo319aqw",
       "name": "Marco Rossi",
-      "pts": 1,
-      "g": 1,
+      "pts": 2,
+      "g": 2,
       "a1": 0,
       "a2": 0,
       "pp": 1,
