@@ -1,0 +1,198 @@
+{
+  "at": "2026-11-23T06:28:13.093Z",
+  "mode": "apply",
+  "periods": [
+    {
+      "f2Period": 1,
+      "fxPeriod": 1,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 2,
+      "fxPeriod": 2,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 3,
+      "fxPeriod": 3,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 4,
+      "fxPeriod": 4,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 5,
+      "upcoming": true,
+      "locksAt": "2026-11-23T17:00:00",
+      "fxPeriod": 5,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [
+        "DROP   Jordan Kyrou from Brian's Endless Winter"
+      ],
+      "results": [
+        {
+          "step": "claimdrop",
+          "tid": "5c6dwdhkmo319aqw",
+          "drop": "042vl",
+          "ok": true,
+          "msg": "<b>Jordan Kyrou</b> has been removed from Brian's Endless Winter effective <b>Period 5</b>. (Nov 23/26 - Dec 6/26)."
+        }
+      ],
+      "remaining": []
+    }
+  ],
+  "swept": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "lockTs": "2026-11-09T18:00:00",
+  "upcoming": 5,
+  "standings": [
+    {
+      "id": "smc5vz9tmo319aqw",
+      "team": "Jason's Gaucho Chudpumpers",
+      "f2": 376,
+      "fantrax": 386,
+      "fantraxPrevNight": 376,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "mo75fhhjmo319aqw",
+      "team": "Graeme's Downtown Demons",
+      "f2": 323,
+      "fantrax": 324,
+      "fantraxPrevNight": 323,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "5c6dwdhkmo319aqw",
+      "team": "Brian's Endless Winter",
+      "f2": 316,
+      "fantrax": 319,
+      "fantraxPrevNight": 316,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "lo1c2zefmo319aqw",
+      "team": "Matt's mid tier perpetual projects",
+      "f2": 297,
+      "fantrax": 299,
+      "fantraxPrevNight": 297,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "h13alq00mo319aqw",
+      "team": "Richie's Meatspinners",
+      "f2": 275,
+      "fantrax": 278,
+      "fantraxPrevNight": 275,
+      "compared": true,
+      "same": true
+    },
+    {
+      "id": "djdo03kcmo319aqw",
+      "team": "Cmack's PWN",
+      "f2": 252,
+      "fantrax": 260,
+      "fantraxPrevNight": 252,
+      "compared": true,
+      "same": true
+    }
+  ]
+}
