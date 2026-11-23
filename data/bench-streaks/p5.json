@@ -1,0 +1,213 @@
+{
+  "postedAt": "2026-11-22T18:20:10",
+  "period": 5,
+  "lock": "2026-11-23T17:00:00",
+  "minStreak": 2,
+  "players": [
+    {
+      "id": "03v70",
+      "name": "Alex DeBrincat",
+      "team": "5c6dwdhkmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "05ran",
+      "name": "Matt Coronato",
+      "team": "5c6dwdhkmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "05gd8",
+      "name": "Mason McTavish",
+      "team": "5c6dwdhkmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "038vb",
+      "name": "Travis Konecny",
+      "team": "5c6dwdhkmo319aqw",
+      "streak": 4
+    },
+    {
+      "id": "03duf",
+      "name": "Dylan Larkin",
+      "team": "5c6dwdhkmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "05tur",
+      "name": "Matthew Knies",
+      "team": "djdo03kcmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "05r1i",
+      "name": "Matty Beniers",
+      "team": "djdo03kcmo319aqw",
+      "streak": 4
+    },
+    {
+      "id": "06axe",
+      "name": "Gabe Perreault",
+      "team": "djdo03kcmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "06maz",
+      "name": "Ilya Protas",
+      "team": "djdo03kcmo319aqw",
+      "streak": 5
+    },
+    {
+      "id": "05ymq",
+      "name": "Matthew Poitras",
+      "team": "djdo03kcmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "06axz",
+      "name": "Bradly Nadeau",
+      "team": "djdo03kcmo319aqw",
+      "streak": 4
+    },
+    {
+      "id": "06fzv",
+      "name": "Cole Hutson",
+      "team": "djdo03kcmo319aqw",
+      "streak": 5
+    },
+    {
+      "id": "06h8h",
+      "name": "Trevor Connelly",
+      "team": "mo75fhhjmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "05r1c",
+      "name": "Juraj Slafkovský",
+      "team": "mo75fhhjmo319aqw",
+      "streak": 4
+    },
+    {
+      "id": "01c12",
+      "name": "John Tavares",
+      "team": "mo75fhhjmo319aqw",
+      "streak": 4
+    },
+    {
+      "id": "03ra7",
+      "name": "Zach Werenski",
+      "team": "mo75fhhjmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "02un5",
+      "name": "Sam Reinhart",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 5
+    },
+    {
+      "id": "00454",
+      "name": "Sidney Crosby",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 4
+    },
+    {
+      "id": "066sp",
+      "name": "Aydar Suniev",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "06axb",
+      "name": "Nick Lardis",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 4
+    },
+    {
+      "id": "03rik",
+      "name": "Troy Terry",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 5
+    },
+    {
+      "id": "042w4",
+      "name": "Adam Fox",
+      "team": "smc5vz9tmo319aqw",
+      "streak": 2
+    },
+    {
+      "id": "0579x",
+      "name": "Adam Fantilli",
+      "team": "lo1c2zefmo319aqw",
+      "streak": 5
+    },
+    {
+      "id": "04lo0",
+      "name": "Quinton Byfield",
+      "team": "lo1c2zefmo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "05ui4",
+      "name": "Dalibor Dvorsky",
+      "team": "h13alq00mo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "065d1",
+      "name": "Matthew Wood",
+      "team": "h13alq00mo319aqw",
+      "streak": 3
+    },
+    {
+      "id": "05tpa",
+      "name": "Ville Koivunen",
+      "team": "h13alq00mo319aqw",
+      "streak": 5
+    },
+    {
+      "id": "06loc",
+      "name": "Egor Surin",
+      "team": "h13alq00mo319aqw",
+      "streak": 5
+    }
+  ],
+  "leftOutInjured": [
+    {
+      "id": "06hcr",
+      "name": "Igor Chernyshov",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "0045k",
+      "name": "Evgeni Malkin",
+      "status": "Out"
+    },
+    {
+      "id": "01ztp",
+      "name": "Zach Hyman",
+      "status": "Out"
+    },
+    {
+      "id": "004jl",
+      "name": "Brad Marchand",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "03bfj",
+      "name": "Artemi Panarin",
+      "status": "Day-To-Day"
+    },
+    {
+      "id": "05r1l",
+      "name": "William Eklund",
+      "status": "Injured Reserve"
+    },
+    {
+      "id": "02un7",
+      "name": "Aleksander Barkov",
+      "status": "Injured Reserve"
+    }
+  ]
+}
