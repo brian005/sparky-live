@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-24T06:20:33.368Z",
+  "mode": "apply",
+  "periods": [],
+  "swept": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "lockTs": "2026-11-23T17:00:00",
+  "upcoming": 6,
+  "error": "Fantrax login failed: still on /login. Wrong credentials or a reCAPTCHA (screenshot: debug-f1-login-failed.png)"
+}
