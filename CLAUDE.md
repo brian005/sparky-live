@@ -146,10 +146,10 @@ Dispatch (from Brian's PowerShell):
 
 - `src/night-records.js`: every finished night, at four levels per stat (pool, pool in a Period N night, the
   franchise's own, its own in a Period N night), records AND ties, a value must be above zero, a level needs one
-  earlier night. Stats: points, ppg (5+ GP), points from one NHL game, goals, primary points (G + A1), PP points,
-  EN points, prospect points, different prospects scoring (old rule: pool/own any-night only, no ties),
-  DOMINATION (outscoring everyone else combined: each one noted; the margin has records); the whole pool's points
-  and ppg (20+ GP) per night. Brian (2026-11-02): report everything first, judge the volume later.
+  earlier night. Stats: points, ppg (5+ GP), the ladder (below), points from one NHL game, goals, primary points
+  (G + A1), PP points, EN points, prospect points, different prospects scoring (old rule: pool/own any-night only,
+  no ties), DOMINATION (outscoring everyone else combined: each one noted; the margin has records); the whole pool's
+  points and ppg (20+ GP) per night. Brian (2026-11-02): report everything first, judge the volume later.
 - **Volume rules (Brian, 2026-11-06).** A franchise's own tie (FRANCHISE RECORD / P5 FRANCHISE RECORD) is announced
   only when it ties at most 2 other nights (`OWN_TIE_MAX`); past that the next level down is tried, so a tie of its
   any-night best can still come out as a Period N record. Pool ties always count. Same for period records
@@ -157,6 +157,24 @@ Dispatch (from Brian's PowerShell):
   had nobody playing (GP 0; an unknown GP doesn't count), in history as tonight; any other night it fires, whatever
   the score ("give it a go"). Replay Sep 29 - Nov 5: 54 lines to 37 (8 own ties of 5-9 other nights and 2
   DOMINATIONs on two-idle nights gone; MPP's Oct 16 margin is now a tie of its own +4 instead of a P2 record).
+- **The ladder (Brian, 2026-11-24).** He asked for "a record for a franchise's best point total and ppg (and the
+  league's) for n players playing". Stat `ladder` in `night-records.js`: the most points with exactly N of a franchise's
+  actives playing, a rung for every N from 1 to 15. At a fixed N most points and best PPG are the same record, so it's
+  one stat: the card says "Most points with 5 playing", the points big and the PPG under them, and a 3-player night has
+  a rung instead of being left out by the PPG minimum. Two levels only, keyed by N instead of the period (`lv`):
+  FRANCHISE RECORD and SPARKY RECORD (all-time, gold). A Sparky rung goes to the night's best among the franchises with
+  that many playing (`peer`); ties follow the other stats' rules (`OWN_TIE_MAX`). A night that sets (or ties) its
+  franchise's or the pool's any-night points or PPG record has always done the same to its rung, so `fold` leaves one
+  card, the points or PPG record's, reading "Best PPG in a night · most points with 5 playing" (`r.also`; its sentence
+  ends "Also the most points with 5 playing (old mark: 10, Feb 14, 2018)."); a tie that's a new best for its rung keeps
+  both cards. No Period N versions (15 x 15 x 7 marks) and no whole-league version (90 rungs, about 25 nights behind
+  each: cheap marks). The Sparky rungs on day one, 1 to 15 playing: 5, 7, 9, 14, 14, 16, 19, 18, 18, 22, 23, 24, 25,
+  22, 26 (PWN holds 8 of them). Volume, replayed: 11 to 18 cards a season over 2023-26.
+- How far the old GP can be trusted (checked 2026-11-24, BEW): it's Fantrax's nightly count, scraped by `backfill.js`.
+  The nightly sums equal the official period lines (`historical.json`), points and GP, in 146 of 162 periods through
+  2024-25; the rest are off by a game or two and by 6 points at most, and nightly points match the NHL box scores
+  (`player-nights`) on all but one of 2,222 nights. So an old night can sit one rung off, and no missing night is big
+  enough to hide a record. This season's nights add up to F2's period lines exactly.
 - History: `data/daily-*` (points, GP), `data/active-stints.json` (every Active player x period x franchise
   2013-14..2025-26, exported once from the local F2 copy's `player_period_pts`; NHL ids for 100 old players
   matched by name; Elias Pettersson fixed to 8480012), `data/player-nights/YYYY-YY.json` (built by
@@ -233,7 +251,9 @@ Dispatch (from Brian's PowerShell):
   DOMINATIONs for Lens, each with its picture layout (`pic`), rewritten by every real run (not `--test`) and committed
   with the state. Sparky Lens (1.49.0+) reads it straight from raw.githubusercontent.com for LAST NIGHT's RECORDS
   section; keep `pic`'s fields as they are, or change Lens's `lnRecCard` with them. The Drive copy
-  (`RECORDS_DRIVE_URL` / `RECORDS_TOKEN`, never set) isn't needed.
+  (`RECORDS_DRIVE_URL` / `RECORDS_TOKEN`, never set) isn't needed. The ladder in it: `book.ladder` is keyed by the
+  number playing (`by: "playing"`, `pool.n` / `fr.CODE.n`, no `any`); a rung's record carries `playing`, and a points or
+  PPG record that took its rung with it carries `also`. Lens draws a rung's card from the same `pic` fields.
 
 ## Lines feed (for Sparky Lens)
 
@@ -253,6 +273,16 @@ Dispatch (from Brian's PowerShell):
 
 ## Change log
 
+- **2026-11-24** - The ladder: night records by how many were playing (see "The ladder" under Night records). A new
+  stat in `night-records.js` (`lv`, `peer` and `what` on a stat, `fold`, `phrase`), its rungs in lens.json's book and
+  records (`by`, `playing`, `also`); `records.js` only gains a note in its header. Checked on a stand-in F2: the 2026-27
+  replay gains 8 (JGC's Sparky record of 22 with 14 playing on Nov 17, four franchise records, two of them BEW's Nov 1
+  and Nov 23 folded into their PPG cards, three ties) and every other line is unchanged; the other stats in lens.json's
+  book come out identical; 19 made-up nights for the fold, peers, ties and the book; the pictures drawn and looked at.
+  Lens needs no change.
+  Same morning Brian asked whether Screech's "2.20 PPG, franchise record" for BEW (Nov 23, 11 in 5) holds over 13
+  seasons. It does, over 2,280 BEW nights, with the 5-GP minimum the card doesn't mention (eight nights under 5 GP were
+  2.20 or better: seven 1-player nights and 8 in 3 on Oct 18, 2023); F2's standings had Period 5 at 11 points in 5 games.
 - **2026-11-18** - Janitor trades land in the right period. The Nov 17 22:20 PST run's upcoming pass asked
   Fantrax for the Kaprizov RMS -> BEW trade in Period 5, but the request still had the old string shape, on
   which Fantrax ignores `period`: it tried Period 4, where Kaprizov was in RMS's active roster, and refused

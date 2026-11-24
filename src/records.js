@@ -15,6 +15,9 @@
 //     most power-play points, most empty-net points, most prospect points, most different prospects scoring,
 //     and DOMINATION (outscoring everyone else combined: every one noted, the margin has records). Plus the
 //     whole pool's night: most points, best ppg (20+ playing), for any night and for a Period N night.
+//     And the ladder (since 2026-11-24): most points with exactly N playing, a rung for each N from 1 to 15,
+//     the franchise's own and the pool's (no Period N versions); a points or PPG record that takes its rung
+//     with it says so on its own card.
 //     Records and ties are both announced. No night lows: zero-point nights happen all the time.
 //   MILESTONES (every night): a franchise passing a round 1,000 all-time points (every season since
 //     2013-14 plus this one so far).

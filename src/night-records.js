@@ -11,15 +11,23 @@
 // night to beat; a value has to be above zero to count; records and ties are both reported. On a night two
 // franchises both pass a pool mark, the pool record only goes to the better one (both, if they're even).
 //
-// Franchise stats, per night: points, ppg (with NIGHT_PPG_MIN_GP or more playing), points from one NHL game,
-// goals, primary points (goals + first assists), power-play points, empty-net points, prospect points,
-// different prospects scoring (as before: pool and own records for any night, new records only, no ties),
+// Franchise stats, per night: points, ppg (with NIGHT_PPG_MIN_GP or more playing), the ladder (see below), points
+// from one NHL game, goals, primary points (goals + first assists), power-play points, empty-net points, prospect
+// points, different prospects scoring (as before: pool and own records for any night, new records only, no ties),
 // and DOMINATION (outscoring every other franchise combined; every one is
 // noted, and the margin over everyone else has records of its own). No DOMINATION on a night two or more franchises
 // had nobody playing (Brian, 2026-11-06: otherwise "give it a go", whatever the score), in history as tonight.
 // A franchise's own tie is announced only when it ties at most OWN_TIE_MAX other nights; past that the next level
 // down is tried (a tie of its any-night best can still be a Period N record), and a pool tie always counts.
 // Pool stats: points, and ppg (with POOL_PPG_MIN_GP or more playing).
+//
+// The ladder (Brian, 2026-11-24): the most points with exactly N of a franchise's actives playing, a rung for every
+// N from 1 to 15. At a fixed N the most points and the best PPG are the same record, so it's one stat and the card
+// shows both numbers; a 3-player night has a rung of its own instead of being left out by the PPG minimum. Two levels
+// only, each keyed by N instead of the period: the franchise's own (FRANCHISE RECORD) and any franchise's (SPARKY
+// RECORD). On a night two franchises with the same N both pass a Sparky rung, it goes to the better one. A night that
+// sets (or ties) its franchise's or the pool's any-night points or PPG record always does the same to the rung for
+// its N: then there's one card, the points or PPG record's, saying both (fold).
 //
 // Data:
 //   history   data/daily-YYYY-YY/*.json and data/daily/*.json (points, GP; via records.js loadHistory),
@@ -49,6 +57,12 @@ const pl = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;                 // 1 powe
 const FR_STATS = [
   { key: "pts", big: (e) => pl(e.pts, "point"), sub: (e) => `from ${e.gp} games played`, label: "most points", val: (e) => e.pts, show: (e) => `${e.pts} points (${e.gp} GP)` },
   { key: "ppg", big: (e) => `${two(e.pts / e.gp)} PPG`, sub: (e) => `${e.pts} points from ${e.gp} games played`, label: "best PPG", val: (e) => (e.gp >= MIN_GP ? e.pts / e.gp : null), num: two, show: (e) => `${two(e.pts / e.gp)} ppg (${e.pts} in ${e.gp} GP)` },
+  // the ladder: most points with exactly this many playing. what: its own wording (no "in a night"); lv: its two levels,
+  // keyed by the number playing; peer: who it's measured against for a Sparky rung on the same night; by: for the book
+  { key: "ladder", big: (e) => pl(e.pts, "point"), sub: (e) => (e.gp > 1 ? `${two(e.pts / e.gp)} PPG` : ""), label: "most points with that many playing", by: "playing",
+    what: (e) => `most points with ${e.gp} playing`, val: (e) => (e.gp >= 1 ? e.pts : null),
+    lv: (e) => [["pool-any", `P|${e.gp}`], ["fr-any", `F|${e.code}|${e.gp}`]], peer: (x, e) => x.gp === e.gp,
+    show: (e) => `${pl(e.pts, "point")}${e.gp > 1 ? ` (${two(e.pts / e.gp)} ppg)` : ""}` },
   { key: "game", big: (e) => pl(e.game.pts, "point"), sub: (e) => `all from ${e.game.id.replace("@", " @ ")}`, detail: true, label: "most points from one NHL game", val: (e) => (e.game ? e.game.pts : null), show: (e) => `${e.game.pts} (${e.game.id})`, ref: (o) => ` (${o.game.id})` },
   { key: "g", big: (e) => pl(e.g, "goal"), detail: true, label: "most goals", val: (e) => e.g, show: (e) => `${e.g}` },
   { key: "prim", big: (e) => pl(e.prim, "primary point"), sub: () => "goals + first assists", detail: true, label: "most primary points", val: (e) => e.prim, show: (e) => `${e.prim}` },
@@ -185,6 +199,7 @@ function levelsOf(e) {
     ["fr-n", e.period ? `F|${e.code}|${e.period}` : null],
   ].filter((x) => x[1]);
 }
+const lvOf = (stat, e) => (stat.lv ? stat.lv(e) : levelsOf(e));   // the ladder has levels of its own
 let DETAIL_ON = true;                                           // set by run(): off until player-nights is complete
 function statsOf(e) { return e.pool ? POOL_STATS : DETAIL_ON ? FR_STATS : FR_STATS.filter((s) => !s.detail); }
 const valOf = (stat, e) => { const v = stat.val(e); return v == null || !(v > EPS) ? null : v; };
@@ -196,7 +211,7 @@ class Marks {
     for (const stat of statsOf(e)) {
       const v = valOf(stat, e);
       if (v == null) continue;
-      for (const [, k] of levelsOf(e)) {
+      for (const [, k] of lvOf(stat, e)) {
         const key = `${stat.key}|${k}`, x = this.m.get(key);
         if (!x || v > x.v + EPS) this.m.set(key, { v, holders: [e] });
         else if (Math.abs(v - x.v) <= EPS) x.holders.push(e);
@@ -212,9 +227,9 @@ function checkNight(list, marks) {
     for (const stat of statsOf(e)) {
       const v = valOf(stat, e);
       if (v == null) continue;
-      // a pool mark goes only to the night's best (all of them, if they're even)
-      const beaten = list.some((x) => x !== e && !!x.pool === !!e.pool && (valOf(stat, x) || 0) > v + EPS);
-      for (const [lv, k] of levelsOf(e)) {
+      // a pool mark goes only to the night's best (all of them, if they're even); a rung's, to the best with as many playing
+      const beaten = list.some((x) => x !== e && !!x.pool === !!e.pool && (!stat.peer || stat.peer(x, e)) && (valOf(stat, x) || 0) > v + EPS);
+      for (const [lv, k] of lvOf(stat, e)) {
         if (beaten && lv.startsWith("pool")) continue;
         if (stat.levels && !stat.levels.includes(lv)) continue;
         const mark = marks.get(stat, k);
@@ -233,23 +248,30 @@ function checkNight(list, marks) {
   return recs;
 }
 
+// A night that sets (or ties) a franchise's or the pool's any-night points or PPG record has done the same to the
+// ladder's rung for its number playing: one card then, the points or PPG record's (the PPG one when it has both),
+// which says the rung too (r.also). A tie that's a new best for its rung keeps both cards: the rung is the news.
+function fold(recs) {
+  const out = [];
+  for (const r of recs) {
+    if (r.stat.key !== "ladder") { out.push(r); continue; }
+    const same = (k) => recs.find((x) => x.e === r.e && x.stat.key === k && x.level === r.level && x.tie === r.tie && !x.also);
+    const host = same("ppg") || same("pts");
+    if (host) host.also = r; else out.push(r);
+  }
+  return out;
+}
+
 // ---- wording -----------------------------------------------------------------------------------------------
 // An old mark (or a night it's tied with) names the franchise only on a pool record, where it could be anyone's; a
 // franchise's own record is obviously its own nights. A tie says how many other nights it ties, and when, only if
 // it's one ("Ties 1 other night: Nov 11, 2023"; "Ties 4 other nights") (Brian, 2026-11-04).
 const namesHolder = (r, o) => r.level.startsWith("pool") && !o.pool;
 const otherNights = (n) => `${n} other night${n === 1 ? "" : "s"}`;
+// what a record is for: "most goals in a Period 2 night", "best PPG in a night"; the ladder's own: "most points with 5 playing"
+const phrase = (r) => (r.stat.what ? r.stat.what(r.e) : `${r.stat.label} in a${r.level.endsWith("-n") ? ` Period ${r.e.period}` : ""} night`);
 function wording(fname, prettyDate) {
-  const where = (r) => {
-    const n = r.e.period;
-    if (r.e.pool) return r.level === "pool-n" ? `the record for ${r.stat.label} in a Period ${n} night` : `the record for ${r.stat.label} in a night`;
-    return {
-      "pool-any": `the pool record for ${r.stat.label} in a night`,
-      "pool-n": `the pool record for ${r.stat.label} in a Period ${n} night`,
-      "fr-any": `their own record for ${r.stat.label} in a night`,
-      "fr-n": `their own record for ${r.stat.label} in a Period ${n} night`,
-    }[r.level];
-  };
+  const where = (r) => (r.e.pool ? `the record for ${phrase(r)}` : `${r.level.startsWith("pool") ? "the pool" : "their own"} record for ${phrase(r)}`);
   const num = (stat, v) => (stat.num ? stat.num(v) : String(v));
   const when = (r, o) => `${namesHolder(r, o) ? `${fname(o.code)}, ` : ""}${prettyDate(o.date)}`;
   const ref = (r, o) => `${num(r.stat, r.old.v)}${r.stat.ref ? r.stat.ref(o) : ""}, ${when(r, o)}`;
@@ -259,7 +281,9 @@ function wording(fname, prettyDate) {
     if (!r.tie) old = ` Old mark: ${ref(r, h[0])}${h.length > 1 ? `, tied ${h.length - 1} time${h.length === 2 ? "" : "s"} since` : ""}.`;
     else old = h.length === 1 ? ` Ties 1 other night: ${when(r, h[0])}.` : ` Ties ${otherNights(h.length)}.`;
     const who = r.e.pool ? "The Sparky League" : fname(r.e.code);
-    return `*${who}* ${r.tie ? "tied" : "set"} ${where(r)}: ${r.stat.show(r.e)}.${old}`;
+    // the rung it took with it (fold): "Also the most points with 5 playing (old mark: 10, Feb 14, 2018)."
+    const a = r.also, also = !a ? "" : a.tie ? ` Also ties the ${phrase(a)}.` : ` Also the ${phrase(a)} (old mark: ${ref(a, a.old.holders[0])}).`;
+    return `*${who}* ${r.tie ? "tied" : "set"} ${where(r)}: ${r.stat.show(r.e)}.${old}${also}`;
   };
   const dom = (e) => `*${fname(e.code)}* DOMINATION: ${e.pts} points, more than everyone else combined (${e.others}).`;
   return { line, dom };
@@ -301,8 +325,9 @@ function cards(fname, prettyDate, logo) {
   const when = (r, o) => `${namesHolder(r, o) ? `${fname(o.code)} · ` : ""}${short(o.date)}`;
   const ref = (r, o) => `${num(r.stat, r.old.v)}${r.stat.ref ? r.stat.ref(o) : ""} · ${when(r, o)}`;
   const record = (r, fallback) => {
-    const lv = LEVEL[r.level], n = r.e.period, h = r.old.holders;
-    const what = `${cap(r.stat.label)} in a${r.level.endsWith("-n") ? ` Period ${n}` : ""} night`;
+    const lv = LEVEL[r.level], h = r.old.holders;
+    // with the rung it took with it (fold): "Best PPG in a night · most points with 5 playing"
+    const what = `${cap(phrase(r))}${r.also ? ` · ${r.stat.key === "pts" ? phrase(r.also).replace(/^most points /, "most ") : phrase(r.also)}` : ""}`;
     let oldTitle, oldVal;
     if (!r.tie) { oldTitle = "Old mark"; oldVal = `${ref(r, h[0])}${h.length > 1 ? ` (tied ${h.length - 1}× since)` : ""}`; }
     else { oldTitle = `Ties ${otherNights(h.length)}`; oldVal = h.length === 1 ? when(r, h[0]) : ""; }   // the date only for one
@@ -335,8 +360,10 @@ function cards(fname, prettyDate, logo) {
 
 // plain records for the record book and for Lens
 const plain = (r) => ({
-  stat: r.stat.key, label: r.stat.label, level: r.level, period: r.e.period, code: r.e.code, value: r.stat.val(r.e),
+  stat: r.stat.key, label: r.stat.what ? r.stat.what(r.e) : r.stat.label, level: r.level, period: r.e.period, code: r.e.code, value: r.stat.val(r.e),
   text: r.stat.show(r.e), tie: r.tie, old: { value: r.old.v, holders: r.old.holders.slice(0, 3).map((o) => ({ code: o.code, date: o.date })), count: r.old.holders.length },
+  ...(r.stat.by ? { playing: r.e.gp } : {}),                   // a rung: how many were playing
+  ...(r.also ? { also: plain(r.also) } : {}),                  // the rung this record took with it (fold)
 });
 
 // ---- run ------------------------------------------------------------------------------------------------
@@ -356,7 +383,7 @@ function run({ hist, cur, want, fname, prettyDate, logo = () => "" }) {
   for (const date of Object.keys(byDate).sort()) {
     const list = byDate[date];
     if (!want(date)) { for (const e of list) marks.add(e); continue; }
-    const recs = checkNight(list, marks);
+    const recs = fold(checkNight(list, marks));
     recs.sort((a, b) => rank[a.level] - rank[b.level] || STATS.indexOf(a.stat) - STATS.indexOf(b.stat));
     const lines = [
       ...list.filter((e) => !e.pool && e.margin != null).map(dom),
@@ -374,12 +401,14 @@ function run({ hist, cur, want, fname, prettyDate, logo = () => "" }) {
 }
 
 // the current marks, for Lens: { stat: { label, pool: { any, n: { N: mark } }, fr: { CODE: { any, n } } } }
+// N is the period; for the ladder (by: "playing") it's the number playing, and there's no `any`
 function book(marks) {
   const out = {};
   const mk = (x) => ({ value: x.v, holders: x.holders.slice(0, 3).map((o) => ({ code: o.pool ? null : o.code, date: o.date })), count: x.holders.length });
   for (const [key, x] of marks.m) {
     const [stat, kind, a, b] = key.split("|");
-    const s = (out[stat] = out[stat] || { label: (STATS.find((t) => t.key === stat) || {}).label, pool: { any: null, n: {} }, fr: {} });
+    const st = STATS.find((t) => t.key === stat) || {};
+    const s = (out[stat] = out[stat] || { label: st.label, ...(st.by ? { by: st.by } : {}), pool: { any: null, n: {} }, fr: {} });
     if (kind === "P" || kind === "L") { if (a) s.pool.n[a] = mk(x); else s.pool.any = mk(x); }
     else if (kind === "F") {
       const f = (s.fr[a] = s.fr[a] || { any: null, n: {} });
