@@ -71,6 +71,13 @@ The Saved by the Bell persona bots post to **#sparkybots**, not #sparky.
 - The Monday 14:00 run exists because periods start and lock on Monday afternoons
   (F2 `lock_ts`, naive Pacific): it catches moves made between Sunday's 23:00 run and
   the lock. On off-week Mondays it's a no-op.
+- **Fantrax sign-in (since 2026-11-24): a saved session first.** From Nov 23 PM Fantrax shows a captcha
+  challenge to the runner's password sign-in, and the janitor never tries to get past a captcha. So Brian signs
+  in by hand: `node src/fantrax-cookie.js` on his PC opens a browser at Fantrax's login, waits until he's in,
+  and pipes the session's cookies into the `FANTRAX_COOKIES` secret with `gh secret set` (never written to disk
+  or shown). The janitor loads them, checks the session with a `getTeamRosterInfo` call, and only then falls
+  back to the password. When both fail, the error says to run the script again. How long a Fantrax session
+  lasts is not known yet: note it here when it first expires.
 - **Trades go in the period after the one they were made in** (Brian, 2026-11-18): the upcoming pass sends
   them to the next period, the locked sweep to the period it mirrors. `createTrade` must use the Commissioner
   Trade page's current shape, `transactionSets: [{ transactions: [{ scorerId, sourceTeamId, destTeamId }] }]`
@@ -273,6 +280,9 @@ Dispatch (from Brian's PowerShell):
 
 ## Change log
 
+- **2026-11-24 (later)** - The manual dry run's new error named the cause: "A captcha challenge is showing".
+  Fantrax now challenges the runner's sign-in. Added the saved-session sign-in (`FANTRAX_COOKIES`, made by
+  `src/fantrax-cookie.js`; see "Fantrax sign-in" under the janitor) with the password as the fallback.
 - **2026-11-24** - Janitor: both Monday runs (pre-lock 13:05 and nightly 22:20 PST) died at the Fantrax login
   ("still on /login"), so Period 5 has not been checked since it locked. Cause on Fantrax's side still unknown
   (last good login Sunday 22:27 PST). Two fixes so the next failure explains itself: a failed login now closes

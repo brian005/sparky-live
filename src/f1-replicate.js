@@ -37,6 +37,8 @@
 //
 // Env:
 //   FANTRAX_USERNAME (or FANTRAX_EMAIL), FANTRAX_PASSWORD   commissioner Fantrax login (required)
+//   FANTRAX_COOKIES                   optional; a saved signed-in Fantrax session (JSON cookies from
+//                                     src/fantrax-cookie.js), tried before the password sign-in
 //   FANTRAX_LEAGUE_ID                 Fantrax league id (required)
 //   F2_BASE                           e.g. https://sparkypool.ca (required)
 //   F2_USER, F2_PASSWORD              the sparkypool.ca sign-in (Name / Password on its front page)
@@ -69,6 +71,7 @@ const PERIOD_ARG = (() => { const i = ARGS.indexOf("--period"); return i >= 0 ? 
 const need = (k) => { const v = process.env[k]; if (!v) { console.error(`Missing env ${k}`); process.exit(2); } return v; };
 const FX_EMAIL = process.env.FANTRAX_EMAIL || need("FANTRAX_USERNAME");   // Sparky Live calls it FANTRAX_USERNAME
 const FX_PASSWORD = need("FANTRAX_PASSWORD");
+const FX_COOKIES = process.env.FANTRAX_COOKIES || "";                       // a saved signed-in session (src/fantrax-cookie.js)
 const LEAGUE = need("FANTRAX_LEAGUE_ID");
 const F2_BASE = need("F2_BASE").replace(/\/+$/, "");
 const F2_TOKEN = process.env.F2_TOKEN || "";
@@ -340,6 +343,23 @@ const FX_FETCH_TIMEOUT_MS = 45000;
 const FX_READ_ATTEMPTS = 3;
 const FX_RETRY_WAIT_MS = [5000, 15000];
 
+// Is this page's Fantrax session signed in? Asks Fantrax for the user's own roster: a signed-out session
+// gets a pageError (or a login page) back instead of a roster.
+async function fxSignedIn(page) {
+  const r = await page.evaluate(async (url) => {
+    try {
+      const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include",
+        body: JSON.stringify({ msgs: [{ method: "getTeamRosterInfo", data: {} }], uiv: 3, refUrl: location.href, dt: 0, at: 0 }) });
+      return await res.text();
+    } catch (e) { return ""; }
+  }, `/fxpa/req?leagueId=${LEAGUE}`).catch(() => "");
+  try {
+    const o = JSON.parse(r);
+    const resp = (o.responses || [])[0] || {};
+    return !o.pageError && !resp.pageError && !!resp.data;
+  } catch (_) { return false; }
+}
+
 async function fantraxSession() {
   const browser = await puppeteer.launch({ headless: HEADLESS ? "new" : false, protocolTimeout: FX_FETCH_TIMEOUT_MS + 30000, args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu"] });
   const page = await browser.newPage();
@@ -354,14 +374,34 @@ async function fantraxSession() {
     try { const b = JSON.parse(req.postData() || "{}"); if (b.v) envelope.v = b.v; if (b.uiv) envelope.uiv = b.uiv; } catch (_) {}
   });
 
+  // Saved session first (Nov 24 2026). Since Nov 23 PM Fantrax shows a captcha challenge to the GitHub
+  // runner's sign-in, which the janitor must not try to get past. So Brian signs in by hand once in a real
+  // browser (src/fantrax-cookie.js), his session cookies go into the FANTRAX_COOKIES secret, and the janitor
+  // loads them instead of typing the password. The password sign-in stays as the fallback for when the saved
+  // session has expired and Fantrax isn't challenging that day.
+  let signedIn = false;
+  if (FX_COOKIES) {
+    try {
+      const jar = JSON.parse(FX_COOKIES);
+      await page.setCookie(...jar.filter((c) => /fantrax\.com$/.test(String(c.domain || "").replace(/^\./, ""))));
+      await page.goto(`${FX}/fantasy/league/${LEAGUE}/team/roster`, { waitUntil: "networkidle2" }).catch(() => {});
+      await sleep(3000);
+      signedIn = !page.url().includes("/login") && await fxSignedIn(page);
+      log(signedIn ? "Fantrax: signed in with the saved session (FANTRAX_COOKIES)" : "Fantrax: the saved session (FANTRAX_COOKIES) has expired; trying the password");
+    } catch (e) { log("Fantrax: couldn't use FANTRAX_COOKIES:", e.message); }
+  }
+
   // A failed login used to leave Chromium running: the caller only closes the browser of a session it got
   // back, so node never exited and the job sat until its 20-minute timeout. GitHub then calls the run
   // "cancelled", skips the failure() step that keeps the screenshot, and nobody sees why (Nov 23-24 2026).
-  try {
-    await fantraxLogin(page);
-  } catch (e) {
-    await browser.close().catch(() => {});
-    throw e;
+  if (!signedIn) {
+    try {
+      await fantraxLogin(page);
+    } catch (e) {
+      await browser.close().catch(() => {});
+      if (/captcha/i.test(e.message)) e.message += `. ${FX_COOKIES ? "The saved session has expired too" : "No saved session is set"}: on Brian's PC run \`node src/fantrax-cookie.js\`, sign in to Fantrax in the window it opens, and it saves a new FANTRAX_COOKIES secret.`;
+      throw e;
+    }
   }
 
   await page.goto(`${FX}/fantasy/league/${LEAGUE}/team/roster`, { waitUntil: "networkidle2" }).catch(() => {});

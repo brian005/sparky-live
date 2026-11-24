@@ -77,6 +77,7 @@ jobs:
         env:
           FANTRAX_USERNAME: ${{ secrets.FANTRAX_USERNAME }}
           FANTRAX_PASSWORD: ${{ secrets.FANTRAX_PASSWORD }}
+          FANTRAX_COOKIES: ${{ secrets.FANTRAX_COOKIES }}
           FANTRAX_LEAGUE_ID: ${{ vars.FANTRAX_LEAGUE_ID }}
           F2_BASE: ${{ vars.F2_BASE }}
           F2_USER: ${{ secrets.F2_USER }}
