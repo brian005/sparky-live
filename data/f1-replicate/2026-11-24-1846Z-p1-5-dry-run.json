@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-24T18:46:39.785Z",
+  "mode": "dry-run",
+  "periods": [],
+  "swept": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "lockTs": "2026-11-23T17:00:00",
+  "upcoming": 6,
+  "error": "Fantrax login failed: still on /login. A captcha challenge is showing. Fantrax says: \"We use cookies to improve your experience\". Wrong credentials, a changed password or a captcha (screenshot: debug-f1-login-failed.png, kept as the run's artifact)"
+}
