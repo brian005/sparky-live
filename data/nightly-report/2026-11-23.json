@@ -2,25 +2,23 @@
   "date": "2026-11-23",
   "period": 5,
   "games": 7,
-  "goals": 34,
-  "notFinal": [
-    "MIN@SJS (CRIT)"
-  ],
+  "goals": 35,
+  "notFinal": [],
   "teams": {
     "5c6dwdhkmo319aqw": {
-      "eligible": 11,
-      "scored": 9,
+      "eligible": 13,
+      "scored": 11,
       "g": 4,
-      "a": 5,
-      "a1": 3,
-      "a2": 2,
+      "a": 7,
+      "a1": 4,
+      "a2": 3,
       "pp": 2,
-      "en": 1,
-      "gp": 3,
+      "en": 3,
+      "gp": 5,
       "games": {
         "LAK@MTL": 1,
         "UTA@WPG": 3,
-        "MIN@SJS": 5
+        "MIN@SJS": 7
       }
     },
     "djdo03kcmo319aqw": {
@@ -32,7 +30,7 @@
       "a2": 1,
       "pp": 0,
       "en": 0,
-      "gp": 4,
+      "gp": 7,
       "games": {
         "MIN@SJS": 1
       }
@@ -46,7 +44,7 @@
       "a2": 1,
       "pp": 2,
       "en": 1,
-      "gp": 7,
+      "gp": 8,
       "games": {
         "CGY@OTT": 1,
         "TOR@NYI": 2,
@@ -62,25 +60,25 @@
       "a2": 0,
       "pp": 0,
       "en": 0,
-      "gp": 3,
+      "gp": 4,
       "games": {
         "CBJ@NJD": 1,
         "ANA@SEA": 1
       }
     },
     "lo1c2zefmo319aqw": {
-      "eligible": 8,
-      "scored": 6,
-      "g": 1,
+      "eligible": 9,
+      "scored": 7,
+      "g": 2,
       "a": 5,
       "a1": 3,
       "a2": 2,
       "pp": 1,
-      "en": 1,
-      "gp": 5,
+      "en": 2,
+      "gp": 6,
       "games": {
         "UTA@WPG": 4,
-        "MIN@SJS": 2
+        "MIN@SJS": 3
       }
     },
     "h13alq00mo319aqw": {
@@ -223,34 +221,34 @@
     "03rh3": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Kirill Kaprizov",
-      "pts": 3,
+      "pts": 4,
       "g": 1,
       "a1": 2,
-      "a2": 0,
+      "a2": 1,
       "pp": 1,
-      "en": 0,
+      "en": 1,
       "game": "MIN@SJS"
     },
     "04xec": {
       "team": "5c6dwdhkmo319aqw",
       "name": "Matt Boldy",
-      "pts": 2,
+      "pts": 3,
       "g": 0,
-      "a1": 1,
+      "a1": 2,
       "a2": 1,
       "pp": 1,
-      "en": 0,
+      "en": 1,
       "game": "MIN@SJS"
     },
     "03rae": {
       "team": "lo1c2zefmo319aqw",
       "name": "Joel Eriksson Ek",
-      "pts": 2,
-      "g": 1,
+      "pts": 3,
+      "g": 2,
       "a1": 0,
       "a2": 1,
       "pp": 1,
-      "en": 0,
+      "en": 1,
       "game": "MIN@SJS"
     },
     "05w9c": {
