@@ -106,7 +106,9 @@ jobs:
           for i in 1 2 3; do git pull --rebase --quiet && git push --quiet && break; sleep 5; done
 
       - name: Keep the debug screenshots
-        if: failure()
+        # cancelled() too: a run that hits timeout-minutes is "cancelled", and its screenshot is the one that
+        # says why (Nov 23-24 2026, Fantrax login)
+        if: failure() || cancelled()
         uses: actions/upload-artifact@v4
         with:
           name: f1-replicate-debug-${{ github.run_id }}

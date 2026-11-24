@@ -317,7 +317,16 @@ async function fantraxLogin(page) {
   await sleep(5000);
   if (page.url().includes("/login")) {
     await page.screenshot({ path: "debug-f1-login-failed.png", fullPage: true }).catch(() => {});
-    throw new Error("Fantrax login failed: still on /login. Wrong credentials or a reCAPTCHA (screenshot: debug-f1-login-failed.png)");
+    // What Fantrax itself said (a wrong-password error, a captcha, a "verify your email"), so the report and
+    // the Slack post name the cause without anyone digging out the screenshot.
+    const said = await page.evaluate(() => {
+      const pick = (sel) => Array.from(document.querySelectorAll(sel)).map((x) => x.innerText.trim()).filter(Boolean);
+      const bits = [...pick("mat-error, .mat-mdc-form-field-error, mat-snack-bar-container, .mat-mdc-snack-bar-label, .alert, [role=alert]"),
+        ...pick("mat-dialog-container, .mat-mdc-dialog-container")];
+      const captcha = !!document.querySelector("iframe[src*='recaptcha'][title*='challenge'], iframe[src*='hcaptcha'], iframe[src*='turnstile']");
+      return { text: [...new Set(bits)].join(" | ").replace(/\s+/g, " ").slice(0, 400), captcha };
+    }).catch(() => ({ text: "", captcha: false }));
+    throw new Error(`Fantrax login failed: still on /login.${said.captcha ? " A captcha challenge is showing." : ""}${said.text ? ` Fantrax says: "${said.text}".` : ""} Wrong credentials, a changed password or a captcha (screenshot: debug-f1-login-failed.png, kept as the run's artifact)`);
   }
   log("Fantrax: logged in");
 }
@@ -345,7 +354,15 @@ async function fantraxSession() {
     try { const b = JSON.parse(req.postData() || "{}"); if (b.v) envelope.v = b.v; if (b.uiv) envelope.uiv = b.uiv; } catch (_) {}
   });
 
-  await fantraxLogin(page);
+  // A failed login used to leave Chromium running: the caller only closes the browser of a session it got
+  // back, so node never exited and the job sat until its 20-minute timeout. GitHub then calls the run
+  // "cancelled", skips the failure() step that keeps the screenshot, and nobody sees why (Nov 23-24 2026).
+  try {
+    await fantraxLogin(page);
+  } catch (e) {
+    await browser.close().catch(() => {});
+    throw e;
+  }
 
   await page.goto(`${FX}/fantasy/league/${LEAGUE}/team/roster`, { waitUntil: "networkidle2" }).catch(() => {});
   await new Promise((r) => setTimeout(r, 3000));

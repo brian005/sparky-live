@@ -273,6 +273,12 @@ Dispatch (from Brian's PowerShell):
 
 ## Change log
 
+- **2026-11-24** - Janitor: both Monday runs (pre-lock 13:05 and nightly 22:20 PST) died at the Fantrax login
+  ("still on /login"), so Period 5 has not been checked since it locked. Cause on Fantrax's side still unknown
+  (last good login Sunday 22:27 PST). Two fixes so the next failure explains itself: a failed login now closes
+  Chromium (it used to keep node alive until the 20-minute timeout, so GitHub called the run "cancelled" and
+  skipped the screenshot step), and the error quotes what Fantrax's login dialog said and whether a captcha is
+  showing. The screenshot step also runs on cancelled. Workflow shipped from `incoming/`.
 - **2026-11-24** - The ladder: night records by how many were playing (see "The ladder" under Night records). A new
   stat in `night-records.js` (`lv`, `peer` and `what` on a stat, `fold`, `phrase`), its rungs in lens.json's book and
   records (`by`, `playing`, `also`); `records.js` only gains a note in its header. Checked on a stand-in F2: the 2026-27
