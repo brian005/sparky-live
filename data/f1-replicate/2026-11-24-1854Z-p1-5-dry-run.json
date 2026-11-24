@@ -1,0 +1,283 @@
+{
+  "at": "2026-11-24T18:54:51.326Z",
+  "mode": "dry-run",
+  "periods": [
+    {
+      "f2Period": 1,
+      "fxPeriod": 1,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 2,
+      "fxPeriod": 2,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 3,
+      "fxPeriod": 3,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 4,
+      "fxPeriod": 4,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    },
+    {
+      "f2Period": 5,
+      "fxPeriod": 5,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [
+        "LINEUP Brian's Endless Winter: Kirill Kaprizov RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Gabriel Vilardi RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Alex DeBrincat RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Dylan Larkin RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Jack Eichel ACTIVE -> RESERVE",
+        "LINEUP Brian's Endless Winter: Nick Schmaltz ACTIVE -> RESERVE",
+        "LINEUP Brian's Endless Winter: Brayden Point ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: Michael Misa MINORS -> ACTIVE",
+        "LINEUP Cmack's PWN: Matthew Knies RESERVE -> ACTIVE",
+        "LINEUP Cmack's PWN: Matty Beniers RESERVE -> ACTIVE",
+        "LINEUP Cmack's PWN: Cole Hutson RESERVE -> ACTIVE",
+        "LINEUP Cmack's PWN: Elias Pettersson ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: James Hagens ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: Pavel Dorofeyev ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: Gavin McKenna ACTIVE -> MINORS",
+        "LINEUP Graeme's Downtown Demons: Artturi Lehkonen RESERVE -> ACTIVE",
+        "LINEUP Graeme's Downtown Demons: Ryan Nugent-Hopkins ACTIVE -> RESERVE",
+        "LINEUP Jason's Gaucho Chudpumpers: Alexis Lafrenière RESERVE -> ACTIVE",
+        "LINEUP Jason's Gaucho Chudpumpers: Dylan Strome ACTIVE -> RESERVE",
+        "LINEUP Matt's mid tier perpetual projects: Kyle Connor RESERVE -> ACTIVE",
+        "LINEUP Matt's mid tier perpetual projects: Logan Cooley RESERVE -> ACTIVE",
+        "LINEUP Matt's mid tier perpetual projects: Adam Fantilli RESERVE -> ACTIVE",
+        "LINEUP Matt's mid tier perpetual projects: Ivan Demidov RESERVE -> ACTIVE",
+        "LINEUP Matt's mid tier perpetual projects: Nathan MacKinnon ACTIVE -> RESERVE",
+        "LINEUP Matt's mid tier perpetual projects: Trevor Zegras ACTIVE -> RESERVE",
+        "LINEUP Matt's mid tier perpetual projects: Dylan Guenther ACTIVE -> RESERVE",
+        "LINEUP Matt's mid tier perpetual projects: Cale Makar ACTIVE -> RESERVE",
+        "LINEUP Richie's Meatspinners: T.J. Hughes RESERVE -> ACTIVE",
+        "LINEUP Richie's Meatspinners: Egor Chinakhov RESERVE -> ACTIVE",
+        "LINEUP Richie's Meatspinners: Jiri Kulich RESERVE -> ACTIVE",
+        "LINEUP Richie's Meatspinners: Mavrik Bourque RESERVE -> ACTIVE",
+        "LINEUP Richie's Meatspinners: Connor Bedard ACTIVE -> RESERVE",
+        "LINEUP Richie's Meatspinners: Michael Brandsegg-Nygård ACTIVE -> RESERVE",
+        "LINEUP Richie's Meatspinners: Roger McQueen MINORS -> RESERVE",
+        "LINEUP Richie's Meatspinners: Anton Frondell ACTIVE -> MINORS"
+      ],
+      "remaining": [
+        "LINEUP Brian's Endless Winter: Kirill Kaprizov RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Gabriel Vilardi RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Alex DeBrincat RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Dylan Larkin RESERVE -> ACTIVE",
+        "LINEUP Brian's Endless Winter: Jack Eichel ACTIVE -> RESERVE",
+        "LINEUP Brian's Endless Winter: Nick Schmaltz ACTIVE -> RESERVE",
+        "LINEUP Brian's Endless Winter: Brayden Point ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: Michael Misa MINORS -> ACTIVE",
+        "LINEUP Cmack's PWN: Matthew Knies RESERVE -> ACTIVE",
+        "LINEUP Cmack's PWN: Matty Beniers RESERVE -> ACTIVE",
+        "LINEUP Cmack's PWN: Cole Hutson RESERVE -> ACTIVE",
+        "LINEUP Cmack's PWN: Elias Pettersson ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: James Hagens ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: Pavel Dorofeyev ACTIVE -> RESERVE",
+        "LINEUP Cmack's PWN: Gavin McKenna ACTIVE -> MINORS",
+        "LINEUP Graeme's Downtown Demons: Artturi Lehkonen RESERVE -> ACTIVE",
+        "LINEUP Graeme's Downtown Demons: Ryan Nugent-Hopkins ACTIVE -> RESERVE",
+        "LINEUP Jason's Gaucho Chudpumpers: Alexis Lafrenière RESERVE -> ACTIVE",
+        "LINEUP Jason's Gaucho Chudpumpers: Dylan Strome ACTIVE -> RESERVE",
+        "LINEUP Matt's mid tier perpetual projects: Kyle Connor RESERVE -> ACTIVE",
+        "LINEUP Matt's mid tier perpetual projects: Logan Cooley RESERVE -> ACTIVE",
+        "LINEUP Matt's mid tier perpetual projects: Adam Fantilli RESERVE -> ACTIVE",
+        "LINEUP Matt's mid tier perpetual projects: Ivan Demidov RESERVE -> ACTIVE",
+        "LINEUP Matt's mid tier perpetual projects: Nathan MacKinnon ACTIVE -> RESERVE",
+        "LINEUP Matt's mid tier perpetual projects: Trevor Zegras ACTIVE -> RESERVE",
+        "LINEUP Matt's mid tier perpetual projects: Dylan Guenther ACTIVE -> RESERVE",
+        "LINEUP Matt's mid tier perpetual projects: Cale Makar ACTIVE -> RESERVE",
+        "LINEUP Richie's Meatspinners: T.J. Hughes RESERVE -> ACTIVE",
+        "LINEUP Richie's Meatspinners: Egor Chinakhov RESERVE -> ACTIVE",
+        "LINEUP Richie's Meatspinners: Jiri Kulich RESERVE -> ACTIVE",
+        "LINEUP Richie's Meatspinners: Mavrik Bourque RESERVE -> ACTIVE",
+        "LINEUP Richie's Meatspinners: Connor Bedard ACTIVE -> RESERVE",
+        "LINEUP Richie's Meatspinners: Michael Brandsegg-Nygård ACTIVE -> RESERVE",
+        "LINEUP Richie's Meatspinners: Roger McQueen MINORS -> RESERVE",
+        "LINEUP Richie's Meatspinners: Anton Frondell ACTIVE -> MINORS"
+      ]
+    },
+    {
+      "f2Period": 6,
+      "upcoming": true,
+      "locksAt": "2026-12-07T11:00:00",
+      "fxPeriod": 6,
+      "aliases": [
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486099",
+          "fantrax": "071wp",
+          "name": "Egor Shilov",
+          "fxName": "Yegor Shilov"
+        },
+        {
+          "team": "h13alq00mo319aqw",
+          "f2": "n8486049",
+          "fantrax": "06rmq",
+          "name": "JP Hurlbert",
+          "fxName": "J.P. Hurlbert"
+        }
+      ],
+      "unresolved": [],
+      "plan": [],
+      "remaining": []
+    }
+  ],
+  "swept": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "lockTs": "2026-11-23T17:00:00",
+  "upcoming": 6,
+  "standings": [
+    {
+      "id": "smc5vz9tmo319aqw",
+      "team": "Jason's Gaucho Chudpumpers",
+      "f2": 388,
+      "fantrax": 388,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "5c6dwdhkmo319aqw",
+      "team": "Brian's Endless Winter",
+      "f2": 330,
+      "fantrax": 322,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "mo75fhhjmo319aqw",
+      "team": "Graeme's Downtown Demons",
+      "f2": 329,
+      "fantrax": 329,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "lo1c2zefmo319aqw",
+      "team": "Matt's mid tier perpetual projects",
+      "f2": 306,
+      "fantrax": 303,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "h13alq00mo319aqw",
+      "team": "Richie's Meatspinners",
+      "f2": 279,
+      "fantrax": 279,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    },
+    {
+      "id": "djdo03kcmo319aqw",
+      "team": "Cmack's PWN",
+      "f2": 261,
+      "fantrax": 261,
+      "fantraxPrevNight": null,
+      "compared": false,
+      "same": true
+    }
+  ]
+}
