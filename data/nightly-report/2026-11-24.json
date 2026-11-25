@@ -1,0 +1,149 @@
+{
+  "date": "2026-11-24",
+  "period": 5,
+  "games": 1,
+  "goals": 8,
+  "notFinal": [],
+  "teams": {
+    "5c6dwdhkmo319aqw": {
+      "eligible": 4,
+      "scored": 2,
+      "g": 0,
+      "a": 2,
+      "a1": 1,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "gp": 2,
+      "games": {
+        "VGK@EDM": 2
+      }
+    },
+    "djdo03kcmo319aqw": {
+      "eligible": 1,
+      "scored": 1,
+      "g": 1,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1,
+      "games": {
+        "VGK@EDM": 1
+      }
+    },
+    "mo75fhhjmo319aqw": {
+      "eligible": 5,
+      "scored": 2,
+      "g": 0,
+      "a": 2,
+      "a1": 2,
+      "a2": 0,
+      "pp": 1,
+      "en": 1,
+      "gp": 2,
+      "games": {
+        "VGK@EDM": 2
+      }
+    },
+    "smc5vz9tmo319aqw": {
+      "eligible": 1,
+      "scored": 1,
+      "g": 1,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 1,
+      "games": {
+        "VGK@EDM": 1
+      }
+    },
+    "lo1c2zefmo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {}
+    },
+    "h13alq00mo319aqw": {
+      "eligible": 0,
+      "scored": 0,
+      "g": 0,
+      "a": 0,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "gp": 0,
+      "games": {}
+    }
+  },
+  "players": {
+    "03jvu": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Mitch Marner",
+      "pts": 2,
+      "g": 0,
+      "a1": 2,
+      "a2": 0,
+      "pp": 1,
+      "en": 1,
+      "game": "VGK@EDM"
+    },
+    "04lc0": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Evan Bouchard",
+      "pts": 2,
+      "g": 0,
+      "a1": 1,
+      "a2": 1,
+      "pp": 0,
+      "en": 0,
+      "game": "VGK@EDM"
+    },
+    "02un4": {
+      "team": "smc5vz9tmo319aqw",
+      "name": "Connor McDavid",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "VGK@EDM"
+    },
+    "04uqa": {
+      "team": "djdo03kcmo319aqw",
+      "name": "Vasily Podkolzin",
+      "pts": 1,
+      "g": 1,
+      "a1": 0,
+      "a2": 0,
+      "pp": 0,
+      "en": 0,
+      "game": "VGK@EDM"
+    }
+  },
+  "bench": {
+    "03924": {
+      "team": "5c6dwdhkmo319aqw",
+      "name": "Jack Eichel",
+      "status": "RESERVE",
+      "pts": 2
+    },
+    "06h8h": {
+      "team": "mo75fhhjmo319aqw",
+      "name": "Trevor Connelly",
+      "status": "RESERVE",
+      "pts": 3
+    }
+  }
+}
